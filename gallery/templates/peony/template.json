@@ -1,0 +1,604 @@
+{
+  "format": "wajha.template",
+  "version": 1,
+  "id": "peony",
+  "name": "Peony",
+  "author": "Wajha Community",
+  "description": "Soft and romantic: blush paper, a petal-pink disc framed by a fine rose-gold line, Playfair Display in deep plum and rose-gold phones.",
+  "category": "elegant",
+  "tags": [
+    "romantic",
+    "blush",
+    "serif",
+    "wedding",
+    "rose gold"
+  ],
+  "theme": {
+    "background": {
+      "fill": {
+        "type": "radial",
+        "cx": 0.5,
+        "cy": 0.28,
+        "radius": 0.95,
+        "stops": [
+          {
+            "offset": 0,
+            "color": "#fdf4f3"
+          },
+          {
+            "offset": 1,
+            "color": "#f4dfe1"
+          }
+        ]
+      },
+      "pattern": null
+    },
+    "panorama": false,
+    "fonts": {
+      "heading": "Playfair Display Variable",
+      "body": "Manrope Variable"
+    },
+    "palette": [
+      "#c2416b",
+      "#d9a35f",
+      "#7b5ea7",
+      "#4a1d3a",
+      "#fdf4f3"
+    ],
+    "mockDark": false
+  },
+  "slides": [
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Your day, *beautifully* planned",
+          "subtitle": "Guests, vendors and budget in one elegant place."
+        },
+        "ar-SA": {
+          "headline": "يوم العمر *بتنظيم* أنيق",
+          "subtitle": "الضيوف والموردون والميزانية في مكان واحد أنيق."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "circle-1",
+              "name": "Petal",
+              "kind": "shape",
+              "x": 0.5,
+              "y": 0.64,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "circle",
+              "width": 0.96,
+              "height": 0.96,
+              "fill": {
+                "type": "solid",
+                "color": "#f8dfe3"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "ring-1",
+              "name": "Rose-gold line",
+              "kind": "shape",
+              "x": 0.5,
+              "y": 0.64,
+              "rotation": 0,
+              "opacity": 0.45,
+              "shape": "ring",
+              "width": 1.14,
+              "height": 1.14,
+              "fill": {
+                "type": "solid",
+                "color": "#c98a8f"
+              },
+              "radius": 0,
+              "stroke": 0.0025,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1481,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Playfair Display Variable",
+                "weight": 600,
+                "size": 0.094,
+                "lineHeight": 1.14,
+                "letterSpacing": -0.01,
+                "color": "#4a1d3a",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.5,
+              "y": 0.63585,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "iphone",
+              "style": {
+                "color": "#e9c6b9",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.76,
+              "slot": "main",
+              "cornerRadius": 0.06,
+              "shadow": {
+                "color": "#6b2a4a33",
+                "blur": 0.07,
+                "x": 0,
+                "y": 0.03
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1619,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Manrope Variable",
+                "weight": 500,
+                "size": 0.04,
+                "lineHeight": 1.42,
+                "letterSpacing": 0,
+                "color": "#6a4a5b",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Guest lists, *simplified*",
+          "subtitle": "RSVPs, seating and dietary notes at a glance."
+        },
+        "ar-SA": {
+          "headline": "قائمة الضيوف *ببساطة*",
+          "subtitle": "تأكيدات الحضور وترتيب المقاعد بنظرة واحدة."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "circle-1",
+              "name": "Petal",
+              "kind": "shape",
+              "x": 0.42,
+              "y": 0.62,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "circle",
+              "width": 0.864,
+              "height": 0.864,
+              "fill": {
+                "type": "solid",
+                "color": "#f8dfe3"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "ring-1",
+              "name": "Rose-gold line",
+              "kind": "shape",
+              "x": 0.42,
+              "y": 0.62,
+              "rotation": 0,
+              "opacity": 0.45,
+              "shape": "ring",
+              "width": 1.026,
+              "height": 1.026,
+              "fill": {
+                "type": "solid",
+                "color": "#c98a8f"
+              },
+              "radius": 0,
+              "stroke": 0.0025,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.54,
+              "y": 0.64085,
+              "rotation": -5,
+              "opacity": 1,
+              "frame": "iphone",
+              "style": {
+                "color": "#e9c6b9",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.76,
+              "slot": "main",
+              "cornerRadius": 0.06,
+              "shadow": {
+                "color": "#6b2a4a33",
+                "blur": 0.07,
+                "x": 0,
+                "y": 0.03
+              }
+            },
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1481,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Playfair Display Variable",
+                "weight": 600,
+                "size": 0.094,
+                "lineHeight": 1.14,
+                "letterSpacing": -0.01,
+                "color": "#4a1d3a",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1619,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Manrope Variable",
+                "weight": 500,
+                "size": 0.04,
+                "lineHeight": 1.42,
+                "letterSpacing": 0,
+                "color": "#6a4a5b",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Every detail, *together*",
+          "subtitle": "Share the plan with your partner and your planner."
+        },
+        "ar-SA": {
+          "headline": "كل التفاصيل *معًا*",
+          "subtitle": "شارك الخطة مع شريك حياتك ومنسّق الحفل."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "circle-1",
+              "name": "Petal",
+              "kind": "shape",
+              "x": 0.5,
+              "y": 0.68,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "circle",
+              "width": 1.008,
+              "height": 1.008,
+              "fill": {
+                "type": "solid",
+                "color": "#f8dfe3"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "ring-1",
+              "name": "Rose-gold line",
+              "kind": "shape",
+              "x": 0.5,
+              "y": 0.68,
+              "rotation": 0,
+              "opacity": 0.45,
+              "shape": "ring",
+              "width": 1.1969999999999998,
+              "height": 1.1969999999999998,
+              "fill": {
+                "type": "solid",
+                "color": "#c98a8f"
+              },
+              "radius": 0,
+              "stroke": 0.0025,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1481,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Playfair Display Variable",
+                "weight": 600,
+                "size": 0.094,
+                "lineHeight": 1.14,
+                "letterSpacing": -0.01,
+                "color": "#4a1d3a",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1619,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Manrope Variable",
+                "weight": 500,
+                "size": 0.04,
+                "lineHeight": 1.42,
+                "letterSpacing": 0,
+                "color": "#6a4a5b",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "device-second",
+              "kind": "device",
+              "x": 0.69,
+              "y": 0.5992,
+              "rotation": 4,
+              "opacity": 1,
+              "frame": "iphone",
+              "style": {
+                "color": "#e9c6b9",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.58,
+              "slot": "second",
+              "cornerRadius": 0.06,
+              "shadow": {
+                "color": "#6b2a4a33",
+                "blur": 0.07,
+                "x": 0,
+                "y": 0.03
+              }
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.33,
+              "y": 0.57845,
+              "rotation": -3,
+              "opacity": 1,
+              "frame": "iphone",
+              "style": {
+                "color": "#e9c6b9",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.62,
+              "slot": "main",
+              "cornerRadius": 0.06,
+              "shadow": {
+                "color": "#6b2a4a33",
+                "blur": 0.07,
+                "x": 0,
+                "y": 0.03
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Countdown to *forever*",
+          "subtitle": "Timelines and reminders, so nothing is missed."
+        },
+        "ar-SA": {
+          "headline": "العدّ التنازلي *للحظة* الكبرى",
+          "subtitle": "جداول وتذكيرات حتى لا يفوتك أي تفصيل."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "circle-1",
+              "name": "Petal",
+              "kind": "shape",
+              "x": 0.5,
+              "y": 0.34,
+              "rotation": 0,
+              "opacity": 1,
+              "shape": "circle",
+              "width": 0.96,
+              "height": 0.96,
+              "fill": {
+                "type": "solid",
+                "color": "#f8dfe3"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "ring-1",
+              "name": "Rose-gold line",
+              "kind": "shape",
+              "x": 0.5,
+              "y": 0.34,
+              "rotation": 0,
+              "opacity": 0.45,
+              "shape": "ring",
+              "width": 1.14,
+              "height": 1.14,
+              "fill": {
+                "type": "solid",
+                "color": "#c98a8f"
+              },
+              "radius": 0,
+              "stroke": 0.0025,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.8219,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Manrope Variable",
+                "weight": 500,
+                "size": 0.04,
+                "lineHeight": 1.42,
+                "letterSpacing": 0,
+                "color": "#6a4a5b",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.5,
+              "y": 0.28952,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "iphone",
+              "style": {
+                "color": "#e9c6b9",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.78,
+              "slot": "main",
+              "cornerRadius": 0.06,
+              "shadow": {
+                "color": "#6b2a4a33",
+                "blur": 0.07,
+                "x": 0,
+                "y": 0.03
+              }
+            },
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.8081,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Playfair Display Variable",
+                "weight": 600,
+                "size": 0.094,
+                "lineHeight": 1.14,
+                "letterSpacing": -0.01,
+                "color": "#4a1d3a",
+                "highlight": "#b03a62",
+                "highlightMode": "color",
+                "align": "center",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "assets": {}
+}

@@ -1,0 +1,14 @@
+# Update pull requests for the actions the workflows use. They are pinned to
+# full commit SHAs, with the release in a comment; Dependabot moves both
+# together, in one pull request a month for all of them. npm and Cargo
+# dependencies are updated by hand.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

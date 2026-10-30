@@ -1,0 +1,34 @@
+/*
+ * Home screen motion that utilities cannot express: a short rise-in for
+ * cards and hero blocks (staggered with --i), and the drop overlay fade.
+ * Durations come from the motion tokens and everything stops for reduced motion.
+ */
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes home-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.home-rise {
+  animation: home-rise var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 12) * 24ms);
+}
+
+.home-fade {
+  animation: home-fade var(--dur) var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-rise,
+  .home-fade {
+    animation: none;
+  }
+}

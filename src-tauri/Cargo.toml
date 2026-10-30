@@ -1,0 +1,46 @@
+[package]
+name = "wajha"
+version = "0.1.0"
+description = "Wajha: beautiful App Store and Google Play screenshots, offline and open source"
+authors = ["Wajha contributors"]
+license = "MIT"
+repository = "https://github.com/M-Alkassem/Wajha"
+edition = "2024"
+# tauri 2.12 itself requires 1.90.
+rust-version = "1.90"
+
+[lib]
+name = "wajha_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+# The scripted self-test behind scripts/desktop-smoke.sh (WAJHA_SELF_TEST_DIR).
+# Never enable it for builds you ship.
+self-test = []
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+fontdb = "0.23"
+# Both are already compiled into tauri, so naming them costs no binary size.
+getrandom = "0.3"
+dunce = "1"
+
+[dev-dependencies]
+tempfile = "3"
+# Mock runtime for the IPC wiring tests; dev-only, never in the shipped binary.
+tauri = { version = "2", features = ["test"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

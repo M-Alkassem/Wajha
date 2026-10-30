@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+@import './styles/kit.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant light (&:where([data-theme='light'], [data-theme='light'] *));
+
+/* focus-visible means keyboard focus here. WebKit also matches :focus-visible
+   when script moves focus right after a click, which radix does on tabs,
+   menus, selects and sliders, so rings and focus-revealed controls would stay
+   behind after plain mouse use. While the pointer was the last input
+   (<html data-modality="pointer">, see src/ui/kit/modality.ts) only text
+   fields, which show focus whatever moved it, keep their focus styles. This
+   covers every focus-visible: utility, group- and peer- ones included. */
+@custom-variant focus-visible (&:focus-visible:where(input, textarea, select, [contenteditable='true'], :not(:root[data-modality='pointer'] *)));
+
+/* Semantic Tailwind theme: bg-panel, text-text-2, border-line, bg-accent ... */
+@theme inline {
+  --color-stage: var(--stage);
+  --color-app: var(--app);
+  --color-panel: var(--panel);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-popover: var(--popover);
+  --color-raised: var(--raised);
+  --color-overlay: var(--overlay);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-text-inverse: var(--text-inverse);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-accent-text: var(--accent-text);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-focus: var(--focus);
+  --color-focus-soft: var(--focus-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-solid: var(--danger-solid);
+  --color-danger-solid-2: var(--danger-solid-2);
+  --color-field: var(--field);
+  --color-field-hover: var(--field-hover);
+  --color-knob: var(--knob);
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-text: var(--tooltip-text);
+  --color-tooltip-line: var(--tooltip-line);
+
+  --font-sans: var(--font-ui);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+  --font-brand: var(--font-brand);
+  --font-brand-ar: var(--font-brand-ar);
+
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-2xl: var(--r-2xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-slide: var(--shadow-slide);
+  --shadow-ring: var(--ring);
+  --shadow-ring-danger: var(--ring-danger);
+  --shadow-brand: var(--brand-glow);
+
+  --ease-out: var(--ease-out);
+  --ease-in: var(--ease-in);
+  --ease-spring: var(--ease-spring);
+}
+
+/* Desktop type scale on top of Tailwind's defaults: text-2xs (11 px) for
+   badges and keycaps, text-ui (13 px) for body copy. */
+@theme {
+  --text-2xs: 11px;
+  --text-2xs--line-height: 14px;
+  --text-ui: 13px;
+  --text-ui--line-height: 18px;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  /* The root font size stays at the browser default (16 px) so Tailwind's
+     rem-based spacing keeps its 4 px grid; the UI's 13 px lives on body. */
+  html {
+    background: var(--app);
+    color: var(--text);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.4;
+    overflow: hidden; /* the app manages its own scroll areas */
+    user-select: none; /* desktop app: text is selectable only in inputs */
+    -webkit-user-select: none;
+  }
+  input,
+  textarea,
+  [contenteditable='true'] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  ::selection {
+    background: var(--selection);
+  }
+  :where(*) {
+    @variant focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+  }
+  button {
+    cursor: default;
+  }
+  /* Thin, unobtrusive scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-hover);
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}

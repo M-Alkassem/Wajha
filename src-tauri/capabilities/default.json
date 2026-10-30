@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Main window: only the core calls the frontend makes. Event listening for the close guard and the before-exit event (src/ui/shell/session.ts); dragging and double-click zooming through the data-tauri-drag-region top bar (the macOS title bar is an overlay); destroying the window once the close handler has saved pending edits; and the devtools hotkey, a command that exists in debug builds only. No fs, dialog or opener permissions: the frontend reaches files only through Wajha's own commands, which Tauri allows for the app's local pages by default. src-tauri/src/lib.rs tests that everything else is refused.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:event:allow-listen",
+    "core:event:allow-unlisten",
+    "core:window:allow-start-dragging",
+    "core:window:allow-internal-toggle-maximize",
+    "core:window:allow-destroy",
+    "core:webview:allow-internal-toggle-devtools"
+  ]
+}

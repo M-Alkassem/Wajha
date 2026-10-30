@@ -1,0 +1,64 @@
+name: Release
+
+# Push a tag like v0.1.0 to build installers for macOS (Apple Silicon + Intel),
+# Windows and Linux and attach them to a draft GitHub release.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+# Nothing by default; the build job asks for what publishing needs.
+permissions: {}
+
+# Actions are pinned to full commit SHAs (the release in the comment), so a
+# moved or hijacked tag cannot change what runs with write access. No caches
+# either: installers are built from a clean slate, never from files another
+# run left in a cache.
+jobs:
+  build:
+    # The release is named after its tag, so a manual run must start from one.
+    if: github.ref_type == 'tag'
+    permissions:
+      contents: write # create the draft release and upload the installers
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: --target aarch64-apple-darwin
+          - platform: macos-latest
+            args: --target x86_64-apple-darwin
+          - platform: ubuntu-22.04
+            args: ''
+          - platform: windows-latest
+            args: ''
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Linux dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - run: npm ci
+      # Shipped builds never enable the `self-test` cargo feature.
+      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Wajha ${{ github.ref_name }}
+          releaseBody: See the assets below to download Wajha for your platform.
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}

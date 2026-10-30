@@ -1,0 +1,18 @@
+{
+  "blueprint": {
+    "sha256": "0aef68f61f768b11f753b32bddb59cf5d9476486768d7e5ac677780025fac202",
+    "version": 1
+  },
+  "lagoon": {
+    "sha256": "4983a70dfc1e112d7e7ba3e2853fd91acb836838462dce4e1e17b9ca7082ffd7",
+    "version": 1
+  },
+  "peony": {
+    "sha256": "dfc1349cb2908b47416236b4a8b0f44957bec98a3b24ee3f15892902c6e7a628",
+    "version": 1
+  },
+  "terminal": {
+    "sha256": "98af3dcfa9b7af724c0b5b6d6f6022bbfe19d30d5d6d4aaffe3935766196e801",
+    "version": 1
+  }
+}

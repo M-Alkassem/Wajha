@@ -1,0 +1,637 @@
+{
+  "format": "wajha.template",
+  "version": 1,
+  "id": "blueprint",
+  "name": "Blueprint",
+  "author": "Wajha Community",
+  "description": "A technical drawing come to life: blueprint blue with a white grid, flush-left Inter, highlighter-yellow words, bare screenshots and dimension lines.",
+  "category": "minimal",
+  "tags": [
+    "blueprint",
+    "grid",
+    "technical",
+    "blue",
+    "home"
+  ],
+  "theme": {
+    "background": {
+      "fill": {
+        "type": "solid",
+        "color": "#1f4fa3"
+      },
+      "pattern": {
+        "kind": "grid",
+        "color": "#ffffff",
+        "opacity": 0.13,
+        "scale": 0.1
+      }
+    },
+    "panorama": false,
+    "fonts": {
+      "heading": "Inter Variable",
+      "body": "Inter Variable"
+    },
+    "palette": [
+      "#ffcf4d",
+      "#4dd0e1",
+      "#ff8a65",
+      "#ffffff",
+      "#1f4fa3"
+    ],
+    "mockDark": false
+  },
+  "slides": [
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Plan your *dream* space",
+          "subtitle": "Measure rooms, sketch layouts and price every idea."
+        },
+        "ar-SA": {
+          "headline": "خطّط لمساحة *أحلامك*",
+          "subtitle": "قِس الغرف وارسم المخططات واحسب تكلفة كل فكرة."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1931,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 700,
+                "size": 0.094,
+                "lineHeight": 1.08,
+                "letterSpacing": -0.035,
+                "color": "#ffffff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.55,
+              "y": 0.66,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "none",
+              "style": {
+                "color": "#2b2c31",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.66,
+              "slot": "main",
+              "cornerRadius": 0.07,
+              "shadow": {
+                "color": "#06204d80",
+                "blur": 0.06,
+                "x": 0,
+                "y": 0.025
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.47,
+              "y": 0.2069,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 450,
+                "size": 0.04,
+                "lineHeight": 1.38,
+                "letterSpacing": 0,
+                "color": "#e3ecff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "rect-1",
+              "name": "Dimension line",
+              "kind": "shape",
+              "x": 0.12,
+              "y": 0.66,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.004,
+              "height": 1.434,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "rect-2",
+              "name": "Tick",
+              "kind": "shape",
+              "x": 0.12,
+              "y": 0.33,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.04,
+              "height": 0.004,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "rect-3",
+              "name": "Tick",
+              "kind": "shape",
+              "x": 0.12,
+              "y": 0.99,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.04,
+              "height": 0.004,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Measure in *seconds*",
+          "subtitle": "Point your camera and get exact room dimensions."
+        },
+        "ar-SA": {
+          "headline": "قياس في *ثوانٍ*",
+          "subtitle": "وجّه الكاميرا لتحصل على أبعاد الغرفة بدقة."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1931,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 700,
+                "size": 0.094,
+                "lineHeight": 1.08,
+                "letterSpacing": -0.035,
+                "color": "#ffffff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.47,
+              "y": 0.2069,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 450,
+                "size": 0.04,
+                "lineHeight": 1.38,
+                "letterSpacing": 0,
+                "color": "#e3ecff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "rect-1",
+              "name": "Dimension line",
+              "kind": "shape",
+              "x": 0.88,
+              "y": 0.66,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.004,
+              "height": 1.434,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "rect-2",
+              "name": "Tick",
+              "kind": "shape",
+              "x": 0.88,
+              "y": 0.33,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.04,
+              "height": 0.004,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.45,
+              "y": 0.66,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "none",
+              "style": {
+                "color": "#2b2c31",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.66,
+              "slot": "main",
+              "cornerRadius": 0.07,
+              "shadow": {
+                "color": "#06204d80",
+                "blur": 0.06,
+                "x": 0,
+                "y": 0.025
+              }
+            },
+            {
+              "id": "rect-3",
+              "name": "Tick",
+              "kind": "shape",
+              "x": 0.88,
+              "y": 0.99,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.04,
+              "height": 0.004,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Budget every *detail*",
+          "subtitle": "Materials, labor and timelines in one plan."
+        },
+        "ar-SA": {
+          "headline": "ميزانية لكل *تفصيل*",
+          "subtitle": "المواد والعمالة والجداول الزمنية في خطة واحدة."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "ring-1",
+              "name": "Measure ring",
+              "kind": "shape",
+              "x": 0.86,
+              "y": 0.34,
+              "rotation": 0,
+              "opacity": 0.7,
+              "shape": "ring",
+              "width": 0.24,
+              "height": 0.24,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0.004,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1931,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 700,
+                "size": 0.094,
+                "lineHeight": 1.08,
+                "letterSpacing": -0.035,
+                "color": "#ffffff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.47,
+              "y": 0.2069,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 450,
+                "size": 0.04,
+                "lineHeight": 1.38,
+                "letterSpacing": 0,
+                "color": "#e3ecff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "device-second",
+              "kind": "device",
+              "x": 0.7,
+              "y": 0.65,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "none",
+              "style": {
+                "color": "#2b2c31",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.5,
+              "slot": "second",
+              "cornerRadius": 0.07,
+              "shadow": {
+                "color": "#06204d80",
+                "blur": 0.06,
+                "x": 0,
+                "y": 0.025
+              }
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.32,
+              "y": 0.58,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "none",
+              "style": {
+                "color": "#2b2c31",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.5,
+              "slot": "main",
+              "cornerRadius": 0.07,
+              "shadow": {
+                "color": "#06204d80",
+                "blur": 0.06,
+                "x": 0,
+                "y": 0.025
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "texts": {
+        "en-US": {
+          "headline": "Build with *confidence*",
+          "subtitle": "Share plans with contractors and track progress."
+        },
+        "ar-SA": {
+          "headline": "ابنِ *بثقة*",
+          "subtitle": "شارك المخططات مع المقاولين وتابع التقدّم."
+        }
+      },
+      "layouts": {
+        "tall": {
+          "background": null,
+          "elements": [
+            {
+              "id": "headline",
+              "kind": "text",
+              "x": 0.5,
+              "y": 0.1931,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "headline",
+              "width": 0.86,
+              "valign": "bottom",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 700,
+                "size": 0.094,
+                "lineHeight": 1.08,
+                "letterSpacing": -0.035,
+                "color": "#ffffff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "subtitle",
+              "kind": "text",
+              "x": 0.47,
+              "y": 0.2069,
+              "rotation": 0,
+              "opacity": 1,
+              "key": "subtitle",
+              "width": 0.8,
+              "valign": "top",
+              "style": {
+                "font": "Inter Variable",
+                "weight": 450,
+                "size": 0.04,
+                "lineHeight": 1.38,
+                "letterSpacing": 0,
+                "color": "#e3ecff",
+                "highlight": "#ffe08a",
+                "highlightMode": "color",
+                "align": "start",
+                "transform": "none",
+                "maxLines": 2,
+                "shadow": null
+              }
+            },
+            {
+              "id": "rect-1",
+              "name": "Dimension line",
+              "kind": "shape",
+              "x": 0.12,
+              "y": 0.66,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.004,
+              "height": 1.434,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "device",
+              "kind": "device",
+              "x": 0.55,
+              "y": 0.66,
+              "rotation": 0,
+              "opacity": 1,
+              "frame": "none",
+              "style": {
+                "color": "#2b2c31",
+                "finish": "metal",
+                "bezel": "black"
+              },
+              "width": 0.66,
+              "slot": "main",
+              "cornerRadius": 0.07,
+              "shadow": {
+                "color": "#06204d80",
+                "blur": 0.06,
+                "x": 0,
+                "y": 0.025
+              }
+            },
+            {
+              "id": "rect-2",
+              "name": "Tick",
+              "kind": "shape",
+              "x": 0.12,
+              "y": 0.33,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.04,
+              "height": 0.004,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            },
+            {
+              "id": "rect-3",
+              "name": "Tick",
+              "kind": "shape",
+              "x": 0.12,
+              "y": 0.99,
+              "rotation": 0,
+              "opacity": 0.8,
+              "shape": "rect",
+              "width": 0.04,
+              "height": 0.004,
+              "fill": {
+                "type": "solid",
+                "color": "#ffffff"
+              },
+              "radius": 0,
+              "stroke": 0,
+              "blur": 0,
+              "seed": 0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "assets": {}
+}

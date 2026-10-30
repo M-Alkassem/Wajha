@@ -1,0 +1,83 @@
+{
+  "format": "wajha.gallery",
+  "version": 1,
+  "updatedAt": "2026-10-30T18:16:49.861Z",
+  "templates": [
+    {
+      "id": "blueprint",
+      "name": "Blueprint",
+      "author": "Wajha Community",
+      "description": "A technical drawing come to life: blueprint blue with a white grid, flush-left Inter, highlighter-yellow words, bare screenshots and dimension lines.",
+      "category": "minimal",
+      "tags": [
+        "blueprint",
+        "grid",
+        "technical",
+        "blue",
+        "home"
+      ],
+      "version": 1,
+      "template": "templates/blueprint/template.json",
+      "preview": "templates/blueprint/preview.jpg",
+      "assets": [],
+      "bytes": 141836
+    },
+    {
+      "id": "lagoon",
+      "name": "Lagoon",
+      "author": "Wajha Community",
+      "description": "Clear tropical water: a deep teal to aqua mesh, drifting bubble rings, white phones and fresh mint highlights.",
+      "category": "gradient",
+      "tags": [
+        "teal",
+        "water",
+        "fresh",
+        "wellness",
+        "mesh"
+      ],
+      "version": 1,
+      "template": "templates/lagoon/template.json",
+      "preview": "templates/lagoon/preview.jpg",
+      "assets": [],
+      "bytes": 160242
+    },
+    {
+      "id": "peony",
+      "name": "Peony",
+      "author": "Wajha Community",
+      "description": "Soft and romantic: blush paper, a petal-pink disc framed by a fine rose-gold line, Playfair Display in deep plum and rose-gold phones.",
+      "category": "elegant",
+      "tags": [
+        "romantic",
+        "blush",
+        "serif",
+        "wedding",
+        "rose gold"
+      ],
+      "version": 1,
+      "template": "templates/peony/template.json",
+      "preview": "templates/peony/preview.jpg",
+      "assets": [],
+      "bytes": 131008
+    },
+    {
+      "id": "terminal",
+      "name": "Terminal",
+      "author": "Wajha Community",
+      "description": "A developer tool after midnight: near-black with a phosphor-green grid, prompt-style eyebrows, Space Grotesk headlines and bare screenshots glowing in the dark.",
+      "category": "dark",
+      "tags": [
+        "developer",
+        "green",
+        "grid",
+        "dark",
+        "code"
+      ],
+      "version": 1,
+      "template": "templates/terminal/template.json",
+      "preview": "templates/terminal/preview.jpg",
+      "assets": [],
+      "bytes": 126689
+    }
+  ]
+}

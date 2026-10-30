@@ -1,0 +1,332 @@
+/*
+ * Motion and the few styles of the UI kit (src/ui/kit) that Tailwind
+ * utilities cannot express: keyframes for radix open/close states, the
+ * brand button, the transparency checkerboard and react-colorful overrides.
+ *
+ * Every animation reads its duration from the motion tokens, and the
+ * reduced-motion block at the end removes the presence animations entirely,
+ * so radix unmounts closed layers immediately instead of waiting for
+ * animationend.
+ */
+
+@keyframes kit-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes kit-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes kit-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--kit-dx, 0), var(--kit-dy, 0)) scale(0.96);
+  }
+}
+@keyframes kit-pop-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+@keyframes kit-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.965);
+  }
+}
+@keyframes kit-dialog-out {
+  to {
+    opacity: 0;
+    transform: translateY(2px) scale(0.98);
+  }
+}
+/* Toasts slide in from the right edge by default; centred stacks override
+   the offsets so they rise from (or drop toward) their own edge. */
+@keyframes kit-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--kit-toast-dx, calc(100% + 24px)), var(--kit-toast-dy, 0)) scale(var(--kit-toast-scale, 1));
+  }
+}
+@keyframes kit-toast-out {
+  to {
+    opacity: 0;
+    transform: translate(var(--kit-toast-out-dx, 16px), var(--kit-toast-out-dy, 0)) scale(0.98);
+  }
+}
+@keyframes kit-collapse-open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+@keyframes kit-collapse-close {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+@keyframes kit-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes kit-indeterminate {
+  from {
+    transform: translateX(-100%) scaleX(0.6);
+  }
+  to {
+    transform: translateX(250%) scaleX(1);
+  }
+}
+@keyframes kit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@layer components {
+  /* Radix layers ---------------------------------------------------- */
+
+  .kit-overlay[data-state='open'] {
+    animation: kit-fade-in var(--dur) var(--ease-out);
+  }
+  .kit-overlay[data-state='closed'] {
+    animation: kit-fade-out var(--dur-fast) var(--ease-in) forwards;
+  }
+
+  .kit-dialog[data-state='open'] {
+    animation: kit-dialog-in 240ms var(--ease-out);
+  }
+  .kit-dialog[data-state='closed'] {
+    animation: kit-dialog-out var(--dur-fast) var(--ease-in) forwards;
+  }
+
+  /* Popovers, menus, selects and tooltips slide in from their trigger. */
+  .kit-pop[data-side='bottom'] {
+    --kit-dy: -4px;
+  }
+  .kit-pop[data-side='top'] {
+    --kit-dy: 4px;
+  }
+  .kit-pop[data-side='left'] {
+    --kit-dx: 4px;
+  }
+  .kit-pop[data-side='right'] {
+    --kit-dx: -4px;
+  }
+  .kit-pop[data-state='open'],
+  .kit-pop[data-state='delayed-open'],
+  .kit-pop[data-state='instant-open'] {
+    animation: kit-pop-in var(--dur) var(--ease-out);
+  }
+  .kit-pop[data-state='closed'] {
+    animation: kit-pop-out var(--dur-fast) var(--ease-in) forwards;
+  }
+
+  .kit-collapse {
+    overflow: hidden;
+  }
+  .kit-collapse[data-state='open'] {
+    animation: kit-collapse-open var(--dur) var(--ease-out);
+  }
+  .kit-collapse[data-state='closed'] {
+    animation: kit-collapse-close var(--dur-fast) var(--ease-in);
+  }
+
+  .kit-toast {
+    animation: kit-toast-in var(--dur-slow) var(--ease-out);
+  }
+  .kit-toast[data-leaving] {
+    animation: kit-toast-out var(--dur) var(--ease-in) forwards;
+    pointer-events: none;
+  }
+  [data-kit-toasts][data-position='bottom-center'] {
+    --kit-toast-dx: 0;
+    --kit-toast-dy: 12px;
+    --kit-toast-scale: 0.97;
+    --kit-toast-out-dx: 0;
+    --kit-toast-out-dy: 8px;
+  }
+  [data-kit-toasts][data-position='top-center'] {
+    --kit-toast-dx: 0;
+    --kit-toast-dy: -12px;
+    --kit-toast-scale: 0.97;
+    --kit-toast-out-dx: 0;
+    --kit-toast-out-dy: -8px;
+  }
+
+  /* Brand glow ------------------------------------------------------ */
+
+  /* A soft blurred-brand-gradient glow painted with radial gradients instead
+     of filter: blur(). WebKit keeps an offscreen buffer the size of a blurred
+     element (about 28 MB for the home page glow on a 2x screen); gradients
+     cost nothing. Size the element to the glow's full visible extent. */
+  .kit-glow {
+    background-image:
+      radial-gradient(closest-side at 30% 56%, rgb(255 138 61 / 0.9), rgb(255 138 61 / 0.35) 55%, rgb(255 138 61 / 0)),
+      radial-gradient(closest-side at 50% 46%, rgb(255 77 126 / 0.9), rgb(255 77 126 / 0.35) 55%, rgb(255 77 126 / 0)),
+      radial-gradient(closest-side at 70% 56%, rgb(124 108 255 / 0.9), rgb(124 108 255 / 0.35) 55%, rgb(124 108 255 / 0));
+  }
+
+  /* Brand button ---------------------------------------------------- */
+
+  /* Hover slides the gradient towards violet. Pressed tightens the glow and
+     shades the gradient with a full-size inset shadow, which paints over the
+     background but under the label: a filter would dim the white text too. */
+  .kit-brand {
+    background-image: var(--brand-gradient-strong);
+    background-size: 150% 100%;
+    background-position: 0% 50%;
+    box-shadow: var(--brand-glow), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    text-shadow: 0 1px 1px rgba(60, 0, 20, 0.22);
+    transition:
+      background-position var(--dur-slow) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+  .kit-brand:hover:not(:disabled) {
+    background-position: 100% 50%;
+    box-shadow:
+      0 10px 30px -8px rgba(255, 77, 126, 0.7),
+      0 4px 14px -4px rgba(124, 108, 255, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.26),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .kit-brand:active:not(:disabled) {
+    box-shadow:
+      0 4px 14px -6px rgba(255, 77, 126, 0.6),
+      0 1px 6px -3px rgba(124, 108, 255, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      inset 0 0 0 100px rgba(40, 0, 24, 0.14);
+  }
+
+  /* Transparency checkerboard behind colour swatches ----------------- */
+
+  .kit-checker {
+    background-color: var(--checker-a);
+    background-image: conic-gradient(var(--checker-b) 0 25%, transparent 0 50%, var(--checker-b) 0 75%, transparent 0);
+    background-size: 8px 8px;
+  }
+
+  /* Skeleton shimmer ------------------------------------------------- */
+
+  .kit-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .kit-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--line), transparent);
+    animation: kit-shimmer 1.6s ease-in-out infinite;
+  }
+
+  .kit-indeterminate {
+    animation: kit-indeterminate 1.25s var(--ease-out) infinite;
+  }
+
+  .kit-spin {
+    animation: kit-spin 0.75s linear infinite;
+  }
+}
+
+/* react-colorful injects its own unlayered <style>; these overrides stay
+   unlayered too (layered rules would lose regardless of specificity). */
+
+.kit-colorful .react-colorful {
+  width: 100%;
+  height: auto;
+  gap: 10px;
+}
+.kit-colorful .react-colorful__saturation {
+  height: 150px;
+  flex: none;
+  border-radius: var(--r-md);
+  border-bottom: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.kit-colorful .react-colorful__hue,
+.kit-colorful .react-colorful__alpha {
+  height: 10px;
+  flex: none;
+  border-radius: 999px;
+}
+.kit-colorful .react-colorful__alpha-pattern,
+.kit-colorful .react-colorful__alpha > div {
+  border-radius: 999px;
+}
+.kit-colorful .react-colorful__last-control {
+  border-radius: 999px;
+}
+.kit-colorful .react-colorful__pointer {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.kit-colorful .react-colorful__hue-pointer,
+.kit-colorful .react-colorful__alpha-pointer {
+  width: 14px;
+  height: 14px;
+}
+/* Keyboard focus only: react-colorful focuses its area on pointer down too (see the focus-visible variant in index.css). */
+.kit-colorful .react-colorful__interactive:focus-visible:not(:root[data-modality='pointer'] *) .react-colorful__pointer {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.22),
+    0 0 0 4px var(--focus-soft),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* While a NumberField label or a gradient handle is dragged, the whole window
+   shows the drag cursor and nothing gets text-selected. */
+.kit-scrubbing,
+.kit-scrubbing * {
+  cursor: ew-resize !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+.kit-dragging,
+.kit-dragging * {
+  cursor: grabbing !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kit-overlay,
+  .kit-dialog,
+  .kit-pop,
+  .kit-collapse,
+  .kit-toast,
+  .kit-shimmer::after,
+  .kit-indeterminate {
+    animation: none !important;
+  }
+  .kit-brand {
+    transition: none;
+  }
+  /* A frozen shimmer would read as a stripe; the skeleton stays flat instead. */
+  .kit-shimmer::after {
+    display: none;
+  }
+}

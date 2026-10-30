@@ -1,0 +1,222 @@
+/*
+ * Wajha design tokens.
+ *
+ * Every colour, radius, shadow and motion value used by the UI comes from
+ * here. Components use them through the Tailwind theme in index.css
+ * (bg-panel, text-text-2, border-line, ...) or directly as var(--token).
+ *
+ * Dark is the default theme; light is a full equivalent, not an afterthought.
+ * <html data-theme="dark|light"> is set at startup from AppSettings.
+ *
+ * Contrast: text, text-2 and text-3 stay >= 4.5:1 on panel and surface in
+ * both themes; accent-text on accent and white on danger-solid too, in every
+ * state: hover (accent-2, danger-solid-2) and pressed (accent-3,
+ * danger-solid-3). Hover goes darker in light; in dark it goes more vivid
+ * rather than lighter, which would drop white text under 4.5:1. Each state
+ * stays visibly apart from the one before it. On a highlighted row
+ * (surface-2, surface-3, accent-soft) secondary text uses text-2: text-3
+ * drops to about 4:1 there. Status colours (success, warning, danger) and
+ * accent-fg stay >= 4.5:1 on every surface, and so does a badge (that colour
+ * on its own soft tint) wherever badges sit: panels, popovers, cards,
+ * surface-2, highlighted and selected rows, fields and the stage. Every stop
+ * of brand-gradient-strong keeps white text at 4.5:1, so the Export label
+ * passes wherever it sits on the gradient. src/ui/kit/contrast.test.ts
+ * measures all of this. Colours that only pass as icons or large text (brand
+ * oranges) never carry body text.
+ */
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Surfaces, from the back of the window to the front */
+  --stage: #08080b;          /* canvas area behind the slides */
+  --stage-dot: rgba(255, 255, 255, 0.045);
+  --app: #0c0c10;            /* window background */
+  --panel: #111115;          /* sidebars, top bar */
+  --surface: #18181d;        /* inputs, cards, list rows */
+  --surface-2: #1f1f25;      /* hover */
+  --surface-3: #27272f;      /* pressed / selected */
+  --overlay: rgba(4, 4, 7, 0.62); /* modal backdrop */
+  --popover: #1a1a20;        /* menus, popovers, dialogs */
+  --raised: #2a2a33;         /* segmented thumb, knobs on surfaces */
+
+  /* Lines */
+  --line: rgba(255, 255, 255, 0.075);
+  --line-strong: rgba(255, 255, 255, 0.13);
+
+  /* Text */
+  --text: #ededf2;
+  --text-2: #a0a0ae;         /* secondary, 7:1 on panel */
+  --text-3: #84848f;         /* tertiary, placeholders, 4.8:1 on surface */
+  --text-inverse: #0c0c10;
+
+  /* Accent: violet, with a warm sunset gradient for the brand */
+  --accent: #6d5dfb;
+  --accent-2: #7549ff;       /* hover: more vivid, not lighter */
+  --accent-3: #5f4ff0;       /* pressed */
+  --accent-text: #ffffff;    /* text on accent */
+  --accent-fg: #a196ff;      /* accent-coloured text and icons on panels */
+  --accent-soft: rgba(124, 108, 255, 0.16);
+  --accent-line: rgba(124, 108, 255, 0.55);
+  --focus: #8b7dff;          /* focus rings: >= 3:1 on every surface */
+  --focus-soft: rgba(124, 108, 255, 0.28); /* halo around focused inputs */
+  --selection: rgba(124, 108, 255, 0.42); /* selected text; text on it stays >= 7:1 */
+
+  /* Status */
+  --success: #3dd68c;
+  --success-soft: rgba(61, 214, 140, 0.13);
+  --warning: #f5b544;
+  --warning-soft: rgba(245, 181, 68, 0.13);
+  --danger: #ff7675;         /* danger text and icons */
+  --danger-soft: rgba(255, 99, 99, 0.13);
+  --danger-solid: #dc3539;   /* destructive buttons, white text 4.5:1 */
+  --danger-solid-2: #e21b25; /* hover: more vivid, not lighter */
+  --danger-solid-3: #c9282f; /* pressed */
+
+  /* Controls */
+  --field: rgba(255, 255, 255, 0.05);        /* input wells; translucent so they read on panels, popovers and dialogs alike */
+  --field-hover: rgba(255, 255, 255, 0.08);
+  --knob: #ffffff;           /* switch and slider thumbs */
+  --checker-a: #2b2b33;      /* transparency checkerboard */
+  --checker-b: #1b1b21;
+  --tooltip: #2c2c35;
+  --tooltip-text: #f4f4f8;
+  --tooltip-line: rgba(255, 255, 255, 0.09);
+  --scrollbar: rgba(255, 255, 255, 0.14);
+  --scrollbar-hover: rgba(255, 255, 255, 0.26);
+
+  /* Depth */
+  --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 6px 18px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.045);
+  --shadow-lg: 0 18px 48px -12px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-xl: 0 32px 96px -24px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-slide: 0 30px 80px -24px rgba(0, 0, 0, 0.75);
+  --ring: 0 0 0 3px rgba(124, 108, 255, 0.26);
+  --ring-danger: 0 0 0 3px rgba(255, 99, 99, 0.22);
+  --glass: rgba(17, 17, 21, 0.72);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --stage: #e9e9ee;
+  --stage-dot: rgba(10, 10, 30, 0.07);
+  --app: #f3f3f6;
+  --panel: #fbfbfc;
+  --surface: #f1f1f4;
+  --surface-2: #e9e9ee;
+  --surface-3: #e0e0e7;
+  --overlay: rgba(18, 18, 32, 0.3);
+  --popover: #ffffff;
+  --raised: #ffffff;
+
+  --line: rgba(15, 15, 35, 0.085);
+  --line-strong: rgba(15, 15, 35, 0.15);
+
+  --text: #16161d;
+  --text-2: #5c5c6b;
+  --text-3: #6b6b79;
+  --text-inverse: #ffffff;
+
+  --accent: #6a59f6;
+  --accent-2: #634fed;
+  --accent-3: #5747e0;
+  --accent-text: #ffffff;
+  --accent-fg: #5643df;
+  --accent-soft: rgba(106, 89, 246, 0.11);
+  --accent-line: rgba(106, 89, 246, 0.5);
+  --focus: #6a59f6;
+  --focus-soft: rgba(106, 89, 246, 0.2);
+  --selection: rgba(106, 89, 246, 0.24);
+
+  --success: #086f43;
+  --success-soft: rgba(18, 168, 101, 0.12);
+  --warning: #865600;
+  --warning-soft: rgba(214, 150, 20, 0.15);
+  --danger: #bc1d26;
+  --danger-soft: rgba(229, 72, 77, 0.1);
+  --danger-solid: #d8343a;
+  --danger-solid-2: #cb2a32;
+  --danger-solid-3: #b92129;
+
+  --field: rgba(15, 15, 35, 0.05);
+  --field-hover: rgba(15, 15, 35, 0.08);
+  --knob: #ffffff;
+  --checker-a: #ffffff;
+  --checker-b: #e3e3e9;
+  --tooltip: #1d1d24;
+  --tooltip-text: #fafafc;
+  --tooltip-line: rgba(0, 0, 0, 0);
+  --scrollbar: rgba(15, 15, 35, 0.18);
+  --scrollbar-hover: rgba(15, 15, 35, 0.32);
+
+  --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --shadow-sm: 0 1px 2px rgba(16, 16, 40, 0.08);
+  --shadow-md: 0 6px 18px -8px rgba(16, 16, 40, 0.2), 0 0 0 1px rgba(16, 16, 40, 0.05);
+  --shadow-lg: 0 18px 48px -14px rgba(16, 16, 40, 0.26), 0 0 0 1px rgba(16, 16, 40, 0.07);
+  --shadow-xl: 0 32px 90px -24px rgba(16, 16, 40, 0.34), 0 0 0 1px rgba(16, 16, 40, 0.07);
+  --shadow-slide: 0 26px 70px -26px rgba(16, 16, 40, 0.35);
+  --ring: 0 0 0 3px rgba(106, 89, 246, 0.2);
+  --ring-danger: 0 0 0 3px rgba(229, 72, 77, 0.18);
+  --glass: rgba(251, 251, 252, 0.78);
+}
+
+:root {
+  /* Brand: a sunset over a night sky. Only for the logo, the Export button
+     and empty states; everyday UI uses the violet accent. */
+  --brand-gradient: linear-gradient(135deg, #ff8a3d 0%, #ff4d7e 46%, #7c6cff 100%);
+  /* Deeper stops for the Export button: white text stays >= 4.5:1 on each of
+     them, hence on every colour between them, at rest and on hover. */
+  --brand-gradient-strong: linear-gradient(100deg, #d34303 0%, #e0245e 50%, #6d4df2 100%);
+  --brand-gradient-soft: linear-gradient(135deg, rgba(255, 138, 61, 0.16) 0%, rgba(255, 77, 126, 0.14) 46%, rgba(124, 108, 255, 0.16) 100%);
+  --brand-glow: 0 8px 24px -8px rgba(255, 77, 126, 0.55), 0 2px 10px -4px rgba(124, 108, 255, 0.45);
+  --brand-orange: #ff8a3d;
+  --brand-pink: #ff4d7e;
+  --brand-violet: #7c6cff;
+  --brand-night: #0e0b1c;
+
+  /* Type: native system UI font for a desktop feel (no download) */
+  --font-ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI Variable Text', 'Segoe UI', system-ui, 'Noto Sans', 'Noto Sans Arabic Variable', sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  /* Wordmark only; both faces are bundled (see src/fonts.ts). */
+  --font-brand: 'Bricolage Grotesque Variable', var(--font-display);
+  --font-brand-ar: 'Readex Pro Variable', 'Noto Sans Arabic Variable', var(--font-ui);
+
+  /* Radii */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-2xl: 22px;
+
+  /* Control heights (8 px grid, desktop density) */
+  --control-sm: 24px;
+  --control-md: 28px;
+  --control-lg: 36px;
+
+  /* Layout */
+  --topbar-h: 52px;
+  --sidebar-w: 248px;
+  --inspector-w: 300px;
+  --traffic-lights-w: 84px; /* macOS window buttons inset, set to 0 elsewhere */
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --dur-slow: 320ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-slow: 0ms;
+  }
+}
