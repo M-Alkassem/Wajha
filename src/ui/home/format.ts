@@ -7,7 +7,7 @@ import { FAMILIES } from '../../model/catalog';
 import type { FamilyId } from '../../model/types';
 import { sanitizeSegment } from '../../export/paths';
 
-import { t } from '../../i18n';
+import { t, tn, uiLanguage } from '../../i18n';
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
@@ -178,6 +178,8 @@ export function listFamilies(families: readonly FamilyId[]): string {
 /** "A", "A and B", "A, B and C". */
 export function listJoin(items: readonly string[]): string {
   if (items.length <= 1) return items[0] ?? '';
+  // Arabic joins with its own "و"; English keeps "a, b and c".
+  if (uiLanguage() === 'ar') return new Intl.ListFormat('ar', { type: 'conjunction' }).format(items);
   return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
@@ -187,9 +189,9 @@ export function shorten(name: string, max = 60): string {
   return chars.length <= max ? chars.join('') : `${chars.slice(0, Math.max(1, max - 1)).join('').trimEnd()}…`;
 }
 
-/** "1 project", "3 languages". */
+/** "1 project", "3 languages", in the interface language (see tn). */
 export function plural(n: number, one: string, many = `${one}s`): string {
-  return `${n} ${n === 1 ? one : many}`;
+  return tn(n, `{count} ${one}`, `{count} ${many}`);
 }
 
 /* Grid navigation ---------------------------------------------------------- */

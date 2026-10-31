@@ -27,7 +27,7 @@ export function ZoomMenu() {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            aria-label={t('Zoom: {v}', { v: fit ? 'fit to window' : label })}
+            aria-label={fit ? t('Zoom: fit to window') : t('Zoom: {label}', { label })}
             className={cx(
               'inline-flex h-7 w-[68px] shrink-0 items-center justify-center gap-1 rounded-sm px-1.5 text-ui text-text-2 tabular-nums outline-none select-none',
               'transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text aria-expanded:bg-surface-2 aria-expanded:text-text',

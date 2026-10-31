@@ -397,7 +397,7 @@ export function FillEditor({
         <div className="grid grid-cols-3 gap-1.5">
           <NumberField
             label={t('X')}
-            labelTitle="Centre X"
+            labelTitle={t('Centre X')}
             aria-label={t('Centre X')}
             value={pct(fill.cx)}
             min={0}
@@ -411,7 +411,7 @@ export function FillEditor({
           />
           <NumberField
             label={t('Y')}
-            labelTitle="Centre Y"
+            labelTitle={t('Centre Y')}
             aria-label={t('Centre Y')}
             value={pct(fill.cy)}
             min={0}
@@ -425,7 +425,7 @@ export function FillEditor({
           />
           <NumberField
             label={t('R')}
-            labelTitle="Radius"
+            labelTitle={t('Radius')}
             aria-label={t('Radius')}
             value={pct(fill.radius)}
             min={1}

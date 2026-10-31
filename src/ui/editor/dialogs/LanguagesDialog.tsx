@@ -67,8 +67,8 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
   const remove = async (code: LangCode) => {
     const p = useEditor.getState().project;
     if (!p || p.languages.length <= 1 || !p.languages.includes(code)) return;
-    const name = languageInfo(code).name;
-    const next = p.languages[0] === code ? languageInfo(p.languages[1]).name : null;
+    const name = t(languageInfo(code).name);
+    const next = p.languages[0] === code ? t(languageInfo(p.languages[1]).name) : null;
     const ok = await confirmDialog({
       title: t('Remove {name}?', { name }),
       message: t('Its texts and screenshots are removed from every slide.{v} You can undo this.', { v: next ? ` ${next} becomes the base language.` : '' }),
@@ -108,7 +108,7 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
     else boxes[Math.max(0, Math.min(boxes.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]?.focus();
   };
 
-  const names = langs.map((l) => languageInfo(l).name);
+  const names = langs.map((l) => t(languageInfo(l).name));
   // Opened from Translations: Done, Escape and the close button all go back there.
   const close = () => closeOrReturn('languages', () => onOpenChange(false));
 
@@ -236,7 +236,7 @@ function LanguageRow({ info, inProject, base, only, disabledAdd, flash, onAdd, o
         checkbox
       )}
       <label htmlFor={id} className="flex min-w-0 flex-1 cursor-default items-center gap-2 self-stretch">
-        <span className="truncate text-ui text-text">{info.name}</span>
+        <span className="truncate text-ui text-text">{t(info.name)}</span>
         {native && (
           <span dir="auto" lang={info.code} className="truncate text-xs text-text-3">
             {native}
@@ -265,8 +265,8 @@ function LanguageRow({ info, inProject, base, only, disabledAdd, flash, onAdd, o
           </Button>
         </Tooltip>
       )}
-      <StoreLocale store="App Store" code={info.appStore} name={info.name} />
-      <StoreLocale store="Google Play" code={info.play} name={info.name} />
+      <StoreLocale store="App Store" code={info.appStore} name={t(info.name)} />
+      <StoreLocale store="Google Play" code={info.play} name={t(info.name)} />
     </div>
   );
 }

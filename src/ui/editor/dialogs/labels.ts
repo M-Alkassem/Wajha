@@ -4,7 +4,7 @@
 import { FAMILIES, isRtl, languageInfo } from '../../../model/catalog';
 import type { FamilyId, LangCode, StoreId } from '../../../model/types';
 
-import { t } from '../../../i18n';
+import { t, tn, uiLanguage } from '../../../i18n';
 const KNOWN_KEYS: Record<string, string> = {
   headline: 'Headline',
   subtitle: t('Subtitle'),
@@ -12,7 +12,7 @@ const KNOWN_KEYS: Record<string, string> = {
   title: t('Title'),
   body: 'Body',
   badge: 'Badge',
-  cta: 'Call to action',
+  cta: t('Call to action'),
 };
 
 /**
@@ -36,7 +36,7 @@ export function storeName(store: StoreId): string {
 
 /** English name of a language ("Arabic"). */
 export function languageName(code: LangCode): string {
-  return languageInfo(code).name;
+  return t(languageInfo(code).name);
 }
 
 /** Native name when it adds something ("العربية" for Arabic), else null ("English (US)"). */
@@ -63,14 +63,16 @@ export function localeFor(code: LangCode, store: StoreId): string | null {
   return store === 'app-store' ? info.appStore : info.play;
 }
 
-/** "1 file" / "40 files". */
+/** "1 file" / "40 files", in the interface language (see tn). */
 export function plural(n: number, one: string, many = `${one}s`): string {
-  return `${n.toLocaleString('en-US')} ${n === 1 ? one : many}`;
+  return tn(n, `{count} ${one}`, `{count} ${many}`);
 }
 
 /** "English, Arabic and German". */
 export function listJoin(items: readonly string[]): string {
   if (items.length <= 1) return items[0] ?? '';
+  // Arabic joins with its own "و"; English keeps "a, b and c".
+  if (uiLanguage() === 'ar') return new Intl.ListFormat('ar', { type: 'conjunction' }).format(items);
   return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 

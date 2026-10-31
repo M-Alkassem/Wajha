@@ -23,7 +23,6 @@ import {
   Unlink,
   type LucideIcon,
 } from 'lucide-react';
-import { FAMILIES } from '../../../model/catalog';
 import { resolveLayout } from '../../../model/resolve';
 import type { FamilyId, SlideElement } from '../../../model/types';
 import { selectActiveLayout, selectActiveSlide, selectActiveSlideIndex, toast, useEditor } from '../../../store';
@@ -49,6 +48,7 @@ import { MOVE_DOWN_KEYS, MOVE_UP_KEYS, moveDelta, restrictToVerticalAxis, scroll
 import { elementLabel } from './labels';
 
 import { t } from '../../../i18n';
+import { familyLabel, familyShortLabel } from '../../shared/names';
 const NO_ELEMENTS: readonly SlideElement[] = [];
 const MODIFIERS = [restrictToVerticalAxis];
 
@@ -166,7 +166,7 @@ export function LayersPanel() {
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex h-10 shrink-0 items-center gap-1.5 pr-2 pl-3">
         <span className="text-xs font-semibold text-text">{t('Slide')} {slideIndex + 1}</span>
-        <span className="truncate text-2xs text-text-3">· {FAMILIES[family].label}</span>
+        <span className="truncate text-2xs text-text-3">· {familyLabel(family)}</span>
         <span className="ml-auto" />
         <AddElementMenu />
       </div>
@@ -227,16 +227,16 @@ export function LayersPanel() {
         <div className="flex min-h-10 shrink-0 items-center gap-2 border-t border-line py-1.5 pr-2 pl-3 text-2xs text-text-3">
           {own ? <Unlink className="size-3.5 shrink-0" /> : <Link2 className="size-3.5 shrink-0 text-accent-fg" />}
           <span className="min-w-0 flex-1 leading-[14px]">
-            {own ? t('Own {shortLabel} layout', { shortLabel: FAMILIES[family].shortLabel }) : t('Follows the {shortLabel} layout until edited', { shortLabel: FAMILIES[primary].shortLabel })}
+            {own ? t('Own {shortLabel} layout', { shortLabel: familyShortLabel(family) }) : t('Follows the {shortLabel} layout until edited', { shortLabel: familyShortLabel(primary) })}
           </span>
           {own && (
-            <Tooltip content={t('Follow the {label} layout instead', { label: FAMILIES[primary].label })} side="top">
+            <Tooltip content={t('Follow the {label} layout instead', { label: familyLabel(primary) })} side="top">
               <Button
                 size="sm"
                 variant="ghost"
                 leadingIcon={<RotateCcw />}
                 onClick={() => {
-                  if (useEditor.getState().resetLayout(slide.id, family)) toast.success(t('Layout reset'), t('It now follows the {label} layout.', { label: FAMILIES[primary].label }));
+                  if (useEditor.getState().resetLayout(slide.id, family)) toast.success(t('Layout reset'), t('It now follows the {label} layout.', { label: familyLabel(primary) }));
                 }}
               >
                 {t('Reset')}

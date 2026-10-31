@@ -23,7 +23,8 @@ import { MAX_SLIDES, selectActiveSlideIndex, toast, useEditor } from '../../stor
 import { planSort, wantsSorting, type ShotCandidate } from './sortShots';
 import { storeAllowance } from './stage/frame';
 
-import { t } from '../../i18n';
+import { t, tn } from '../../i18n';
+import { familyLabel, familyShortLabel } from '../shared/names';
 /**
  * Browser File objects as ImportFile records. Nothing is read here: the
  * importer reads each file when its turn comes and only when it is within
@@ -150,7 +151,7 @@ function reportPlaced(placed: number, offered: number, room: number, family: Fam
     return;
   }
   if (placed > 0) {
-    toast.warning(t('Added {placed} of {offered} screenshots', { placed, offered }), t('{limitSentence}, so {left} {v} left out.', { limitSentence: limitSentence(family), left, v: left === 1 ? 'was' : 'were' }));
+    toast.warning(t('Added {placed} of {offered} screenshots', { placed, offered }), tn(left, '{limitSentence}, so 1 was left out.', '{limitSentence}, so {count} were left out.', { limitSentence: limitSentence(family) }));
   } else if (room === 0) {
     toast.warning(t('No screenshots added'), t('{limitSentence}; slides after {v} are not exported.', { limitSentence: limitSentence(family), v: FAMILIES[family]?.maxSlides }));
   } else {
@@ -308,7 +309,7 @@ export async function importDrop(dropped: readonly DroppedFile[], target?: Scree
   return importSorted(project.id, shots, unreadable);
 }
 
-const groupName = (family: FamilyId, lang: LangCode, languages: number) => (languages > 1 ? `${FAMILIES[family].label} · ${languageInfo(lang).name}` : FAMILIES[family].label);
+const groupName = (family: FamilyId, lang: LangCode, languages: number) => (languages > 1 ? `${familyLabel(family)} · ${t(languageInfo(lang).name)}` : familyLabel(family));
 
 async function importSorted(projectId: string, shots: readonly Candidate[], unreadable: number): Promise<number> {
   const start = useEditor.getState().project;
@@ -343,14 +344,14 @@ async function importSorted(projectId: string, shots: readonly Candidate[], unre
   }
   reportSkipped({ assets: [], skipped });
   if (placed) toast.success(placed === 1 ? t('Sorted 1 screenshot') : t('Sorted {placed} screenshots', { placed }), lines.join(' · '));
-  if (left) toast.warning(t('{left} {v} left out', { left, v: left === 1 ? 'screenshot was' : 'screenshots were' }), t('The stores take a limited number of screenshots per device and language.'));
+  if (left) toast.warning(tn(left, '1 screenshot was left out', '{count} screenshots were left out'), t('The stores take a limited number of screenshots per device and language.'));
   for (const [family, rest] of plan.otherFamily) {
     toast.push({
       kind: 'info',
-      title: t('{length} {v} for {label}', { length: rest.length, v: rest.length === 1 ? 'screenshot is' : 'screenshots are', label: FAMILIES[family].label }),
+      title: tn(rest.length, '1 screenshot is for {label}', '{count} screenshots are for {label}', { label: familyLabel(family) }),
       description: t('This project does not have that device yet.'),
       action: {
-        label: t('Add {shortLabel}', { shortLabel: FAMILIES[family].shortLabel }),
+        label: t('Add {shortLabel}', { shortLabel: familyShortLabel(family) }),
         run: () => {
           if (useEditor.getState().project?.id !== projectId) return;
           useEditor.getState().enableFamily(family);
@@ -360,7 +361,7 @@ async function importSorted(projectId: string, shots: readonly Candidate[], unre
     });
   }
   const odd = plan.unmatched.length + unreadable;
-  if (odd) toast.warning(t('Skipped {odd} {v}', { odd, v: odd === 1 ? 'file' : 'files' }), t('They are not screenshots of any device in this project.'));
+  if (odd) toast.warning(tn(odd, 'Skipped 1 file', 'Skipped {count} files'), t('They are not screenshots of any device in this project.'));
   if (!placed && !plan.otherFamily.size && !odd && !left) toast.warning(t('No screenshots added'), t('They could not be placed on the slides.'));
   return placed;
 }

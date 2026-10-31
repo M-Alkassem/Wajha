@@ -15,6 +15,7 @@ import { estimateBytes, familySummaries, firstSkippedSlide, formatBytes, groupWa
 import type { TextOverflowRow, TextOverflowState } from './textOverflow';
 
 import { t } from '../../i18n';
+import { familyLabel } from '../shared/names';
 export interface ExportSummaryPanelProps {
   project: Project;
   plan: ExportPlan;
@@ -208,7 +209,7 @@ function SlideChips({
       <span className="flex items-start gap-1.5 text-2xs leading-4 text-text-2">
         {families.length === 1 ? <FamilyIcon family={families[0]} className={iconClass} /> : <MonitorSmartphone aria-hidden className={iconClass} />}
         <span className="min-w-0">
-          {listJoin(families.map((f) => FAMILIES[f].label))} · {langLabel}
+          {listJoin(families.map((f) => familyLabel(f)))} · {langLabel}
         </span>
       </span>
       <span className="flex flex-wrap gap-1">
@@ -217,7 +218,11 @@ function SlideChips({
             key={slideIndex}
             type="button"
             onClick={() => onJump(target)}
-            aria-label={t('Go to {v}slide {v2}, {label}, {langLabel}', { v: what ? `${what} on ` : '', v2: slideIndex + 1, label: FAMILIES[target.family ?? families[0]].label, langLabel })}
+            aria-label={
+              what
+                ? t('Go to {what} on slide {slide}, {label}, {langLabel}', { what, slide: slideIndex + 1, label: t(FAMILIES[target.family ?? families[0]].label), langLabel })
+                : t('Go to slide {slide}, {label}, {langLabel}', { slide: slideIndex + 1, label: t(FAMILIES[target.family ?? families[0]].label), langLabel })
+            }
             className={cx(
               'inline-flex h-6 min-w-6 items-center justify-center rounded-[5px] border border-line bg-surface-2 px-1.5 text-2xs font-medium text-text-2 tabular-nums outline-none',
               'transition-colors duration-(--dur-fast) hover:border-accent-line hover:bg-accent-soft hover:text-accent-fg',

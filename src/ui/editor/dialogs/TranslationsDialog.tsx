@@ -102,7 +102,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       try {
         result = csvToTexts(p, text);
       } catch (err) {
-        toast.error(t('Could not import {v}', { v: file.name || 'the file' }), message(err));
+        toast.error(file.name ? t('Could not import {name}', { name: file.name }) : t('Could not import the file'), message(err));
         return;
       }
       const payload = importPayload(p, result);
@@ -169,7 +169,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
         className="h-full"
         icon={<CircleCheck />}
         title={t('Everything is translated')}
-        description={t('Every text has a translation in {v}.', { v: hasTargets ? 'every language' : languageName(project.languages[0]) })}
+        description={hasTargets ? t('Every text has a translation in every language.') : t('Every text has a translation in {language}.', { language: languageName(project.languages[0]) })}
         actions={<Button onClick={() => toggleMissing(false)}>{t('Show all texts')}</Button>}
       />
     );
@@ -212,7 +212,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
               <Kbd keys="shift+enter" /> {t('New line')}
             </span>
             <span className="truncate">
-              <span className="font-mono text-text">{t('*word*')}</span> {t('highlights a word')}
+              {tx('{word} highlights a word', { word: <span className="font-mono text-text">{t('*word*')}</span> })}
             </span>
           </span>
         }

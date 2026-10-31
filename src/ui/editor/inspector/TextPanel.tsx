@@ -36,7 +36,7 @@ import { useLive } from './live';
 import { ShadowSection } from './ShadowSection';
 import { patchTarget, refreshFonts, slideById, usePalette, type Target } from './state';
 
-import { t } from '../../../i18n';
+import { t, tn } from '../../../i18n';
 import { tx } from '../../../i18n/react';
 const TEXT_SHADOW = { color: '#00000059', blur: 0.012, x: 0, y: 0.004 };
 const HIGHLIGHT_SHORTCUT = 'mod+b';
@@ -188,7 +188,7 @@ function TextField({ target, textKey, maxLines, size }: TextContentProps) {
       )}
       <div className="flex items-center justify-between gap-2">
         <p className="min-w-0 text-xs leading-4 text-text-3">
-          {t('Wrap words in')} <span className="font-medium text-text-2">{t('*asterisks*')}</span> {t('to highlight')}
+          {tx('Wrap words in {asterisks} to highlight', { asterisks: <span className="font-medium text-text-2">{t('*asterisks*')}</span> })}
         </p>
         <IconButton
           size="sm"
@@ -228,7 +228,7 @@ function OverflowNote({ target, maxLines, size }: { target: Target; maxLines: nu
       <p className="flex items-start gap-1.5">
         <TriangleAlert aria-hidden className="mt-px size-3.5 shrink-0 text-warning" />
         <span className="min-w-0 text-balance">
-          {t('Too long for')} {maxLines === 1 ? t('one line') : t('{maxLines} lines', { maxLines })}{t(', even shrunk to 60%.')}
+          {tn(maxLines, 'Too long for one line, even shrunk to 60%.', 'Too long for {count} lines, even shrunk to 60%.')}
         </span>
       </p>
       <div className="flex flex-wrap gap-1.5 pl-5">
@@ -282,7 +282,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         />
         <NumberField
           label={<ALargeSmall />}
-          labelTitle="Font size, % of the shorter canvas side"
+          labelTitle={t('Font size, % of the shorter canvas side')}
           aria-label={t('Font size')}
           value={toPct(style.size)}
           min={0.4}
@@ -296,7 +296,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
       <Pair>
         <NumberField
           label={<LineHeight />}
-          labelTitle="Line height, times the font size"
+          labelTitle={t('Line height, times the font size')}
           aria-label={t('Line height')}
           value={style.lineHeight}
           min={0.5}
@@ -307,7 +307,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         />
         <NumberField
           label={<LetterSpacing />}
-          labelTitle="Letter spacing, em (not applied to Arabic and other joined scripts)"
+          labelTitle={t('Letter spacing, em (not applied to Arabic and other joined scripts)')}
           aria-label={t('Letter spacing')}
           value={style.letterSpacing}
           min={-0.5}
@@ -335,7 +335,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         </div>
         <NumberField
           label={<Rows3 />}
-          labelTitle="Maximum lines; longer text shrinks to fit (empty = no limit)"
+          labelTitle={t('Maximum lines; longer text shrinks to fit (empty = no limit)')}
           aria-label={t('Maximum lines')}
           value={style.maxLines > 0 ? style.maxLines : Number.NaN}
           unit={style.maxLines === 1 ? 'line' : style.maxLines > 1 ? 'lines' : undefined}
@@ -393,7 +393,7 @@ const TextBoxRow = memo(function TextBoxRow({ el, target }: { el: TextElement; t
   return (
     <Row label={t('Text box')}>
       <Pair>
-        <NumberField label={t('W')} labelTitle="Box width, % of the shorter canvas side" value={toPct(el.width)} min={2} max={600} step={0.5} precision={2} unit="%" {...width} />
+        <NumberField label={t('W')} labelTitle={t('Box width, % of the shorter canvas side')} value={toPct(el.width)} min={2} max={600} step={0.5} precision={2} unit="%" {...width} />
         <SegmentedControl<TextElement['valign']>
           aria-label={t('Vertical anchor')}
           fullWidth

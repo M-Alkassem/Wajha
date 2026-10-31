@@ -420,7 +420,7 @@ export function ColorPickerPanel({ color, alpha, palette, onLive, onCommit, inpu
           </span>
           <HexInput
             id={inputId}
-            ariaLabel="Hex colour"
+            ariaLabel={t('Hex colour')}
             hex={rgb.slice(1)}
             onCommitHex={(typed) => onCommit(alpha && typed.length === 7 ? withAlpha(typed, a) : typed)}
             className="min-w-0 flex-1"

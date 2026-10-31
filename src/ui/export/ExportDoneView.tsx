@@ -5,7 +5,6 @@
  */
 import type { ReactNode } from 'react';
 import { Check, ChevronRight, CircleSlash, Download, Folder, TriangleAlert, Type, X } from 'lucide-react';
-import { FAMILIES } from '../../model/catalog';
 import { cx } from '../kit';
 import type { JumpTarget } from '../editor/dialogs/dialogState';
 import { languageName, listJoin, plural } from '../editor/dialogs/labels';
@@ -14,6 +13,7 @@ import { formatBytes, formatDuration, type OverflowEntry } from './exportModel';
 import type { ExportOutcome } from './runProjectExport';
 
 import { t } from '../../i18n';
+import { familyLabel } from '../shared/names';
 export interface ExportDoneViewProps {
   outcome: ExportOutcome;
   /** Files the run was going to write. */
@@ -87,7 +87,7 @@ export function ExportDoneView({ outcome, total, downloaded, onJump }: ExportDon
             {perFamily.map(({ family, files }) => (
               <li key={family} className="flex items-center gap-1.5">
                 <FamilyIcon family={family} className="size-3.5" />
-                {FAMILIES[family].label}
+                {familyLabel(family)}
                 <span className="text-text-2 tabular-nums">{files}</span>
               </li>
             ))}

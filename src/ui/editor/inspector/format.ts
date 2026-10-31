@@ -141,7 +141,7 @@ export function elementName(el: SlideElement, project: Project | null): string {
 
 /** English language name for hints ("English", "Arabic"), without the region when it is the only variant shown. */
 export function languageLabel(code: LangCode): string {
-  return languageInfo(code).name;
+  return t(languageInfo(code).name);
 }
 
 /* Fonts ------------------------------------------------------------------ */

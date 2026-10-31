@@ -6,6 +6,7 @@ import type { FamilyId, Project } from '../../../model/types';
 import { plural } from './labels';
 
 import { t } from '../../../i18n';
+import { familyLabel } from '../../shared/names';
 /** Screenshots placed for a family (every slide, slot and language). */
 export function familyShotCount(project: Project, family: FamilyId): number {
   let n = 0;
@@ -27,7 +28,7 @@ export function slideLimitLabel(family: FamilyId): string {
  */
 export function disableConfirmation(project: Project, family: FamilyId): { title: string; message: string } | null {
   if (!project.families.includes(family) || project.families.length <= 1) return null;
-  const label = FAMILIES[family].label;
+  const label = familyLabel(family);
   const shots = familyShotCount(project, family);
   const primary = project.families[0] === family;
   if (shots === 0 && !primary) return null;

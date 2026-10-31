@@ -110,8 +110,8 @@ const SizeRow = memo(function SizeRow({ el, target }: { el: ShapeElement; target
       }
     >
       <Pair>
-        <NumberField label={t('W')} labelTitle="Width, % of the shorter canvas side" value={toPct(el.width)} min={0.1} max={800} step={0.5} precision={1} unit="%" {...width} />
-        <NumberField label={t('H')} labelTitle="Height, % of the shorter canvas side" value={toPct(el.height)} min={0.1} max={800} step={0.5} precision={1} unit="%" {...height} />
+        <NumberField label={t('W')} labelTitle={t('Width, % of the shorter canvas side')} value={toPct(el.width)} min={0.1} max={800} step={0.5} precision={1} unit="%" {...width} />
+        <NumberField label={t('H')} labelTitle={t('Height, % of the shorter canvas side')} value={toPct(el.height)} min={0.1} max={800} step={0.5} precision={1} unit="%" {...height} />
       </Pair>
     </Row>
   );

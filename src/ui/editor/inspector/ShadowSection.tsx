@@ -78,13 +78,15 @@ export const ShadowSection = memo(function ShadowSection({ id, el, target, defau
           <SliderRow label={t('Blur')} value={toPct(shadow.blur)} apply={applyBlur} min={0} max={20} inputMax={200} step={0.1} precision={2} unit="%" />
           <Row label={t('Offset')}>
             <Pair>
-              <NumberField label={t('X')} labelTitle="Horizontal offset, % of the shorter canvas side" value={toPct(shadow.x)} min={-200} max={200} step={0.1} precision={2} unit="%" {...x} />
-              <NumberField label={t('Y')} labelTitle="Vertical offset, % of the shorter canvas side" value={toPct(shadow.y)} min={-200} max={200} step={0.1} precision={2} unit="%" {...y} />
+              <NumberField label={t('X')} labelTitle={t('Horizontal offset, % of the shorter canvas side')} value={toPct(shadow.x)} min={-200} max={200} step={0.1} precision={2} unit="%" {...x} />
+              <NumberField label={t('Y')} labelTitle={t('Vertical offset, % of the shorter canvas side')} value={toPct(shadow.y)} min={-200} max={200} step={0.1} precision={2} unit="%" {...y} />
             </Pair>
           </Row>
         </>
       ) : (
-        <p className="text-xs leading-4 text-text-3">{t('Lifts the')} {el.kind === 'text' ? 'text' : el.kind === 'device' ? 'device' : 'image'} {t('off the background.')}</p>
+        <p className="text-xs leading-4 text-text-3">
+          {el.kind === 'text' ? t('Lifts the text off the background.') : el.kind === 'device' ? t('Lifts the device off the background.') : t('Lifts the image off the background.')}
+        </p>
       )}
     </InspectorSection>
   );

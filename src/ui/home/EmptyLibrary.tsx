@@ -11,6 +11,7 @@ import { TemplateCard } from './TemplateCard';
 import { heroPreviewProject, requestPreviewFonts } from './templates';
 
 import { t } from '../../i18n';
+import { tx } from '../../i18n/react';
 /**
  * First run: the hero (what Wajha does, the two ways in) beside a fan of
  * live slides, then a row of built-in templates that open the new-project
@@ -31,8 +32,9 @@ export function EmptyLibrary() {
             id="home-hero-title"
             className="mt-7 font-display text-[40px] leading-[46px] font-semibold tracking-[-0.035em] text-balance text-text 2xl:text-[46px] 2xl:leading-[52px]"
           >
-            {t('Make your app store page')}{' '}
-            <span className="bg-[image:var(--brand-gradient)] bg-clip-text text-transparent light:bg-[image:var(--brand-gradient-strong)]">{t('shine')}</span>
+            {tx('Make your app store page {shine}', {
+              shine: <span className="bg-[image:var(--brand-gradient)] bg-clip-text text-transparent light:bg-[image:var(--brand-gradient-strong)]">{t('shine')}</span>,
+            })}
           </h1>
           <p className="mt-4 max-w-[460px] text-[15px] leading-6 text-pretty text-text-2">
             {t('Design App Store and Google Play screenshots from beautiful templates, then export every size, device and language in one go.')}

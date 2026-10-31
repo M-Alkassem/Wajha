@@ -144,7 +144,7 @@ const LanguageHeader = memo(function LanguageHeader({ lang, base, filled, total,
           </Badge>
         )}
       </div>
-      <div className="flex items-center gap-2" title={t('{filled} of {total} {v}', { filled, total, v: base ? 'texts written' : 'translated' })}>
+      <div className="flex items-center gap-2" title={base ? t('{filled} of {total} texts written', { filled, total }) : t('{filled} of {total} translated', { filled, total })}>
         <div className="h-1 flex-1 overflow-hidden rounded-full bg-surface-3">
           <div
             className={cx('h-full rounded-full transition-[width] duration-(--dur-slow) ease-out', complete ? 'bg-success' : 'bg-accent')}

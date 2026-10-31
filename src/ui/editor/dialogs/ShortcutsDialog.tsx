@@ -13,6 +13,7 @@ import { displayShortcuts, filterShortcuts, groupShortcuts, type ShortcutLike } 
 import type { EditorDialogProps } from './types';
 
 import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 /** Keys of the sidebar lists: they act on the focused row, so they are not in the editor-wide table. */
 const LIST_SHORTCUTS: readonly ShortcutLike[] = [
   { id: 'moveSlide', label: t('Move slide up or down (slides list)'), keys: [MOVE_UP_KEYS, MOVE_DOWN_KEYS], group: 'Slides' },
@@ -53,7 +54,7 @@ function ShortcutsBody({ open, onOpenChange }: EditorDialogProps) {
         footerStart={
           opener ? (
             <span className="flex items-center gap-1.5">
-              {t('Press')} <Kbd keys={opener} /> {t('in the editor to open this list.')}
+              {tx('Press {key} in the editor to open this list.', { key: <Kbd keys={opener} /> })}
             </span>
           ) : undefined
         }

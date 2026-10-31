@@ -11,7 +11,7 @@ import { ensureFonts, setAssetReader } from '../../runtime';
 import { readTemplateAsset } from '../../storage';
 import { matchesSearch } from './format';
 
-import { t } from '../../i18n';
+import { t, uiLanguage } from '../../i18n';
 export const CATEGORY_ORDER: readonly TemplateCategory[] = TEMPLATE_CATEGORIES;
 
 export const CATEGORY_LABEL: Readonly<Record<TemplateCategory, string>> = {
@@ -94,9 +94,9 @@ export function blankPreviewProject(family: FamilyId, lang: LangCode): Project {
 }
 
 const HERO_COPY: ReadonlyArray<{ headline: string; subtitle: string }> = [
-  { headline: 'Plan your day *beautifully*', subtitle: t('Tasks, calendar and notes in one calm place.') },
-  { headline: 'Focus on what *matters*', subtitle: t('Smart lists bring today’s priorities to the top.') },
-  { headline: 'See how far you’ve *come*', subtitle: t('Weekly insights that keep you going.') },
+  { headline: 'Plan your day *beautifully*', subtitle: 'Tasks, calendar and notes in one calm place.' },
+  { headline: 'Focus on what *matters*', subtitle: 'Smart lists bring today’s priorities to the top.' },
+  { headline: 'See how far you’ve *come*', subtitle: 'Weekly insights that keep you going.' },
 ];
 
 let heroSample: Project | null = null;
@@ -107,7 +107,8 @@ let heroSample: Project | null = null;
  */
 export function heroPreviewProject(builtins: readonly Template[]): Project {
   const first = builtins[0];
-  if (first) return templatePreviewProject(first, 'iphone', 'en-US');
+  // An Arabic interface shows the template in Arabic, right to left.
+  if (first) return templatePreviewProject(first, 'iphone', uiLanguage() === 'ar' ? 'ar-SA' : 'en-US');
   if (!heroSample) {
     const project = blankProject('Sample', ['iphone'], ['en-US']);
     project.slides.forEach((slide, i) => {

@@ -53,11 +53,11 @@ type Phase =
 const BODY = 'h-[min(640px,calc(100vh-200px))] border-t border-line';
 
 const DESCRIPTIONS: Record<Phase['name'], string> = {
-  setup: 'Every slide at the exact pixel sizes the stores ask for.',
-  picking: 'Every slide at the exact pixel sizes the stores ask for.',
-  running: 'Rendering at full resolution. Keep this window open.',
-  done: 'Every slide at the exact pixel sizes the stores ask for.',
-  error: 'Every slide at the exact pixel sizes the stores ask for.',
+  setup: t('Every slide at the exact pixel sizes the stores ask for.'),
+  picking: t('Every slide at the exact pixel sizes the stores ask for.'),
+  running: t('Rendering at full resolution. Keep this window open.'),
+  done: t('Every slide at the exact pixel sizes the stores ask for.'),
+  error: t('Every slide at the exact pixel sizes the stores ask for.'),
 };
 
 function errorMessage(err: unknown): string {

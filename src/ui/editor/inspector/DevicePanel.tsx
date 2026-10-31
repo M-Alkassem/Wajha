@@ -380,20 +380,20 @@ interface Preset {
 }
 
 const METALS: Preset[] = [
-  { color: '#2b2b30', name: 'Graphite' },
-  { color: '#d9d9de', name: 'Silver' },
-  { color: '#b7aea3', name: 'Natural titanium' },
-  { color: '#2f4b6e', name: 'Deep blue' },
-  { color: '#c8a27a', name: 'Desert gold' },
-  { color: '#f5f5f7', name: 'White' },
-  { color: '#111114', name: 'Black' },
+  { color: '#2b2b30', name: t('Graphite') },
+  { color: '#d9d9de', name: t('Silver') },
+  { color: '#b7aea3', name: t('Natural titanium') },
+  { color: '#2f4b6e', name: t('Deep blue') },
+  { color: '#c8a27a', name: t('Desert gold') },
+  { color: '#f5f5f7', name: t('White') },
+  { color: '#111114', name: t('Black') },
 ];
 
 const CLAYS: Preset[] = [
-  { color: '#cdbdf7', name: 'Lilac clay', clay: true },
-  { color: '#b5e3cf', name: 'Mint clay', clay: true },
-  { color: '#f6c1a6', name: 'Peach clay', clay: true },
-  { color: '#b9d4f5', name: 'Sky clay', clay: true },
+  { color: '#cdbdf7', name: t('Lilac clay'), clay: true },
+  { color: '#b5e3cf', name: t('Mint clay'), clay: true },
+  { color: '#f6c1a6', name: t('Peach clay'), clay: true },
+  { color: '#b9d4f5', name: t('Sky clay'), clay: true },
 ];
 
 /** Sum of channel differences; templates use near-identical shades (#2b2c31 for graphite). */

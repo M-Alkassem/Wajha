@@ -34,7 +34,7 @@ export function StatusBar() {
   const Icon = FAMILY_ICONS[family];
   const count = project.slides.length;
   const over = Math.max(0, count - info.maxSlides);
-  const language = languageInfo(lang).name;
+  const language = t(languageInfo(lang).name);
 
   const goToMissing = () => {
     const first = missing.first;

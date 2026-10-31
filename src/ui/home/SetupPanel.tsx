@@ -11,6 +11,7 @@ import { requestPreviewFonts } from './templates';
 
 import { t } from '../../i18n';
 import { tx } from '../../i18n/react';
+import { familyLabel } from '../shared/names';
 /* Preview ------------------------------------------------------------------------ */
 
 const STAGE_PAD = 20;
@@ -150,7 +151,7 @@ export function DevicePicker({ value, onChange }: DevicePickerProps) {
               const on = value.includes(f);
               const d = FAMILIES[f].design;
               return (
-                <Tooltip key={f} content={`${FAMILIES[f].label} · ${d.width} × ${d.height}`} side="bottom">
+                <Tooltip key={f} content={`${familyLabel(f)} · ${d.width} × ${d.height}`} side="bottom">
                   <button
                     type="button"
                     aria-pressed={on}
@@ -233,7 +234,7 @@ export function LanguagePicker({ value, onChange }: LanguagePickerProps) {
               key={code}
               className="group/lang flex h-8 items-center gap-2 rounded-md border border-line bg-field pr-1 pl-2.5 light:bg-raised"
             >
-              <LanguageNames code={code} native={info.native} name={info.name} />
+              <LanguageNames code={code} native={info.native} name={t(info.name)} />
               {info.rtl && (
                 <Badge size="sm" variant="accent" title={t('Right-to-left')}>
                   {t('RTL')}
@@ -246,14 +247,14 @@ export function LanguagePicker({ value, onChange }: LanguagePickerProps) {
               ) : (
                 <IconButton
                   size="sm"
-                  label={t('Make {name} the base language', { name: info.name })}
+                  label={t('Make {name} the base language', { name: t(info.name) })}
                   tooltip={t('Make base language')}
                   icon={<Star />}
                   onClick={() => onChange([code, ...value.filter((c) => c !== code)])}
                   className="opacity-0 group-focus-within/lang:opacity-100 group-hover/lang:opacity-100 focus-visible:opacity-100"
                 />
               )}
-              {value.length > 1 && <IconButton size="sm" label={t('Remove {name}', { name: info.name })} tooltip={t('Remove')} icon={<X />} onClick={() => toggle(code)} />}
+              {value.length > 1 && <IconButton size="sm" label={t('Remove {name}', { name: t(info.name) })} tooltip={t('Remove')} icon={<X />} onClick={() => toggle(code)} />}
             </li>
           );
         })}

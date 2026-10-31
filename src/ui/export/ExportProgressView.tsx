@@ -97,7 +97,7 @@ function PreviewImage({ image, format }: { image: ExportPreviewImage; format: 'p
         <img ref={imgRef} alt="" decoding="async" draggable={false} className="block size-full" />
       </div>
       <figcaption className="text-2xs text-text-3">
-        {t('Last finished ·')} {size?.label ?? image.job.sizeId} · {image.job.width} × {image.job.height}
+        {t('Last finished · {size} · {width} × {height}', { size: size ? t(size.label) : image.job.sizeId, width: image.job.width, height: image.job.height })}
       </figcaption>
     </figure>
   );

@@ -17,6 +17,7 @@ import type { EditorDialogProps } from './types';
 
 import { t } from '../../../i18n';
 import { tx } from '../../../i18n/react';
+import { familyLabel } from '../../shared/names';
 export function FamiliesDialog({ open, onOpenChange }: EditorDialogProps) {
   const session = useOpenSession(open);
   return <FamiliesSession key={session} open={open} onOpenChange={onOpenChange} />;
@@ -55,7 +56,7 @@ function FamiliesBody({ project, open, onOpenChange }: EditorDialogProps & { pro
         icon={<MonitorSmartphone />}
         title={t('Devices & stores')}
         description={t('Design once and every device adapts. Turn on the devices your app ships on.')}
-        footerStart={<span className="truncate">{`${plural(enabled.length, 'device')}: ${listJoin(enabled.map((f) => FAMILIES[f].label))}`}</span>}
+        footerStart={<span className="truncate">{`${plural(enabled.length, 'device')}: ${listJoin(enabled.map((f) => familyLabel(f)))}`}</span>}
         footer={
           <Button variant="primary" onClick={() => onOpenChange(false)}>
             {t('Done')}
@@ -69,7 +70,7 @@ function FamiliesBody({ project, open, onOpenChange }: EditorDialogProps & { pro
               family={family}
               on={enabled.includes(family)}
               primary={family === primary}
-              primaryLabel={FAMILIES[primary].label}
+              primaryLabel={familyLabel(primary)}
               ownSlides={project.slides.filter((s) => s.layouts[family]).length}
               slideCount={project.slides.length}
               last={enabled.length <= 1 && enabled.includes(family)}

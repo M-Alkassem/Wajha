@@ -36,7 +36,7 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
         <Pair>
           <NumberField
             label={t('X')}
-            labelTitle="Horizontal position, % of the canvas width"
+            labelTitle={t('Horizontal position, % of the canvas width')}
             value={toPct(el.x)}
             min={-200}
             max={300}
@@ -47,7 +47,7 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
           />
           <NumberField
             label={t('Y')}
-            labelTitle="Vertical position, % of the canvas height"
+            labelTitle={t('Vertical position, % of the canvas height')}
             value={toPct(el.y)}
             min={-200}
             max={300}
@@ -63,7 +63,7 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
         <div className="flex items-center gap-2">
           <NumberField
             label={<RotateCw />}
-            labelTitle="Rotation, degrees clockwise"
+            labelTitle={t('Rotation, degrees clockwise')}
             value={normalizeRotation(el.rotation)}
             min={-180}
             max={180}

@@ -22,12 +22,17 @@ import { FRAME_ICONS } from '../familyMeta';
 import { FAMILIES } from '../../../model/catalog';
 
 import { t } from '../../../i18n';
-/** Copy a new text layer starts with, so it is visible on the slide right away. */
-const SAMPLE_TEXT: Record<TextRole, string> = {
-  headline: t('Your headline'),
-  subtitle: t('A short line about this screen'),
-  caption: t('New'),
+
+/**
+ * Copy a new text layer starts with, so it is visible on the slide right
+ * away. It is slide content, so it follows the language being edited, not
+ * the interface language.
+ */
+const SAMPLE_TEXT: Record<'en' | 'ar', Record<TextRole, string>> = {
+  en: { headline: 'Your headline', subtitle: 'A short line about this screen', caption: 'New' },
+  ar: { headline: 'عنوانك هنا', subtitle: 'سطر قصير يعرّف بهذه الشاشة', caption: 'جديد' },
 };
+const sampleText = (role: TextRole, lang: string) => SAMPLE_TEXT[lang.startsWith('ar') ? 'ar' : 'en'][role];
 
 /** Images added at once from the picker (each becomes a layer). */
 const MAX_IMAGES_AT_ONCE = 8;
@@ -61,7 +66,7 @@ function addText(role: TextRole): string | null {
   if (!p || !slide) return null;
   const inLayout = resolveLayout(p, slide, s.activeFamily).elements.some((e) => e.kind === 'text' && e.key === role);
   const keepsText = role !== 'caption' && !inLayout && resolveText(slide, role, s.activeLang, p.languages[0]) !== '';
-  return addLayer('text', keepsText ? { role } : { role, text: SAMPLE_TEXT[role] });
+  return addLayer('text', keepsText ? { role } : { role, text: sampleText(role, s.activeLang) });
 }
 
 /** Picks images and adds each one as an image layer, slightly staggered; the last is selected. */

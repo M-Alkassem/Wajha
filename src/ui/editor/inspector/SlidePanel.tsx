@@ -6,7 +6,7 @@
  */
 import { memo, useCallback, useId, useMemo, useState, type ReactNode } from 'react';
 import { Languages, LayoutTemplate, MonitorSmartphone, RotateCcw, Settings2, Type } from 'lucide-react';
-import { FAMILIES, languageInfo } from '../../../model/catalog';
+import { languageInfo } from '../../../model/catalog';
 import { deepClone } from '../../../model/clone';
 import { resolveLayout } from '../../../model/resolve';
 import type { Background, DeviceElement, FamilyId, Fill, LangCode, Pattern } from '../../../model/types';
@@ -22,6 +22,7 @@ import { refreshFonts, slideById, useEditorDeep, usePalette } from './state';
 
 import { t } from '../../../i18n';
 import { tx } from '../../../i18n/react';
+import { familyLabel, familyShortLabel } from '../../shared/names';
 export interface SlidePanelProps {
   slideId: string;
   family: FamilyId;
@@ -92,21 +93,21 @@ const SlideSection = memo(function SlideSection({ slideId, family, palette }: { 
       <div className="flex min-h-7 items-center justify-between gap-2">
         <Switch label={t('Use theme background')} checked={own === null} onCheckedChange={followTheme} />
       </div>
-      {own && familyCount > 1 && <Hint>{tx('Applies to this slide’s {label} layout.', { label: FAMILIES[family].label })}</Hint>}
+      {own && familyCount > 1 && <Hint>{tx('Applies to this slide’s {label} layout.', { label: familyLabel(family) })}</Hint>}
       {own && <BackgroundFields scope={`slide:${slideId}:${family}`} value={own} applyFill={applyFill} read={current} updatePattern={updatePattern} palette={palette} />}
       {customLayout && (
         <div className="mt-1 flex items-center gap-2 rounded-md border border-line bg-surface px-2.5 py-2 light:bg-raised">
           <LayoutTemplate aria-hidden className="size-3.5 shrink-0 text-text-3" />
           <p className="min-w-0 flex-1 text-xs leading-4 text-text-2">
-            {tx('Own {shortLabel} layout, independent of {shortLabel2}.', { shortLabel: FAMILIES[family].shortLabel, shortLabel2: FAMILIES[primary].shortLabel })}
+            {tx('Own {shortLabel} layout, independent of {shortLabel2}.', { shortLabel: familyShortLabel(family), shortLabel2: familyShortLabel(primary) })}
           </p>
           <Button
             size="sm"
             variant="ghost"
             leadingIcon={<RotateCcw />}
-            title={t('Follow the {label} layout instead', { label: FAMILIES[primary].label })}
+            title={t('Follow the {label} layout instead', { label: familyLabel(primary) })}
             onClick={() => {
-              if (useEditor.getState().resetLayout(slideId, family)) toastWithUndo('Layout reset', `It now follows the ${FAMILIES[primary].label} layout.`);
+              if (useEditor.getState().resetLayout(slideId, family)) toastWithUndo('Layout reset', `It now follows the ${familyLabel(primary)} layout.`);
             }}
           >
             {t('Reset')}
@@ -173,7 +174,7 @@ const ScreenshotsSection = memo(function ScreenshotsSection({ slideId, family }:
                     key={code}
                     label={
                       <span className="flex min-w-0 items-center gap-1.5">
-                        <span className="truncate">{info.name}</span>
+                        <span className="truncate">{t(info.name)}</span>
                         {code === base && row.langs.length > 1 && (
                           <Badge size="sm" className="shrink-0">
                             Base
@@ -186,7 +187,7 @@ const ScreenshotsSection = memo(function ScreenshotsSection({ slideId, family }:
                     selected={false}
                     aria-current={code === activeLang || undefined}
                     className={cx(code === activeLang && 'bg-surface-2')}
-                    title={t('Show the {name} screenshot', { name: info.name })}
+                    title={t('Show the {name} screenshot', { name: t(info.name) })}
                     onSelect={() => open(row.device.id, code)}
                   />
                 );
@@ -306,19 +307,19 @@ const ProjectSection = memo(function ProjectSection() {
 
   return (
     <InspectorSection id="project" title={t('Project')} borderless>
-      <ChipGroup label={t('Devices')} manageLabel="Manage devices" onManage={() => openDialog('families')}>
+      <ChipGroup label={t('Devices')} manageLabel={t('Manage devices')} onManage={() => openDialog('families')}>
           {families.map((f, i) => (
-            <Chip key={f} active={f === activeFamily} title={i === 0 ? t('{label} (primary: other devices adapt its layouts)', { label: FAMILIES[f].label }) : FAMILIES[f].label} onClick={() => useEditor.getState().setActiveFamily(f)}>
-              {FAMILIES[f].shortLabel}
+            <Chip key={f} active={f === activeFamily} title={i === 0 ? t('{label} (primary: other devices adapt its layouts)', { label: familyLabel(f) }) : familyLabel(f)} onClick={() => useEditor.getState().setActiveFamily(f)}>
+              {familyShortLabel(f)}
             </Chip>
           ))}
       </ChipGroup>
-      <ChipGroup label={t('Languages')} manageLabel="Manage languages" onManage={() => openDialog('languages')}>
+      <ChipGroup label={t('Languages')} manageLabel={t('Manage languages')} onManage={() => openDialog('languages')}>
           {shown.map((code, i) => {
             const info = languageInfo(code);
             return (
-              <Chip key={code} active={code === activeLang} title={i === 0 ? t('{name}: base language, used where a translation is missing', { name: info.name }) : info.name} onClick={() => useEditor.getState().setActiveLang(code)}>
-                <span className="truncate">{info.name}</span>
+              <Chip key={code} active={code === activeLang} title={i === 0 ? t('{name}: base language, used where a translation is missing', { name: t(info.name) }) : t(info.name)} onClick={() => useEditor.getState().setActiveLang(code)}>
+                <span className="truncate">{t(info.name)}</span>
                 {i === 0 && languages.length > 1 && <span className="text-2xs font-normal opacity-70">{t('Base')}</span>}
               </Chip>
             );

@@ -137,7 +137,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
       const family = now.fonts?.find((f) => f.file === font.file)?.family ?? font.family;
       const { heading, body } = now.theme.fonts;
       store.applyFonts(role === 'heading' ? family : heading, role === 'body' ? family : body);
-      toast.success(t('{family} is now the {v} font', { family, v: role === 'heading' ? 'headline' : 'body text' }));
+      toast.success(role === 'heading' ? t('{family} is now the headline font', { family }) : t('{family} is now the body text font', { family }));
     });
 
   const addLogoToSlides = () =>
@@ -277,7 +277,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
               <SectionHeading id="brand-logo">{t('Logo')}</SectionHeading>
               <div className="flex items-center gap-3">
                 <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-line kit-checker">
-                  {logoUrl ? <img src={logoUrl} alt={t('Logo: {v}', { v: k.logo?.name ?? '' })} className="max-h-full max-w-full object-contain" /> : <ImagePlus aria-hidden className="size-5 text-text-3" />}
+                  {logoUrl ? <img src={logoUrl} alt={t('Logo: {name}', { name: k.logo?.name ?? '' })} className="max-h-full max-w-full object-contain" /> : <ImagePlus aria-hidden className="size-5 text-text-3" />}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button
