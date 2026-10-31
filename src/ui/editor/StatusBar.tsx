@@ -82,7 +82,7 @@ export function StatusBar() {
         </span>
       )}
       <span className="min-w-4 flex-1" />
-      {hints && <span className="hidden truncate lg:inline">Drop screenshots onto slides to place them</span>}
+      {hints && <span className="hidden truncate lg:inline">Drop screenshots or a folder onto the slides to place them</span>}
       <button
         type="button"
         onClick={() => useEditorUi.getState().openDialog('shortcuts')}

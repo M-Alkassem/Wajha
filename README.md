@@ -86,7 +86,10 @@ Get the installer for your system from the
    to its text and screenshots.
 2. **Add screenshots.** Drop images onto the slides (or onto the stage to fill
    slides in order). A screenshot added while another language is active
-   becomes that language's localized version.
+   becomes that language's localized version. Drop a whole folder (say your
+   simulator captures, or a fastlane `screenshots/` folder) and Wajha sorts the
+   images by device, from their size and name, and by language, from folder or
+   file names such as `ar-SA` or `Arabic`.
 3. **Write the copy.** Click a headline and type. Wrap words in `*asterisks*`
    to highlight them. Use **Translations** to fill in other languages, or
    export a CSV, translate it anywhere and import it back.

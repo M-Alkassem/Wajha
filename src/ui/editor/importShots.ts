@@ -15,10 +15,12 @@
  * that language's localized screenshot.
  */
 import type { AssetInfo, DeviceElement, FamilyId, LangCode, Project } from '../../model/types';
-import { FAMILIES } from '../../model/catalog';
+import { FAMILIES, languageInfo } from '../../model/catalog';
+import { readImageSize, sniffImageExt } from '../../platform';
 import { resolveLayout, resolveShot } from '../../model/resolve';
 import { importImagesWithReport, pickAndImportImagesWithReport, type ImportFile, type ImportReport } from '../../runtime';
 import { MAX_SLIDES, selectActiveSlideIndex, toast, useEditor } from '../../store';
+import { planSort, wantsSorting, type ShotCandidate } from './sortShots';
 import { storeAllowance } from './stage/frame';
 
 /**
@@ -213,4 +215,151 @@ export async function pickScreenshotsForSlot(slideId: string, slot: string): Pro
   const result = place(report.assets, { slideId, slot });
   reportPlaced(result.placed, report.assets.length, result.room, store.activeFamily);
   return result.placed;
+}
+
+/* Sorted import -------------------------------------------------------------- */
+
+/** A dropped file and the folders it sat in, from the dropped folder down. */
+export interface DroppedFile {
+  file: File;
+  folders: string[];
+}
+
+const IMAGE_NAME = /^[^.].*\.(png|jpe?g|webp)$/i;
+/** A drop reads at most this many images and this deep into folders. */
+const MAX_DROP_FILES = 300;
+const MAX_DROP_DEPTH = 6;
+
+const readDir = (reader: FileSystemDirectoryReader) => new Promise<FileSystemEntry[]>((resolve) => reader.readEntries(resolve, () => resolve([])));
+const fileOf = (entry: FileSystemFileEntry) => new Promise<File | null>((resolve) => entry.file(resolve, () => resolve(null)));
+
+/**
+ * The files of a drop, with folders read recursively (images only, bounded).
+ * Call it while handling the drop event: the browser forgets the dropped
+ * entries once the handler returns. Nothing is read beyond the listing.
+ */
+export function collectDrop(dt: DataTransfer): Promise<DroppedFile[]> {
+  const files = Array.from(dt.files ?? []);
+  const entries = Array.from(dt.items ?? []).map((item) => (item.kind === 'file' && typeof item.webkitGetAsEntry === 'function' ? item.webkitGetAsEntry() : null));
+  if (!entries.some((e) => e?.isDirectory)) return Promise.resolve(files.map((file) => ({ file, folders: [] })));
+  return (async () => {
+    const out: DroppedFile[] = [];
+    const walk = async (entry: FileSystemEntry, folders: string[], depth: number): Promise<void> => {
+      if (out.length >= MAX_DROP_FILES) return;
+      if (entry.isFile) {
+        if (!IMAGE_NAME.test(entry.name)) return;
+        const file = await fileOf(entry as FileSystemFileEntry);
+        if (file) out.push({ file, folders });
+      } else if (entry.isDirectory && depth < MAX_DROP_DEPTH) {
+        const reader = (entry as FileSystemDirectoryEntry).createReader();
+        const children: FileSystemEntry[] = [];
+        for (let batch = await readDir(reader); batch.length; batch = await readDir(reader)) children.push(...batch);
+        for (const child of children) await walk(child, [...folders, entry.name], depth + 1);
+      }
+    };
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      if (entry) await walk(entry, [], 0);
+      else if (files[i]) out.push({ file: files[i], folders: [] });
+    }
+    return out;
+  })();
+}
+
+/** Pixel size from the start of an image file (its header), or null for anything that is not a readable image. */
+async function headerSize(file: File): Promise<{ width: number; height: number } | null> {
+  try {
+    const head = new Uint8Array(await file.slice(0, 256 * 1024).arrayBuffer());
+    const ext = sniffImageExt(head);
+    return ext ? readImageSize(head, ext) : null;
+  } catch {
+    return null;
+  }
+}
+
+interface Candidate extends ShotCandidate {
+  file: File;
+}
+
+async function candidatesOf(dropped: readonly DroppedFile[]): Promise<{ shots: Candidate[]; unreadable: number }> {
+  const shots: Candidate[] = [];
+  let unreadable = 0;
+  for (const d of dropped) {
+    const size = await headerSize(d.file);
+    if (size) shots.push({ name: d.file.name, folders: d.folders, width: size.width, height: size.height, file: d.file });
+    else unreadable++;
+  }
+  return { shots, unreadable };
+}
+
+/**
+ * Drops a set of files (and folders) on the editor: sorted into devices and
+ * languages when that is what they hold (see wantsSorting), else poured into
+ * the slides as importScreenshots does. Returns how many images were placed.
+ */
+export async function importDrop(dropped: readonly DroppedFile[], target?: ScreenshotTarget): Promise<number> {
+  const store = useEditor.getState();
+  const project = store.project;
+  if (!project || !dropped.length) return 0;
+  const { shots, unreadable } = await candidatesOf(dropped);
+  const active = { family: store.activeFamily, lang: store.activeLang };
+  if (!wantsSorting(shots, project.families, project.languages, active)) return importScreenshots(dropped.map((d) => d.file), target);
+  return importSorted(project.id, shots, unreadable);
+}
+
+const groupName = (family: FamilyId, lang: LangCode, languages: number) => (languages > 1 ? `${FAMILIES[family].label} · ${languageInfo(lang).name}` : FAMILIES[family].label);
+
+async function importSorted(projectId: string, shots: readonly Candidate[], unreadable: number): Promise<number> {
+  const start = useEditor.getState().project;
+  if (!start) return 0;
+  const plan = planSort(shots, start.families, start.languages);
+  const lines: string[] = [];
+  let placed = 0;
+  let left = 0;
+  const skipped: ImportReport['skipped'] = [];
+  for (const group of plan.groups) {
+    const current = useEditor.getState().project;
+    if (current?.id !== projectId) return placed;
+    // Each group fills its slides from the first one; files beyond the store limit are never read.
+    const room = shotRoom(current, group.family, 0);
+    const assets: AssetInfo[] = [];
+    for (const shot of group.shots.slice(0, room)) {
+      try {
+        const one = await importImagesWithReport(projectId, [{ name: shot.name, data: shot.file }]);
+        assets.push(...one.assets);
+        skipped.push(...one.skipped);
+      } catch (err) {
+        toast.error('Could not import images', err instanceof Error ? err.message : String(err));
+        return placed;
+      }
+    }
+    left += Math.max(0, group.shots.length - room);
+    if (useEditor.getState().project?.id !== projectId || !assets.length) continue;
+    useEditor.getState().addAssets(assets);
+    const n = useEditor.getState().assignShotsInOrder(group.family, group.lang, assets.map((a) => a.id), 0);
+    placed += n;
+    if (n) lines.push(`${groupName(group.family, group.lang, start.languages.length)}: ${n}`);
+  }
+  reportSkipped({ assets: [], skipped });
+  if (placed) toast.success(placed === 1 ? 'Sorted 1 screenshot' : `Sorted ${placed} screenshots`, lines.join(' · '));
+  if (left) toast.warning(`${left} ${left === 1 ? 'screenshot was' : 'screenshots were'} left out`, 'The stores take a limited number of screenshots per device and language.');
+  for (const [family, rest] of plan.otherFamily) {
+    toast.push({
+      kind: 'info',
+      title: `${rest.length} ${rest.length === 1 ? 'screenshot is' : 'screenshots are'} for ${FAMILIES[family].label}`,
+      description: 'This project does not have that device yet.',
+      action: {
+        label: `Add ${FAMILIES[family].shortLabel}`,
+        run: () => {
+          if (useEditor.getState().project?.id !== projectId) return;
+          useEditor.getState().enableFamily(family);
+          void importSorted(projectId, rest, 0);
+        },
+      },
+    });
+  }
+  const odd = plan.unmatched.length + unreadable;
+  if (odd) toast.warning(`Skipped ${odd} ${odd === 1 ? 'file' : 'files'}`, 'They are not screenshots of any device in this project.');
+  if (!placed && !plan.otherFamily.size && !odd && !left) toast.warning('No screenshots added', 'They could not be placed on the slides.');
+  return placed;
 }

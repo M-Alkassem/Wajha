@@ -17,7 +17,7 @@ import { blankProject } from '../../model/defaults';
 import { assetInfo } from '../../model/fixtures.node';
 import { resolveLayout } from '../../model/resolve';
 import { MAX_SLIDES, useApp, useEditor } from '../../store';
-import { importScreenshots, pickScreenshotsForSlot, shotRoom } from './importShots';
+import { collectDrop, importScreenshots, pickScreenshotsForSlot, shotRoom } from './importShots';
 
 const ed = () => useEditor.getState();
 const toasts = () => useApp.getState().toasts.map((t) => ({ kind: t.kind, title: t.title, description: t.description }));
@@ -207,5 +207,39 @@ describe('pickScreenshotsForSlot', () => {
     expect(await pickScreenshotsForSlot('s1', slotOf(0))).toBe(2);
     expect(assetCount()).toBe(2);
     expect(toasts()).toEqual([{ kind: 'success', title: '2 screenshots added', description: undefined }]);
+  });
+});
+
+describe('collectDrop', () => {
+  // Just enough of the File and Directory Entries API to describe a dropped tree.
+  const fileEntry = (name: string) => ({ isFile: true, isDirectory: false, name, file: (ok: (f: File) => void) => ok(new File(['x'], name)) });
+  const dirEntry = (name: string, children: unknown[]) => ({
+    isFile: false,
+    isDirectory: true,
+    name,
+    createReader: () => {
+      let done = false;
+      // Browsers hand out a directory in batches and end with an empty one.
+      return { readEntries: (ok: (e: unknown[]) => void) => ok(done ? [] : ((done = true), children)) };
+    },
+  });
+  const transfer = (entries: unknown[], files: File[] = []) =>
+    ({ files, items: entries.map((entry) => ({ kind: 'file', webkitGetAsEntry: () => entry })) }) as unknown as DataTransfer;
+
+  it('reads dropped folders recursively, images only, with the folders each file sat in', async () => {
+    const dt = transfer([
+      dirEntry('screenshots', [dirEntry('ar-SA', [fileEntry('1.png'), fileEntry('.DS_Store'), fileEntry('notes.txt')]), dirEntry('en-US', [fileEntry('1.jpg')])]),
+    ]);
+    const out = await collectDrop(dt);
+    expect(out.map((d) => [d.folders.join('/'), d.file.name])).toEqual([
+      ['screenshots/ar-SA', '1.png'],
+      ['screenshots/en-US', '1.jpg'],
+    ]);
+  });
+
+  it('passes plain files through without reading anything', async () => {
+    const a = new File(['x'], 'a.png');
+    const out = await collectDrop(transfer([fileEntry('a.png')], [a]));
+    expect(out).toEqual([{ file: a, folders: [] }]);
   });
 });

@@ -7,7 +7,8 @@
  * cursor, plain wheel scrolls (a vertical wheel scrolls the strip sideways
  * when nothing overflows vertically), Space + drag or the middle button pan.
  * Screenshot files dropped on a device, a slide or the empty stage are
- * imported through importScreenshots. Global keyboard shortcuts belong to
+ * imported through importDrop (sorted into devices and languages when they
+ * come as folders or mixed sets). Global keyboard shortcuts belong to
  * the editor; the stage only handles Escape during a drag and Space to pan.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type PointerEvent as ReactPointerEvent } from 'react';
@@ -16,7 +17,7 @@ import { ImageUp, LayoutPanelTop, Plus } from 'lucide-react';
 import { FAMILIES } from '../../../model/catalog';
 import { MAX_SLIDES, selectActiveSlideIndex, useEditor } from '../../../store';
 import { Button, ContextMenu, ContextMenuContent, ContextMenuTrigger, EmptyState, cx, markNotNavigation } from '../../kit';
-import { hasFiles, importScreenshots, type ScreenshotTarget } from '../importShots';
+import { collectDrop, hasFiles, importDrop, type ScreenshotTarget } from '../importShots';
 import { addSlideAfter } from '../sidebar/slideActions';
 import { modalLayerOpen } from '../useEditorShortcuts';
 import { fieldToCommit, inputModality, isTextEntry, movesFocus, spaceCanPan } from './focus';
@@ -519,11 +520,12 @@ export function Stage() {
       if (!hasFiles(e.dataTransfer)) return;
       e.preventDefault();
       const { target } = resolveDrop(e);
-      const files = Array.from(e.dataTransfer.files ?? []);
+      // Read now: the browser forgets dropped folders once this handler returns.
+      const dropped = collectDrop(e.dataTransfer);
       if (dropTimer.current !== null) clearTimeout(dropTimer.current);
       dropTimer.current = null;
       setDropTarget(null);
-      if (files.length) void importScreenshots(files, target);
+      void dropped.then((files) => (files.length ? importDrop(files, target) : 0));
     },
     [resolveDrop],
   );
