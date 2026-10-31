@@ -562,7 +562,7 @@ mod tests {
             .unwrap_err();
         assert!(err.starts_with("invalid_path: "), "{err}");
         let err = h
-            .json("open_file_pick", serde_json::json!({ "kind": "image" }))
+            .json("open_file_pick", serde_json::json!({ "kind": "video" }))
             .unwrap_err();
         assert!(err.starts_with("invalid_data: "), "{err}");
     }

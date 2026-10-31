@@ -51,7 +51,7 @@ export interface ExportTarget {
   path: string | null;
 }
 
-export type OpenFileKind = 'project' | 'template' | 'csv';
+export type OpenFileKind = 'project' | 'template' | 'csv' | 'font' | 'image';
 
 export interface OpenedFile {
   name: string;

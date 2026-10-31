@@ -29,6 +29,7 @@ import { layoutSource, resolveLayout } from '../model/resolve';
 import { LIMITS, cleanFontName, cleanName, cleanText, isAssetId, isFamilyId, isLangCode, isSafeKey, normalizeColor, uniqueFamilies, uniqueLanguages } from '../model/rules';
 import type {
   AssetInfo,
+  ProjectFont,
   Background,
   DeviceElement,
   ElementKind,
@@ -50,6 +51,7 @@ import {
   SHAPE_KINDS,
   ValidationError,
   cleanAssetInfo,
+  cleanFonts,
   cleanBackground,
   cleanElement,
   cleanExportSettings,
@@ -180,6 +182,8 @@ export interface EditorState {
   setShot(slideId: string, family: FamilyId, slot: string, lang: LangCode, assetId: string | null): boolean;
   /** Registers imported images; returns how many were new. */
   addAssets(assets: AssetInfo[]): number;
+  /** Registers font files stored with the project (storage putProjectFont); returns how many were new. */
+  addFonts(fonts: ProjectFont[]): number;
   /**
    * Puts the screenshots into the first device of consecutive slides starting
    * at `startSlideIndex`, adding slides (up to the family's store limit) as
@@ -1110,6 +1114,24 @@ export function createEditorStore() {
               ((shots[family] ??= {})[slot] ??= {})[lang] = assetId;
             }
           });
+        },
+
+        addFonts(fonts) {
+          const p = get().project;
+          if (!p || !Array.isArray(fonts)) return 0;
+          const have = p.fonts ?? [];
+          // Validation drops duplicates and bad entries, so the list stays what a reload would give.
+          const next = cleanFonts([...have, ...fonts], 'fonts');
+          const n = next.length - have.length;
+          if (n <= 0) return 0;
+          return commit(
+            (d) => {
+              d.fonts = next;
+            },
+            { history: false },
+          )
+            ? n
+            : 0;
         },
 
         addAssets(assets) {

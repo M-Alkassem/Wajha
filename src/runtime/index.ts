@@ -28,7 +28,7 @@ export {
 
 /* fonts.ts */
 export type { FontLoadRequest } from './fonts';
-export { ensureFonts, onFontsChanged, fontLoadRequests } from './fonts';
+export { ensureFonts, onFontsChanged, fontLoadRequests, registerProjectFonts } from './fonts';
 
 /* env.ts */
 export { browserEnv } from './env';

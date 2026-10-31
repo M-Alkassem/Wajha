@@ -32,6 +32,8 @@ const MB: u64 = 1024 * 1024;
 const MAX_PROJECT_FILE: u64 = 500 * MB;
 const MAX_TEMPLATE_FILE: u64 = 100 * MB;
 const MAX_CSV_FILE: u64 = 10 * MB;
+const MAX_FONT_FILE: u64 = 30 * MB;
+const MAX_LOGO_FILE: u64 = 20 * MB;
 
 /// Largest file `save_file` writes: no kind of file the app opens is
 /// bigger, so a bigger one could never be opened again.
@@ -297,6 +299,18 @@ fn open_kind(kind: &str) -> AppResult<OpenKind> {
             label: "CSV spreadsheet",
             extensions: &["csv", "txt"],
             max_bytes: MAX_CSV_FILE,
+        }),
+        "font" => Ok(OpenKind {
+            title: "Add a font",
+            label: "Font",
+            extensions: &["ttf", "otf", "woff", "woff2"],
+            max_bytes: MAX_FONT_FILE,
+        }),
+        "image" => Ok(OpenKind {
+            title: "Choose an image",
+            label: "Image",
+            extensions: &["png", "jpg", "jpeg", "webp"],
+            max_bytes: MAX_LOGO_FILE,
         }),
         other => Err(AppError::invalid_data(format!(
             "unknown file kind {}",
@@ -654,7 +668,15 @@ mod tests {
         assert_eq!(template.extensions, ["wajha-template", "zip"]);
         let csv = open_kind("csv").unwrap();
         assert_eq!(csv.extensions, ["csv", "txt"]);
-        for bad in ["", "Project", "image", "../x"] {
+        assert_eq!(
+            open_kind("font").unwrap().extensions,
+            ["ttf", "otf", "woff", "woff2"]
+        );
+        assert_eq!(
+            open_kind("image").unwrap().extensions,
+            ["png", "jpg", "jpeg", "webp"]
+        );
+        for bad in ["", "Project", "video", "../x"] {
             assert_eq!(
                 open_kind(bad).err().map(|e| e.code()),
                 Some(ErrorCode::InvalidData),
@@ -670,6 +692,8 @@ mod tests {
         assert_eq!(limit("project"), 500 << 20);
         assert_eq!(limit("template"), 100 << 20);
         assert_eq!(limit("csv"), 10 << 20);
+        assert_eq!(limit("font"), 30 << 20);
+        assert_eq!(limit("image"), 20 << 20);
         assert_eq!(MAX_IMAGE_BYTES, 100 << 20);
         assert_eq!(MAX_SAVE_FILE, limit("project"));
     }

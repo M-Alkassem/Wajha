@@ -48,6 +48,9 @@ size both stores ask for, in every language, in one click.
   undo and redo, keyboard shortcuts, `*highlighted*` words, auto-fitting
   headlines, panorama backgrounds that flow across slides, and a light and a
   dark theme.
+- **Your own fonts and a brand kit**: add .ttf, .otf, .woff or .woff2 files
+  (they travel inside the project and its `.wajha` file), and keep your
+  brand's colours, fonts and logo once to apply them to any project.
 - **Private and light**: no account, no telemetry, works offline. The app is
   about 6 MB and uses your system's web view instead of shipping a browser.
 
@@ -130,8 +133,9 @@ Projects are plain folders, so they are easy to back up or sync:
 | Windows | `%APPDATA%\studio.wajha.app\` |
 | Linux | `~/.local/share/studio.wajha.app/` |
 
-Each project keeps its `project.json`, a small thumbnail and its images,
-stored once each and named by content hash. Images you stop using are deleted
+Each project keeps its `project.json`, a small thumbnail, its images and any
+fonts you added, stored once each and named by content hash. The brand kit
+lives in `brand/` next to the projects. Images you stop using are deleted
 when you close the project, or the next time you open it. Use **Export as file** on a project card to
 share a whole project as a single `.wajha` file.
 

@@ -15,10 +15,12 @@ import { unzipSync, zipSync, type UnzipFileInfo, type Zippable } from 'fflate';
 import { newId } from '../model/ids';
 import type { Project, ProjectMeta, Template } from '../model/types';
 import { validateProject, validateTemplate } from '../model/validate';
-import { getPlatform } from '../platform';
+import { getPlatform, sha256Hex } from '../platform';
+import { isFontFile } from '../model/rules';
 import {
   ARCHIVE_MAX_BYTES,
   ARCHIVE_MAX_ENTRIES,
+  MAX_FONT_BYTES,
   MAX_IMAGE_BYTES,
   MAX_MANIFEST_BYTES,
   TEMPLATE_ARCHIVE_MAX_BYTES,
@@ -27,6 +29,7 @@ import {
   megabytes,
 } from '../platform/limits';
 import { isAssetId } from '../platform/paths';
+import { projectFontFile, readProjectFont, sniffFontExt } from './fonts';
 import { listProjects, loadProject, metaOf, readThumbnail, saveProject } from './library';
 import { keepAssets, usedAssetIds, withPresentAssets } from './refs';
 import {
@@ -87,6 +90,8 @@ interface ArchiveContents {
   image: Uint8Array | null;
   /** assetId -> bytes, only entries that pass assetMatches. */
   assets: Map<string, Uint8Array>;
+  /** Font file -> bytes (projects only), only real fonts whose name is their hash. */
+  fonts: Map<string, Uint8Array>;
 }
 
 /** Names that would land outside the destination when extracted ("zip slip"). */
@@ -100,6 +105,13 @@ export function isUnsafeEntryName(name: string): boolean {
 }
 
 const isAssetEntry = (name: string) => name.startsWith(ASSET_PREFIX) && isAssetId(name.slice(ASSET_PREFIX.length));
+const FONT_PREFIX = 'fonts/';
+const isFontEntry = (name: string) => name.startsWith(FONT_PREFIX) && isFontFile(name.slice(FONT_PREFIX.length));
+
+/** A font entry is kept only when it is a font of the format its name says and its name is its hash. */
+async function fontMatches(file: string, bytes: Uint8Array): Promise<boolean> {
+  return sniffFontExt(bytes) === file.slice(file.lastIndexOf('.') + 1) && (await sha256Hex(bytes)) === file.slice(0, 64);
+}
 
 function invalid(kind: ArchiveKind, detail: string, cause?: unknown): StorageError {
   return new StorageError('invalid_file', `This is not a valid ${kind.ext} file: ${detail}.`, cause === undefined ? undefined : { cause });
@@ -140,13 +152,14 @@ async function openArchive(data: Uint8Array, kind: ArchiveKind): Promise<Archive
     if (total > kind.maxBytes) throw tooLarge(kind, `more than ${megabytes(kind.maxBytes)} uncompressed`);
     const isManifest = info.name === kind.manifest;
     const isImage = info.name === kind.image;
-    if (!isManifest && !isImage && !isAssetEntry(info.name)) return false;
+    const isFont = kind === PROJECT_ARCHIVE && isFontEntry(info.name);
+    if (!isManifest && !isImage && !isFont && !isAssetEntry(info.name)) return false;
     // Names stay unique even for entries that are skipped, so pass 2 inflates exactly what was checked.
     if (known.has(info.name)) throw invalid(kind, `${info.name} appears twice`);
     known.add(info.name);
     // A huge manifest blocks the app while it parses: refuse it. An oversized image is dropped like a damaged one.
     if (isManifest && size > MAX_MANIFEST_BYTES) throw tooLarge(kind, `${kind.manifest} is larger than ${megabytes(MAX_MANIFEST_BYTES)}`);
-    if (isManifest || size <= (isImage ? THUMBNAIL_LIMITS.maxBytes : MAX_IMAGE_BYTES)) wanted.add(info.name);
+    if (isManifest || size <= (isImage ? THUMBNAIL_LIMITS.maxBytes : isFont ? MAX_FONT_BYTES : MAX_IMAGE_BYTES)) wanted.add(info.name);
     return false;
   });
   if (!wanted.has(kind.manifest)) throw invalid(kind, `${kind.manifest} is missing`);
@@ -170,8 +183,15 @@ async function openArchive(data: Uint8Array, kind: ArchiveKind): Promise<Archive
     const assetId = name.slice(ASSET_PREFIX.length);
     if (await assetMatches(assetId, bytes)) assets.set(assetId, bytes);
   }
+  const fonts = new Map<string, Uint8Array>();
+  for (const name of wanted) {
+    const bytes = files[name];
+    if (!bytes || !isFontEntry(name)) continue;
+    const file = name.slice(FONT_PREFIX.length);
+    if (await fontMatches(file, bytes)) fonts.set(file, bytes);
+  }
   const image = files[kind.image];
-  return { manifest, image: image && imageWithinLimits(image, THUMBNAIL_LIMITS) ? image : null, assets };
+  return { manifest, image: image && imageWithinLimits(image, THUMBNAIL_LIMITS) ? image : null, assets, fonts };
 }
 
 function formatOf(json: unknown): unknown {
@@ -217,9 +237,9 @@ async function archiveFiles(
   image: Uint8Array | null,
   assetsDir: string,
   assetFile: (assetId: string) => string,
+  budget: ArchiveBudget = new ArchiveBudget(kind),
 ): Promise<Zippable> {
   const p = getPlatform();
-  const budget = new ArchiveBudget(kind);
   const used = usedAssetIds(document);
   const manifest = utf8(JSON.stringify(keepAssets(document, used)));
   if (manifest.byteLength > MAX_MANIFEST_BYTES) {
@@ -248,7 +268,15 @@ async function archiveFiles(
 export async function exportProjectArchive(id: string): Promise<Uint8Array> {
   const project = await loadProject(id);
   const thumb = await readThumbnail(id);
-  const files = await archiveFiles(PROJECT_ARCHIVE, project, thumb, projectAssetsDir(id), (a) => projectAssetFile(id, a));
+  const budget = new ArchiveBudget(PROJECT_ARCHIVE);
+  const files = await archiveFiles(PROJECT_ARCHIVE, project, thumb, projectAssetsDir(id), (a) => projectAssetFile(id, a), budget);
+  for (const font of project.fonts ?? []) {
+    const bytes = await readProjectFont(id, font.file);
+    if (!bytes) continue;
+    budget.add(bytes.byteLength);
+    // WOFF and WOFF2 are compressed already.
+    files[`${FONT_PREFIX}${font.file}`] = [bytes, { level: font.file.endsWith('.ttf') || font.file.endsWith('.otf') ? 6 : 0 }];
+  }
   return zipSync(files);
 }
 
@@ -270,8 +298,11 @@ export async function importProjectArchive(data: Uint8Array): Promise<ProjectMet
   const names = new Set((await listProjects()).map((m) => m.name));
   const now = Date.now();
   const used = usedAssetIds(project);
+  // Fonts whose file did not arrive are dropped; their text falls back like any missing font.
+  const fonts = (project.fonts ?? []).filter((f) => archive.fonts.has(f.file));
   const imported: Project = {
     ...keepAssets(project, used),
+    fonts: fonts.length ? fonts : undefined,
     id: newId(),
     name: names.has(project.name) ? withSuffix(project.name, IMPORTED_SUFFIX) : project.name,
     createdAt: Number.isFinite(project.createdAt) ? Math.min(project.createdAt, now) : now,
@@ -280,6 +311,7 @@ export async function importProjectArchive(data: Uint8Array): Promise<ProjectMet
   };
   try {
     for (const [assetId, bytes] of archive.assets) if (used.has(assetId)) await p.write(projectAssetFile(imported.id, assetId), bytes);
+    for (const font of fonts) await p.write(projectFontFile(imported.id, font.file), archive.fonts.get(font.file)!);
     if (archive.image) await p.write(thumbFile(imported.id), archive.image);
     // Written last: until project.json exists the import is not listed.
     await saveProject(imported);

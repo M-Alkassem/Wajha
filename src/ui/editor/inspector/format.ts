@@ -214,18 +214,21 @@ const CATEGORY_LABEL: Record<FontInfo['category'], string> = {
 const CATEGORY_ORDER: FontInfo['category'][] = ['sans', 'display', 'serif', 'arabic', 'multi'];
 
 /** Bundled fonts by category, then system fonts (minus duplicates of bundled ones), filtered by `query`. */
-export function fontGroups(systemFonts: readonly string[], query: string): FontGroup[] {
+export function fontGroups(systemFonts: readonly string[], query: string, ownFonts: readonly string[] = []): FontGroup[] {
   const q = query.trim().toLocaleLowerCase();
   // Bundled families end in " Variable", which the picker never shows: "ar" must not match all of them.
   const matches = (label: string, family: string) =>
     !q || label.toLocaleLowerCase().includes(q) || family.replace(/\s+Variable$/i, '').toLocaleLowerCase().includes(q);
   const groups: FontGroup[] = [];
+  // Fonts the project brought along come first: they are why someone added them.
+  const own = ownFonts.filter((f) => f && matches(f, f)).map((f) => ({ family: f, label: f, category: 'system' as const }));
+  if (own.length) groups.push({ id: 'own', label: 'Your fonts', fonts: own });
   for (const cat of CATEGORY_ORDER) {
     const fonts = BUNDLED_FONTS.filter((f) => f.category === cat && matches(f.label, f.family)).map((f) => ({ family: f.family, label: f.label, category: f.category }));
     if (fonts.length) groups.push({ id: cat, label: CATEGORY_LABEL[cat], fonts });
   }
   const bundled = new Set(BUNDLED_FONTS.flatMap((f) => [f.family.toLocaleLowerCase(), f.label.toLocaleLowerCase()]));
-  const seen = new Set<string>();
+  const seen = new Set<string>(ownFonts.map((f) => f.toLocaleLowerCase()));
   const system: FontGroup['fonts'] = [];
   for (const name of systemFonts) {
     const key = name.toLocaleLowerCase();

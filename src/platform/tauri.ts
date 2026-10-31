@@ -215,7 +215,7 @@ export function createTauriPlatform(): Platform {
     },
 
     async openFile(kind): Promise<OpenedFile | null> {
-      if (kind !== 'project' && kind !== 'template' && kind !== 'csv') throw new PlatformError('invalid_data', 'Unknown file kind');
+      if (!(kind in OPEN_FILE_MAX_BYTES)) throw new PlatformError('invalid_data', 'Unknown file kind');
       const picked = await call<unknown>('open_file_pick', { kind });
       if (!isRecord(picked) || typeof picked.token !== 'string') return null;
       const name = typeof picked.name === 'string' ? picked.name : '';

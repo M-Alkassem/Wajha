@@ -44,7 +44,8 @@ function webpVp8x(width: number, height: number): Uint8Array {
 
 describe('file limits', () => {
   it('match the limits the desktop shell applies before reading a file', () => {
-    expect(OPEN_FILE_MAX_BYTES).toEqual({ project: 500 * MB, template: 100 * MB, csv: 10 * MB });
+    // dialogs.rs limits_match_the_frontend checks the same numbers on the Rust side.
+    expect(OPEN_FILE_MAX_BYTES).toEqual({ project: 500 * MB, template: 100 * MB, csv: 10 * MB, font: 30 * MB, image: 20 * MB });
     expect([ARCHIVE_MAX_BYTES, TEMPLATE_ARCHIVE_MAX_BYTES, MAX_CSV_BYTES, MAX_IMAGE_BYTES]).toEqual([500 * MB, 100 * MB, 10 * MB, 100 * MB]);
   });
 

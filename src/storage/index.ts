@@ -65,3 +65,17 @@ export { loadSettings, saveSettings, DEFAULT_SETTINGS } from './settings';
 /* Shared */
 export { StorageError, type StorageErrorCode } from './shared';
 export { collectAssetRefs, usedAssetIds, withPresentAssets } from './refs';
+export { fontFamilyName, familyFromFileName, putProjectFont, readProjectFont, sniffFontExt, projectFontFile } from './fonts';
+export {
+  MAX_BRAND_COLORS,
+  MAX_BRAND_FONTS,
+  copyBrandFontToProject,
+  emptyBrandKit,
+  putBrandFont,
+  putBrandLogo,
+  readBrandFile,
+  readBrandKit,
+  writeBrandKit,
+  type BrandKit,
+  type BrandLogo,
+} from './brand';

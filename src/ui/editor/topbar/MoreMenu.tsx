@@ -1,4 +1,4 @@
-import { Ellipsis, FileArchive, Keyboard, LayoutTemplate } from 'lucide-react';
+import { Ellipsis, FileArchive, Keyboard, LayoutTemplate, Palette } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -30,6 +30,9 @@ export function MoreMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem icon={<FileArchive />} onSelect={() => void exportProjectFile()}>
           Export project file…
+        </DropdownMenuItem>
+        <DropdownMenuItem icon={<Palette />} onSelect={() => useEditorUi.getState().openDialog('brand')}>
+          Brand kit…
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Panels</DropdownMenuLabel>

@@ -51,6 +51,7 @@ export const LIMITS = {
   textKeys: 100,
   slots: 20,
   assets: 5000,
+  fonts: 24,
   galleryTemplates: 1000,
   galleryAssets: 200,
 } as const;
@@ -136,6 +137,13 @@ export function isTemplateId(v: unknown): v is string {
 }
 
 /** A content-addressed asset id, "<sha256 hex>.<png|jpg|webp>". */
+const FONT_FILE = /^[0-9a-f]{64}\.(ttf|otf|woff|woff2)$/;
+
+/** "<64 hex>.<ttf|otf|woff|woff2>", the only file names allowed in fonts folders. */
+export function isFontFile(v: unknown): v is string {
+  return typeof v === 'string' && FONT_FILE.test(v);
+}
+
 export function isAssetId(v: unknown): v is string {
   return typeof v === 'string' && v.length <= 69 && ASSET_ID_RE.test(v);
 }

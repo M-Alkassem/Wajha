@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useApp, useEditor } from '../../store';
 import { Spinner } from '../kit';
 import { useEditorChrome } from './chrome';
-import { ExportDialog, FamiliesDialog, LanguagesDialog, SaveTemplateDialog, ShortcutsDialog, TranslationsDialog } from './dialogs';
+import { BrandKitDialog, ExportDialog, FamiliesDialog, LanguagesDialog, SaveTemplateDialog, ShortcutsDialog, TranslationsDialog } from './dialogs';
 import { useEditorUi } from './editorUi';
 import { Inspector } from './inspector/Inspector';
 import { LeftSidebar } from './sidebar/LeftSidebar';
@@ -76,6 +76,7 @@ function EditorDialogs() {
       <FamiliesDialog open={dialog === 'families'} onOpenChange={onOpenChange} />
       <SaveTemplateDialog open={dialog === 'saveTemplate'} onOpenChange={onOpenChange} />
       <ShortcutsDialog open={dialog === 'shortcuts'} onOpenChange={onOpenChange} />
+      <BrandKitDialog open={dialog === 'brand'} onOpenChange={onOpenChange} />
     </>
   );
 }

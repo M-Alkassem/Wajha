@@ -30,6 +30,7 @@ import {
   cleanName,
   cleanText,
   isAssetId,
+  isFontFile,
   isFamilyId,
   isId,
   isLangCode,
@@ -44,6 +45,7 @@ import type {
   AssetInfo,
   Background,
   DeviceElement,
+  ProjectFont,
   DeviceFrameId,
   ElementKind,
   ExportSettings,
@@ -526,6 +528,29 @@ export function cleanAssets(v: unknown, path: string): Record<string, AssetInfo>
   return out;
 }
 
+/**
+ * A project's font list: entries whose file name is not a font file are
+ * dropped, and so is a second entry for a family or file already listed.
+ */
+export function cleanFonts(v: unknown, path: string): ProjectFont[] {
+  if (isMissing(v)) return [];
+  const out: ProjectFont[] = [];
+  const families = new Set<string>();
+  const files = new Set<string>();
+  if (!Array.isArray(v)) return out;
+  v.slice(0, LIMITS.fonts).forEach((raw: unknown, i) => {
+    if (!isPlainObject(raw)) return;
+    const file = raw.file;
+    if (!isFontFile(file) || files.has(file)) return;
+    const family = nameField(raw, 'family', at(path, i), '');
+    if (!family || families.has(family.toLowerCase())) return;
+    families.add(family.toLowerCase());
+    files.add(file);
+    out.push({ family, file, name: nameField(raw, 'name', at(path, i), file) || file });
+  });
+  return out;
+}
+
 /** Export settings; `languages` lists the project languages export may pick from. */
 export function cleanExportSettings(v: unknown, path: string, languages: readonly LangCode[]): ExportSettings {
   const d = defaultExportSettings();
@@ -700,6 +725,7 @@ export function validateProject(json: unknown): Project {
   const ids = new Set<string>();
   const slides = arrayField(o, 'slides', '', LIMITS.slides).map((s, i) => cleanSlide(s, at('slides', i), ctx, ids));
   if (!slides.length) slides.push(newSlide(families, theme, languages));
+  const fonts = cleanFonts(get(o, 'fonts'), 'fonts');
 
   return {
     format: 'wajha.project',
@@ -714,6 +740,7 @@ export function validateProject(json: unknown): Project {
     languages,
     slides,
     assets,
+    ...(fonts.length ? { fonts } : {}),
     export: cleanExportSettings(get(o, 'export'), 'export', languages),
   };
 }

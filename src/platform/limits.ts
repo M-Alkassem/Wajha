@@ -28,12 +28,18 @@ export const ARCHIVE_MAX_ENTRIES = 2000;
 export const MAX_MANIFEST_BYTES = 16 * MB;
 /** Largest translations spreadsheet. */
 export const MAX_CSV_BYTES = 10 * MB;
+/** Largest font file (a full CJK font is about 20 MB). */
+export const MAX_FONT_BYTES = 30 * MB;
+/** Largest logo picked for the brand kit. */
+export const MAX_LOGO_BYTES = 20 * MB;
 
 /** Largest file Platform.openFile reads, per kind. */
 export const OPEN_FILE_MAX_BYTES: Readonly<Record<OpenFileKind, number>> = {
   project: ARCHIVE_MAX_BYTES,
   template: TEMPLATE_ARCHIVE_MAX_BYTES,
   csv: MAX_CSV_BYTES,
+  font: MAX_FONT_BYTES,
+  image: MAX_LOGO_BYTES,
 };
 
 /** "100 MB", for messages. */

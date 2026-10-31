@@ -466,3 +466,27 @@ describe('ValidationError', () => {
     expect(e).toBeInstanceOf(Error);
   });
 });
+
+describe('validateProject: fonts', () => {
+  const file = (c: string, ext = 'ttf') => `${c.repeat(64)}.${ext}`;
+  it('keeps font entries with a font file name, once per family and file', () => {
+    const p = { ...blankProject('Fonts', ['iphone'], ['en-US']), fonts: [
+      { family: 'Brandish', file: file('a'), name: 'brandish.ttf' },
+      { family: 'brandish', file: file('b'), name: 'again.ttf' },
+      { family: 'Other', file: file('a'), name: 'same file.ttf' },
+      { family: 'Evil', file: '../../etc/passwd', name: 'x' },
+      { family: '', file: file('c'), name: 'nameless.ttf' },
+      { family: 'Web', file: file('d', 'woff2') },
+      'junk',
+    ] };
+    expect(validateProject(p).fonts).toEqual([
+      { family: 'Brandish', file: file('a'), name: 'brandish.ttf' },
+      { family: 'Web', file: file('d', 'woff2'), name: file('d', 'woff2') },
+    ]);
+  });
+
+  it('leaves the field out when there are no fonts', () => {
+    expect('fonts' in validateProject({ ...blankProject('None', ['iphone'], ['en-US']), fonts: [] })).toBe(false);
+    expect('fonts' in validateProject({ ...blankProject('Bad', ['iphone'], ['en-US']), fonts: 'nope' })).toBe(false);
+  });
+});

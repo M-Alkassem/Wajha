@@ -5,3 +5,4 @@ export { LanguagesDialog } from './LanguagesDialog';
 export { FamiliesDialog } from './FamiliesDialog';
 export { SaveTemplateDialog } from './SaveTemplateDialog';
 export { ShortcutsDialog } from './ShortcutsDialog';
+export { BrandKitDialog } from './BrandKitDialog';

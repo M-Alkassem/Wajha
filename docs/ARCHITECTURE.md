@@ -333,6 +333,16 @@ that the app ended by itself and that the rename reached the disk. The
 window has `dragDropEnabled: false` so HTML5 drag-and-drop delivers `File`
 objects to the webview on every platform.
 
+
+Fonts and brand kit (`storage/fonts.ts`, `storage/brand.ts`): font files
+people add are content-addressed like images (`<sha-256>.<ttf|otf|woff|woff2>`)
+and stored in `projects/<id>/fonts/`; `project.fonts` lists them with the
+family text styles use (read from the file's name table, else its file name).
+`.wajha` files carry them under `fonts/`, verified by signature and hash on
+import. `runtime/fonts.ts` registers them as FontFaces before any drawing.
+The brand kit is `brand/kit.json` (colours, fonts, logo) with its files in
+`brand/files/`; applying it copies files into the project.
+
 ### 6.4 Storage (`src/storage`)
 
 Layout in `src/storage/index.ts`. Rules:

@@ -9,7 +9,7 @@
  * loading it, so list() reports sizes and dates as 0 (nothing needs them).
  */
 import { Zip, ZipDeflate, ZipPassThrough } from 'fflate';
-import type { AppInfo, DirEntry, ExportTarget, ImageExt, OpenedFile, PickedImage, Platform } from './types';
+import type { AppInfo, DirEntry, ExportTarget, ImageExt, OpenedFile, OpenFileKind, PickedImage, Platform } from './types';
 import { PlatformError } from './types';
 import { MAX_IMAGE_BYTES, OPEN_FILE_MAX_BYTES } from './limits';
 import {
@@ -304,6 +304,15 @@ interface PendingExport {
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
+/** What the browser's file picker offers for each Platform.openFile kind. */
+const WEB_ACCEPT: Readonly<Record<OpenFileKind, string>> = {
+  project: '.wajha',
+  template: '.wajha-template',
+  csv: '.csv,text/csv',
+  font: '.ttf,.otf,.woff,.woff2',
+  image: 'image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp',
+};
+
 export function createWebPlatform(): Platform {
   const exports = new Map<string, PendingExport>();
   const finished = new Set<string>();
@@ -437,7 +446,7 @@ export function createWebPlatform(): Platform {
     },
 
     async openFile(kind): Promise<OpenedFile | null> {
-      const accept = kind === 'project' ? '.wajha' : kind === 'template' ? '.wajha-template' : kind === 'csv' ? '.csv,text/csv' : null;
+      const accept = WEB_ACCEPT[kind] ?? null;
       if (!accept) throw new PlatformError('invalid_data', 'Unknown file kind');
       const [file] = await pickFiles(accept, false);
       if (!file) return null;

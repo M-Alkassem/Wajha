@@ -350,7 +350,19 @@ export interface Project {
   languages: LangCode[];
   slides: Slide[];
   assets: Record<string, AssetInfo>;
+  /** Font files the project brought along (text styles name their family). */
+  fonts?: ProjectFont[];
   export: ExportSettings;
+}
+
+/** A font file stored with the project, in projects/<id>/fonts/<file>. */
+export interface ProjectFont {
+  /** The family text styles use, e.g. "Gilroy". */
+  family: string;
+  /** "<sha-256 hex>.<ttf|otf|woff|woff2>" */
+  file: string;
+  /** The file's original name, for people. */
+  name: string;
 }
 
 /** Small summary written next to project.json for the home screen. */

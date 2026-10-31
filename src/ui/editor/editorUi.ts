@@ -3,7 +3,7 @@ import { useEditor } from '../../store';
 import { useEditorChrome } from './chrome';
 
 /** Dialogs the editor can show; EditorScreen renders the one that is open. */
-export type EditorDialog = 'export' | 'translations' | 'languages' | 'families' | 'saveTemplate' | 'shortcuts';
+export type EditorDialog = 'export' | 'translations' | 'languages' | 'families' | 'saveTemplate' | 'shortcuts' | 'brand';
 
 /** A request for the inspector to focus the text field of a text element. */
 export interface TextFocusRequest {

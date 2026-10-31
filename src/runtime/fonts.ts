@@ -5,11 +5,14 @@
  * rendering, `ensureFonts` asks `document.fonts.load()` for every (family,
  * weight) the project draws, once per language with that language's own
  * characters as the sample, which pulls in exactly the subsets needed
- * (Arabic, Hebrew, Cyrillic, ...).
+ * (Arabic, Hebrew, Cyrillic, ...). Font files a project brought along
+ * (project.fonts) are registered as FontFaces first, under the family name
+ * text styles use.
  */
 import type { FamilyId, Project, Slide, SlideLayout } from '../model/types';
 import { BUNDLED_FONTS, FONT_FALLBACK_STACK, languageInfo } from '../model/catalog';
 import { resolveLayout } from '../model/resolve';
+import { readProjectFont } from '../storage';
 import { settleWithin } from './util';
 
 /** ensureFonts gives up waiting after this long (a broken font must not block export). */
@@ -167,10 +170,42 @@ function fontFaceSet(): FontFaceSet | null {
 const satisfied = new Set<string>();
 const SATISFIED_MAX = 4096;
 
+// Registered project fonts, by family and file: each loads once per session.
+const registered = new Set<string>();
+
+/**
+ * Registers the project's own font files with the document, so canvas text
+ * in their family draws with them. A file that is missing or does not load
+ * leaves its family to the fallback fonts.
+ */
+export async function registerProjectFonts(project: Project): Promise<void> {
+  const fonts = fontFaceSet();
+  if (!fonts || typeof FontFace === 'undefined' || !Array.isArray(project.fonts)) return;
+  for (const font of project.fonts) {
+    const key = `${font.family}\u0000${font.file}`;
+    if (registered.has(key)) continue;
+    registered.add(key);
+    try {
+      const bytes = await readProjectFont(project.id, font.file);
+      if (!bytes) {
+        registered.delete(key);
+        continue;
+      }
+      // FontFace takes an ArrayBuffer of exactly the file.
+      const face = new FontFace(font.family, bytes.slice().buffer, { weight: '1 1000' });
+      await face.load();
+      fonts.add(face);
+    } catch {
+      registered.delete(key);
+    }
+  }
+}
+
 /** Resolves once every font used by the project (in every language) is loaded. */
 export async function ensureFonts(project: Project): Promise<void> {
   const fonts = fontFaceSet();
   if (!fonts) return;
+  await settleWithin(registerProjectFonts(project), FONT_LOAD_TIMEOUT_MS);
   let requests: FontLoadRequest[];
   try {
     requests = fontLoadRequests(project);

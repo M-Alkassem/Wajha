@@ -31,6 +31,7 @@ import {
   thumbFile,
   utf8,
 } from './shared';
+import { projectFontFile } from './fonts';
 
 const projectKey = (id: string) => `project:${id}`;
 
@@ -223,6 +224,10 @@ export async function duplicateProject(id: string, name: string): Promise<Projec
       if (entry.isDir || !used.has(entry.name)) continue;
       const bytes = await p.read(projectAssetFile(id, entry.name));
       if (bytes) await p.write(projectAssetFile(copy.id, entry.name), bytes);
+    }
+    for (const font of source.fonts ?? []) {
+      const bytes = await p.read(projectFontFile(id, font.file));
+      if (bytes) await p.write(projectFontFile(copy.id, font.file), bytes);
     }
     const thumb = await p.read(thumbFile(id));
     // The source's picture shows the copy too; one that had fallen behind the source stays behind.

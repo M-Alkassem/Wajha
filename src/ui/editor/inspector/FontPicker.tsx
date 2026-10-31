@@ -1,13 +1,17 @@
 /**
- * Font picker: a searchable list of the bundled fonts (by category, each
- * name drawn in its own face) followed by the fonts installed on the
- * system, which are listed lazily the first time the picker opens. The list
- * is windowed, so hundreds of system fonts stay cheap.
+ * Font picker: a searchable list of the project's own fonts, the bundled
+ * fonts (by category, each name drawn in its own face) and the fonts
+ * installed on the system, which are listed lazily the first time the picker
+ * opens. "Add font file…" stores a font with the project and picks it. The
+ * list is windowed, so hundreds of system fonts stay cheap.
  */
 import { memo, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Check, ChevronDown, Search } from 'lucide-react';
+import { Check, ChevronDown, Plus, Search } from 'lucide-react';
 import { getPlatform } from '../../../platform';
-import { FIELD_SHELL, Input, Popover, PopoverContent, PopoverTrigger, ScrollArea, Spinner, cx, useFieldControl } from '../../kit';
+import { registerProjectFonts } from '../../../runtime';
+import { putProjectFont } from '../../../storage';
+import { toast, useEditor } from '../../../store';
+import { Button, FIELD_SHELL, Input, Popover, PopoverContent, PopoverTrigger, ScrollArea, Spinner, cx, useFieldControl } from '../../kit';
 import { bundledFont, fontGroups, fontLabel, fontPreviewFamily } from './format';
 import { loadSystemFonts } from './systemFonts';
 
@@ -81,6 +85,8 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
   /** Key of the highlighted option; null = the current font (or the first match while searching). */
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const isWeb = getPlatform().kind === 'web';
+  const ownFonts = useEditor((s) => s.project?.fonts);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -97,7 +103,7 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
   }, []);
 
   const items = useMemo<Item[]>(() => {
-    const groups = fontGroups(system ?? [], query);
+    const groups = fontGroups(system ?? [], query, (ownFonts ?? []).map((f) => f.family));
     const out: Item[] = [];
     const listed = groups.some((g) => g.fonts.some((f) => f.family === value));
     if (!listed && value && !query.trim()) {
@@ -113,7 +119,7 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
       }
     }
     return out;
-  }, [system, query, value]);
+  }, [system, query, value, ownFonts]);
 
   const fontIndexes = useMemo(() => items.flatMap((it, i) => (it.kind === 'font' ? [i] : [])), [items]);
   const searching = query.trim() !== '';
@@ -261,6 +267,25 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
           </div>
         </ScrollArea>
       )}
+      <div className="border-t border-line p-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start"
+          leadingIcon={adding ? <Spinner size={12} label={null} /> : <Plus />}
+          disabled={adding}
+          onClick={() => {
+            setAdding(true);
+            void addFontFile()
+              .then((family) => {
+                if (family) onPick(family);
+              })
+              .finally(() => setAdding(false));
+          }}
+        >
+          Add font file…
+        </Button>
+      </div>
       {(system === null || (isWeb && !searching)) && (
         <div className="flex h-8 items-center gap-2 border-t border-line px-3 text-2xs text-text-3">
           {system === null ? (
@@ -275,4 +300,29 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
       )}
     </div>
   );
+}
+
+/**
+ * Picks a font file, stores it with the open project and registers it, so
+ * text can use it at once. Returns its family, or null when cancelled or
+ * refused (the user is told why).
+ */
+async function addFontFile(): Promise<string | null> {
+  const project = useEditor.getState().project;
+  if (!project) return null;
+  try {
+    const picked = await getPlatform().openFile('font');
+    if (!picked) return null;
+    const font = await putProjectFont(project.id, picked.data, picked.name);
+    const store = useEditor.getState();
+    if (store.project?.id !== project.id) return null;
+    store.addFonts([font]);
+    const now = useEditor.getState().project;
+    if (now) await registerProjectFonts(now);
+    toast.success(`Added ${font.family}`, 'It is saved with this project, so it travels with it.');
+    return now?.fonts?.find((f) => f.file === font.file)?.family ?? font.family;
+  } catch (err) {
+    toast.error('Could not add the font', err instanceof Error ? err.message : String(err));
+    return null;
+  }
 }

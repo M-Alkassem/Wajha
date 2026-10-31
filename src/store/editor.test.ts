@@ -437,6 +437,17 @@ describe('slides', () => {
   });
 });
 
+describe('fonts', () => {
+  it('registers project fonts once each, without an undo step', () => {
+    const font = { family: 'Brandish', file: `${'a'.repeat(64)}.ttf`, name: 'brandish.ttf' };
+    expect(s().addFonts([font])).toBe(1);
+    expect(s().addFonts([font, { ...font, family: 'Brandish' }])).toBe(0);
+    expect(s().project?.fonts).toEqual([font]);
+    expect(s().canUndo).toBe(false);
+    expect(s().addFonts([{ ...font, file: 'not-a-font.exe' }])).toBe(0);
+  });
+});
+
 describe('elements', () => {
   it('materialises a derived layout on first edit and leaves the primary alone', () => {
     const before = slide(0).layouts.iphone;
