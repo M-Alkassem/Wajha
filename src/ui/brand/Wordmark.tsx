@@ -1,5 +1,6 @@
 import { Logo } from './Logo';
 
+import { t } from '../../i18n';
 export interface WordmarkProps {
   size?: 'sm' | 'md' | 'lg';
   /** Show the mark before the name (default true). */
@@ -22,7 +23,7 @@ export function Wordmark({ size = 'md', showMark = true, showArabic = true, clas
     <span className={`inline-flex items-center ${s.gap} select-none ${className ?? ''}`}>
       {showMark && <Logo size={s.mark} title={null} />}
       <span className="inline-flex items-baseline gap-[0.4em] leading-none">
-        <span className={`font-brand font-semibold tracking-[-0.035em] text-text ${s.latin}`}>Wajha</span>
+        <span className={`font-brand font-semibold tracking-[-0.035em] text-text ${s.latin}`}>{t('Wajha')}</span>
         {showArabic && (
           <span lang="ar" dir="rtl" className={`font-brand-ar font-medium text-text-3 ${s.arabic}`}>
             واجهة

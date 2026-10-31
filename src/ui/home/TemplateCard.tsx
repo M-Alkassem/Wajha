@@ -7,6 +7,7 @@ import { useInView, useTruncationTooltip } from './hooks';
 import { SlideStrip } from './SlideStrip';
 import { categoryLabel, templatePreviewProject } from './templates';
 
+import { t } from '../../i18n';
 /** Shell of every template tile; selection draws an accent ring over the border. */
 const TILE =
   'group/tpl relative flex flex-col rounded-lg border border-line bg-surface p-1.5 shadow-[var(--highlight)] light:bg-raised light:shadow-sm ' +
@@ -77,7 +78,7 @@ export const TemplateCard = memo(function TemplateCard({ template, selected = fa
   const described = `${template.name}, ${categoryLabel(template.category)} template${template.author ? ` by ${template.author}` : ''}`;
   const titleRef = useRef<HTMLSpanElement>(null);
   const subtitleRef = useRef<HTMLSpanElement>(null);
-  const names = { title: template.name, subtitle: template.author ? `by ${template.author}` : 'Template', titleRef, subtitleRef };
+  const names = { title: template.name, subtitle: template.author ? t('by {author}', { author: template.author }) : t('Template'), titleRef, subtitleRef };
   return (
     <div className={cx(TILE, selected && TILE_SELECTED, busy && 'opacity-60')}>
       <NamesTooltip {...names}>
@@ -85,7 +86,7 @@ export const TemplateCard = memo(function TemplateCard({ template, selected = fa
           type="button"
           data-tile=""
           aria-pressed={mode === 'select' ? selected : undefined}
-          aria-label={mode === 'select' ? described : `Start a project from ${described}`}
+          aria-label={mode === 'select' ? described : t('Start a project from {described}', { described })}
           onClick={() => (selected && onActivate ? undefined : onSelect())}
           onDoubleClick={() => onActivate?.()}
           onKeyDown={(e) => {
@@ -131,7 +132,7 @@ export function BlankCard({ selected, onSelect, onActivate }: { selected: boolea
         type="button"
         data-tile=""
         aria-pressed={selected}
-        aria-label="Blank project, start from scratch"
+        aria-label={t('Blank project, start from scratch')}
         onClick={() => (selected && onActivate ? undefined : onSelect())}
         onDoubleClick={() => onActivate?.()}
         onKeyDown={(e) => {
@@ -159,7 +160,7 @@ export function BlankCard({ selected, onSelect, onActivate }: { selected: boolea
         </div>
       </div>
       {selected && <SelectedCheck />}
-      <TileFooter title="Blank" subtitle="Start from scratch" />
+      <TileFooter title={t('Blank')} subtitle={t('Start from scratch')} />
     </div>
   );
 }
@@ -182,7 +183,7 @@ export const GalleryCard = memo(function GalleryCard({ entry, installed, install
   const src = preview.url !== brokenUrl ? preview.url : null;
   const titleRef = useRef<HTMLSpanElement>(null);
   const subtitleRef = useRef<HTMLSpanElement>(null);
-  const names = { title: entry.name, subtitle: entry.author ? `by ${entry.author}` : 'Community', titleRef, subtitleRef };
+  const names = { title: entry.name, subtitle: entry.author ? t('by {author}', { author: entry.author }) : t('Community'), titleRef, subtitleRef };
   return (
     <div className={cx(TILE, selected && TILE_SELECTED)}>
       <NamesTooltip {...names}>
@@ -203,20 +204,20 @@ export const GalleryCard = memo(function GalleryCard({ entry, installed, install
           preview.state !== 'loading' && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[image:var(--brand-gradient-soft)] text-text-3">
               <ImageOff className="size-5" />
-              <span className="text-2xs">No preview</span>
+              <span className="text-2xs">{t('No preview')}</span>
             </div>
           )
         )}
         {installing ? (
           <div className="absolute inset-x-0 bottom-0 z-[2] flex flex-col gap-1.5 bg-[var(--glass)] px-3 py-2.5 backdrop-blur-md">
-            <span className="text-2xs font-medium text-text">Downloading…</span>
-            <ProgressBar value={null} size="sm" label={`Downloading ${entry.name}`} />
+            <span className="text-2xs font-medium text-text">{t('Downloading…')}</span>
+            <ProgressBar value={null} size="sm" label={t('Downloading {name}', { name: entry.name })} />
           </div>
         ) : (
           !installed && (
             <span className="absolute right-2 bottom-2 flex h-6 items-center gap-1 rounded-full bg-[var(--glass)] px-2.5 text-2xs font-medium text-text opacity-0 shadow-md backdrop-blur-md transition-opacity duration-(--dur-fast) group-focus-within/tpl:opacity-100 group-hover/tpl:opacity-100">
               <Download className="size-3" />
-              Use template
+              {t('Use template')}
             </span>
           )
         )}
@@ -227,7 +228,7 @@ export const GalleryCard = memo(function GalleryCard({ entry, installed, install
         badge={
           installed ? (
             <Badge size="sm" variant="success">
-              Installed
+              {t('Installed')}
             </Badge>
           ) : (
             <Badge size="sm">{categoryLabel(entry.category)}</Badge>

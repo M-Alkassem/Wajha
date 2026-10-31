@@ -15,6 +15,7 @@ import { ProjectName } from './topbar/ProjectName';
 import { SaveIndicator } from './topbar/SaveIndicator';
 import { ZoomMenu } from './topbar/ZoomMenu';
 
+import { t } from '../../i18n';
 interface BarSize {
   width: number;
   /** Room reserved for the macOS window buttons (0 elsewhere). */
@@ -84,9 +85,9 @@ export function TopBar() {
     >
       <div data-tauri-drag-region className="flex min-w-0 items-center">
         <div ref={insetRef} data-tauri-drag-region aria-hidden className="h-full shrink-0 self-stretch" style={{ width: 'var(--traffic-lights-w, 0px)' }} />
-        <IconButton label="Back to projects" icon={<ChevronLeft />} tooltipSide="bottom" loading={leaving} onClick={() => void back()} />
+        <IconButton label={t('Back to projects')} icon={<ChevronLeft />} tooltipSide="bottom" loading={leaving} onClick={() => void back()} />
         <IconButton
-          label={leftOpen ? 'Hide sidebar' : 'Show sidebar'}
+          label={leftOpen ? t('Hide sidebar') : t('Show sidebar')}
           icon={<PanelLeft />}
           shortcut={shortcutKeys('toggleSidebar')}
           tooltipSide="bottom"
@@ -105,14 +106,14 @@ export function TopBar() {
         <div data-tauri-drag-region className="h-full flex-1 self-stretch" />
         <LanguageMenu showName={density.languageName} />
         <Separator />
-        <IconButton label="Undo" icon={<Undo2 />} shortcut={shortcutKeys('undo')} tooltipSide="bottom" disabled={!canUndo} onClick={() => useEditor.getState().undo()} />
-        <IconButton label="Redo" icon={<Redo2 />} shortcut={shortcutKeys('redo')} tooltipSide="bottom" disabled={!canRedo} onClick={() => useEditor.getState().redo()} />
+        <IconButton label={t('Undo')} icon={<Undo2 />} shortcut={shortcutKeys('undo')} tooltipSide="bottom" disabled={!canUndo} onClick={() => useEditor.getState().undo()} />
+        <IconButton label={t('Redo')} icon={<Redo2 />} shortcut={shortcutKeys('redo')} tooltipSide="bottom" disabled={!canRedo} onClick={() => useEditor.getState().redo()} />
         <ZoomMenu />
         <Separator />
         <MoreMenu />
-        <Tooltip content="Export screenshots" shortcut={shortcutKeys('export')} side="bottom">
+        <Tooltip content={t('Export screenshots')} shortcut={shortcutKeys('export')} side="bottom">
           <Button variant="brand" leadingIcon={<Share />} className="ml-1.5" onClick={() => useEditorUi.getState().openDialog('export')}>
-            Export
+            {t('Export')}
           </Button>
         </Tooltip>
       </div>

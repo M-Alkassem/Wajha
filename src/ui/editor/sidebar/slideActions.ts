@@ -4,6 +4,7 @@
 import { MAX_SLIDES, confirmDialog, useEditor } from '../../../store';
 import { slideHasContent } from './labels';
 
+import { t } from '../../../i18n';
 /**
  * Deletes a slide, asking first when it holds texts or screenshots. The last
  * slide is never deleted. Resolves true when the slide was removed.
@@ -15,9 +16,9 @@ export async function deleteSlideWithConfirm(slideId: string): Promise<boolean> 
   if (index < 0) return false;
   if (slideHasContent(p.slides[index])) {
     const ok = await confirmDialog({
-      title: `Delete slide ${index + 1}?`,
-      message: 'Its texts and screenshots go with it, in every language and device family. You can undo this.',
-      confirmLabel: 'Delete slide',
+      title: t('Delete slide {v}?', { v: index + 1 }),
+      message: t('Its texts and screenshots go with it, in every language and device family. You can undo this.'),
+      confirmLabel: t('Delete slide'),
       danger: true,
     });
     if (!ok) return false;

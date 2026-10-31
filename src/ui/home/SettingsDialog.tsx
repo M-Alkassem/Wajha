@@ -9,15 +9,16 @@ import { Button, cx, Dialog, DialogContent, Switch } from '../kit';
 import { useHomeUi } from './homeUi';
 import { errorText } from './library';
 
+import { t } from '../../i18n';
 type Theme = AppSettings['theme'];
 
 const THEMES: ReadonlyArray<{ value: Theme; label: string; icon: ReactNode }> = [
-  { value: 'system', label: 'System', icon: <Monitor /> },
-  { value: 'dark', label: 'Dark', icon: <Moon /> },
-  { value: 'light', label: 'Light', icon: <Sun /> },
+  { value: 'system', label: t('System'), icon: <Monitor /> },
+  { value: 'dark', label: t('Dark'), icon: <Moon /> },
+  { value: 'light', label: t('Light'), icon: <Sun /> },
 ];
 
-const OS_LABEL: Record<AppInfo['os'], string> = { macos: 'macOS', windows: 'Windows', linux: 'Linux', web: 'Browser' };
+const OS_LABEL: Record<AppInfo['os'], string> = { macos: t('macOS'), windows: t('Windows'), linux: t('Linux'), web: t('Browser') };
 
 /** App settings: appearance, editor hints, and about (version, data folder, links, licenses). */
 export function SettingsDialog() {
@@ -28,11 +29,11 @@ export function SettingsDialog() {
       <DialogContent
         size="md"
         icon={<Settings />}
-        title="Settings"
-        description="Changes apply right away."
+        title={t('Settings')}
+        description={t('Changes apply right away.')}
         footer={
           <Button variant="primary" onClick={() => setOpen(false)}>
-            Done
+            {t('Done')}
           </Button>
         }
       >
@@ -48,10 +49,10 @@ function SettingsBody() {
   const update = useApp((s) => s.updateSettings);
   return (
     <div className="flex flex-col">
-      <Group title="Appearance">
+      <Group title={t('Appearance')}>
         <div
           role="radiogroup"
-          aria-label="Theme"
+          aria-label={t('Theme')}
           className="grid grid-cols-3 gap-3"
           onKeyDown={(e) => {
             // One tab stop; arrows move the choice like native radio buttons.
@@ -69,16 +70,16 @@ function SettingsBody() {
           ))}
         </div>
       </Group>
-      <Group title="Editor">
+      <Group title={t('Editor')}>
         <label className="flex items-start gap-3">
           <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <span className="text-ui text-text">Show hints</span>
-            <span className="text-xs leading-4 text-text-3">Short tips for first steps in the editor, like dropping screenshots onto a slide.</span>
+            <span className="text-ui text-text">{t('Show hints')}</span>
+            <span className="text-xs leading-4 text-text-3">{t('Short tips for first steps in the editor, like dropping screenshots onto a slide.')}</span>
           </span>
-          <Switch aria-label="Show hints" checked={hints} onCheckedChange={(v) => void update({ hints: v })} className="mt-0.5" />
+          <Switch aria-label={t('Show hints')} checked={hints} onCheckedChange={(v) => void update({ hints: v })} className="mt-0.5" />
         </label>
       </Group>
-      <Group title="About" last>
+      <Group title={t('About')} last>
         <About />
       </Group>
     </div>
@@ -172,7 +173,7 @@ function About() {
   const open = (url: string) => {
     getPlatform()
       .openUrl(url)
-      .catch((e: unknown) => toast.error('Could not open the link', errorText(e)));
+      .catch((e: unknown) => toast.error(t('Could not open the link'), errorText(e)));
   };
 
   return (
@@ -184,38 +185,37 @@ function About() {
         </span>
         <div className="flex min-w-0 flex-col gap-0.5">
           <span className="flex items-baseline gap-2">
-            <span className="font-brand text-[17px] leading-5 font-semibold tracking-[-0.03em] text-text">Wajha</span>
+            <span className="font-brand text-[17px] leading-5 font-semibold tracking-[-0.03em] text-text">{t('Wajha')}</span>
             <span lang="ar" dir="rtl" className="font-brand-ar text-xs text-text-3">
               {APP_NAME_AR}
             </span>
           </span>
           <span className="text-xs text-text-2 tabular-nums">
-            {info ? `Version ${info.version} · ${OS_LABEL[info.os] ?? info.os}` : ' '}
+            {info ? t('Version {version} · {v}', { version: info.version, v: OS_LABEL[info.os] ?? info.os }) : ' '}
           </span>
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium text-text-2">{desktop ? 'Data folder' : 'Storage'}</span>
+        <span className="text-xs font-medium text-text-2">{desktop ? t('Data folder') : t('Storage')}</span>
         {desktop && info ? (
           <DataFolder path={info.dataDir} />
         ) : (
-          <p className="text-xs leading-4 text-text-3">Projects are stored in this browser. Use “Export as file” on a project to keep a copy.</p>
+          <p className="text-xs leading-4 text-text-3">{t('Projects are stored in this browser. Use “Export as file” on a project to keep a copy.')}</p>
         )}
       </div>
 
       <div className="flex flex-wrap gap-2">
         <Button size="sm" trailingIcon={<ExternalLink />} onClick={() => open(REPO_URL)}>
-          Source code on GitHub
+          {t('Source code on GitHub')}
         </Button>
         <Button size="sm" variant="ghost" trailingIcon={<ExternalLink />} onClick={() => open(`${REPO_URL}/issues`)}>
-          Report a problem
+          {t('Report a problem')}
         </Button>
       </div>
 
       <p className="text-xs leading-[18px] text-text-3">
-        Wajha is free and open-source software under the MIT License. It works offline, with no account and no tracking. Fonts by their authors
-        under the SIL Open Font License.
+        {t('Wajha is free and open-source software under the MIT License. It works offline, with no account and no tracking. Fonts by their authors under the SIL Open Font License.')}
       </p>
     </div>
   );
@@ -231,7 +231,7 @@ function DataFolder({ path }: { path: string }) {
 
   const copy = async () => {
     if (await copyText(path)) setCopied(true);
-    else toast.error('Could not copy the path');
+    else toast.error(t('Could not copy the path'));
   };
 
   return (
@@ -239,8 +239,8 @@ function DataFolder({ path }: { path: string }) {
       <span dir="ltr" title={path} className="min-w-0 flex-1 truncate font-mono text-2xs text-text-2 select-text">
         {path}
       </span>
-      <Button size="sm" variant="ghost" aria-label={copied ? 'Copied' : 'Copy the data folder path'} leadingIcon={copied ? <Check /> : <Copy />} onClick={() => void copy()}>
-        {copied ? 'Copied' : 'Copy'}
+      <Button size="sm" variant="ghost" aria-label={copied ? t('Copied') : t('Copy the data folder path')} leadingIcon={copied ? <Check /> : <Copy />} onClick={() => void copy()}>
+        {copied ? t('Copied') : t('Copy')}
       </Button>
     </div>
   );

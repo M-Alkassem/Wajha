@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getImageCache, pickAndImportImagesWithReport, type ImportReport } from '../../../runtime';
 import { toast, useEditor } from '../../../store';
 
+import { t } from '../../../i18n';
 /** A counter that changes whenever a preview image finishes loading. */
 export function usePreviewTick(): number {
   const [tick, setTick] = useState(0);
@@ -71,7 +72,7 @@ function reportSkipped(report: ImportReport): void {
   if (!report.skipped.length) return;
   const first = report.skipped[0];
   const more = report.skipped.length > 1 ? ` (+${report.skipped.length - 1} more)` : '';
-  toast.warning(report.skipped.length === 1 ? `Skipped ${first.name}` : `Skipped ${report.skipped.length} files`, `${first.message}${more}`);
+  toast.warning(report.skipped.length === 1 ? t('Skipped {name}', { name: first.name }) : t('Skipped {length} files', { length: report.skipped.length }), `${first.message}${more}`);
 }
 
 /**
@@ -85,7 +86,7 @@ export async function pickImageAsset(): Promise<string | null> {
   try {
     report = await pickAndImportImagesWithReport(project.id);
   } catch (err) {
-    toast.error('Could not import the image', err instanceof Error ? err.message : String(err));
+    toast.error(t('Could not import the image'), err instanceof Error ? err.message : String(err));
     return null;
   }
   reportSkipped(report);

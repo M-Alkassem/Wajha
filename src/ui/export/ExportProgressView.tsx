@@ -8,6 +8,7 @@ import { sizeById } from '../../model/catalog';
 import { ProgressBar, Skeleton } from '../kit';
 import { jobLabel, remainingLabel, remainingMs } from './exportModel';
 
+import { t } from '../../i18n';
 export interface ExportPreviewImage {
   bytes: Uint8Array;
   job: ExportJob;
@@ -46,13 +47,13 @@ export function ExportProgressView({ progress, startedAt, preview, format, stopp
       <div className="flex w-full max-w-[460px] flex-col gap-2.5">
         <div className="flex items-baseline justify-between gap-4">
           <span className="text-ui font-medium text-text">
-            {stopping ? 'Stopping after this file…' : done >= total ? 'Finishing…' : `Rendering ${shown} of ${total}`}
+            {stopping ? t('Stopping after this file…') : done >= total ? t('Finishing…') : t('Rendering {shown} of {total}', { shown, total })}
           </span>
           <span className="text-xs text-text-3 tabular-nums">{Math.round(fraction * 100)}%</span>
         </div>
-        <ProgressBar value={fraction} tone="brand" label="Export progress" />
+        <ProgressBar value={fraction} tone="brand" label={t('Export progress')} />
         <div className="flex items-center justify-between gap-4 text-xs">
-          <span className="min-w-0 truncate text-text-2">{current ? jobLabel(current) : `Writing to ${targetLabel}`}</span>
+          <span className="min-w-0 truncate text-text-2">{current ? jobLabel(current) : t('Writing to {targetLabel}', { targetLabel })}</span>
           {left && <span className="shrink-0 text-text-3">{left}</span>}
         </div>
       </div>
@@ -96,7 +97,7 @@ function PreviewImage({ image, format }: { image: ExportPreviewImage; format: 'p
         <img ref={imgRef} alt="" decoding="async" draggable={false} className="block size-full" />
       </div>
       <figcaption className="text-2xs text-text-3">
-        Last finished · {size?.label ?? image.job.sizeId} · {image.job.width} × {image.job.height}
+        {t('Last finished ·')} {size?.label ?? image.job.sizeId} · {image.job.width} × {image.job.height}
       </figcaption>
     </figure>
   );
@@ -107,7 +108,7 @@ function PreviewSkeleton({ job }: { job: ExportJob }) {
   return (
     <div className="flex flex-col items-center gap-3">
       <Skeleton width={box.width} height={box.height} radius="lg" />
-      <span className="text-2xs text-text-3">Preparing the first file…</span>
+      <span className="text-2xs text-text-3">{t('Preparing the first file…')}</span>
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { StatusBar } from './StatusBar';
 import { TopBar } from './TopBar';
 import { useEditorShortcuts } from './useEditorShortcuts';
 
+import { t } from '../../i18n';
 /** How long the editor waits for its project before it gives up and shows the projects. */
 const NO_PROJECT_MS = 1500;
 
@@ -47,11 +48,11 @@ function EditorLayout() {
       <TopBar />
       <div className="flex min-h-0 flex-1">
         {leftOpen && <LeftSidebar />}
-        <main aria-label="Slides canvas" className="relative min-w-0 flex-1 bg-stage">
+        <main aria-label={t('Slides canvas')} className="relative min-w-0 flex-1 bg-stage">
           <Stage />
         </main>
         {rightOpen && (
-          <aside aria-label="Inspector" className="flex h-full w-(--inspector-w) shrink-0 flex-col border-l border-line bg-panel">
+          <aside aria-label={t('Inspector')} className="flex h-full w-(--inspector-w) shrink-0 flex-col border-l border-line bg-panel">
             <Inspector />
           </aside>
         )}
@@ -86,8 +87,8 @@ function OpeningProject() {
   return (
     <div data-tauri-drag-region className="flex h-full items-center justify-center bg-app">
       <div className="flex animate-[kit-fade-in_var(--dur-slow)_var(--ease-out)_200ms_both] flex-col items-center gap-3 text-text-3">
-        <Spinner size={20} label="Opening project" />
-        <span className="text-xs">Opening project…</span>
+        <Spinner size={20} label={t('Opening project')} />
+        <span className="text-xs">{t('Opening project…')}</span>
       </div>
     </div>
   );

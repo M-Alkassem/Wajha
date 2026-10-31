@@ -8,6 +8,8 @@ import { FAMILY_ICONS } from './familyMeta';
 import { shortcutKeys } from './shortcuts';
 import { countMissingShots } from './sidebar/labels';
 
+import { t } from '../../i18n';
+import { tx } from '../../i18n/react';
 function Dot() {
   return <span aria-hidden className="size-[3px] shrink-0 rounded-full bg-text-3/60" />;
 }
@@ -55,14 +57,14 @@ export function StatusBar() {
       <span className="shrink-0 tabular-nums">
         {plural(count, 'slide', 'slides')}
         {over > 0 && (
-          <Tooltip content={`${info.label} listings show at most ${info.maxSlides}; the rest are not exported`}>
-            <span className="ml-1 text-warning">· {over} not exported</span>
+          <Tooltip content={t('{label} listings show at most {maxSlides}; the rest are not exported', { label: info.label, maxSlides: info.maxSlides })}>
+            <span className="ml-1 text-warning">{tx('· {over} not exported', { over })}</span>
           </Tooltip>
         )}
       </span>
       <Dot />
       {missing.count > 0 ? (
-        <Tooltip content={`Slides without a screenshot in ${language} show a mock screen. Click to go to the first.`}>
+        <Tooltip content={t('Slides without a screenshot in {language} show a mock screen. Click to go to the first.', { language })}>
           <button
             type="button"
             onClick={goToMissing}
@@ -78,22 +80,22 @@ export function StatusBar() {
       ) : (
         <span className="inline-flex shrink-0 items-center gap-1">
           <CircleCheck className="size-3 text-success" />
-          All screenshots added
+          {t('All screenshots added')}
         </span>
       )}
       <span className="min-w-4 flex-1" />
-      {hints && <span className="hidden truncate lg:inline">Drop screenshots or a folder onto the slides to place them</span>}
+      {hints && <span className="hidden truncate lg:inline">{t('Drop screenshots or a folder onto the slides to place them')}</span>}
       <button
         type="button"
         onClick={() => useEditorUi.getState().openDialog('shortcuts')}
-        aria-label="Keyboard shortcuts"
+        aria-label={t('Keyboard shortcuts')}
         className={cx(
           'inline-flex h-5 shrink-0 items-center gap-1.5 rounded-[4px] px-1 -mr-1 text-text-3 outline-none',
           'transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-focus',
         )}
       >
         <Keyboard className="size-3.5" />
-        <span>Shortcuts</span>
+        <span>{t('Shortcuts')}</span>
         <Kbd keys={shortcutKeys('shortcuts')} className="[&>kbd]:h-4 [&>kbd]:min-w-4" />
       </button>
     </footer>

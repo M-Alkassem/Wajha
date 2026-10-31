@@ -15,6 +15,7 @@ import { Button, FIELD_SHELL, Input, Popover, PopoverContent, PopoverTrigger, Sc
 import { bundledFont, fontGroups, fontLabel, fontPreviewFamily } from './format';
 import { loadSystemFonts } from './systemFonts';
 
+import { t } from '../../../i18n';
 const ROW = 28;
 const LIST_MAX = 308;
 const OVERSCAN = 6;
@@ -60,7 +61,7 @@ export const FontPicker = memo(function FontPicker({ value, onChange, disabled, 
           <ChevronDown aria-hidden className="size-3.5 shrink-0 text-text-3 transition-transform duration-(--dur) ease-out group-data-[state=open]/font:rotate-180" />
         </button>
       </PopoverTrigger>
-      <PopoverContent padding="none" width={272} align="start" side="bottom" aria-label="Fonts" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <PopoverContent padding="none" width={272} align="start" side="bottom" aria-label={t('Fonts')} onOpenAutoFocus={(e) => e.preventDefault()}>
         {open && (
           <FontList
             value={value}
@@ -107,7 +108,7 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
     const out: Item[] = [];
     const listed = groups.some((g) => g.fonts.some((f) => f.family === value));
     if (!listed && value && !query.trim()) {
-      out.push({ kind: 'header', key: 'h:current', label: 'Current' });
+      out.push({ kind: 'header', key: 'h:current', label: t('Current') });
       out.push({ kind: 'font', key: `f:${value}`, family: value, label: fontLabel(value), scriptFont: false });
     }
     for (const g of groups) {
@@ -195,13 +196,13 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
           ref={inputRef}
           size="md"
           role="combobox"
-          aria-label="Search fonts"
+          aria-label={t('Search fonts')}
           aria-expanded
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={activeItem?.kind === 'font' ? optionId(active) : undefined}
           leadingIcon={<Search />}
-          placeholder="Search fonts"
+          placeholder={t('Search fonts')}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -214,10 +215,10 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
         />
       </div>
       {items.length === 0 ? (
-        <p className="px-3 py-6 text-center text-xs text-text-3">{system === null ? 'Loading fonts…' : `No fonts match “${query.trim()}”`}</p>
+        <p className="px-3 py-6 text-center text-xs text-text-3">{system === null ? t('Loading fonts…') : t('No fonts match “{v}”', { v: query.trim() })}</p>
       ) : (
         <ScrollArea viewportRef={setViewport} style={{ height }} type="hover">
-          <div id={listId} role="listbox" aria-label="Fonts" className="relative" style={{ height: items.length * ROW }}>
+          <div id={listId} role="listbox" aria-label={t('Fonts')} className="relative" style={{ height: items.length * ROW }}>
             {items.slice(first, last).map((it, k) => {
               const i = first + k;
               const top = i * ROW;
@@ -283,7 +284,7 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
               .finally(() => setAdding(false));
           }}
         >
-          Add font file…
+          {t('Add font file…')}
         </Button>
       </div>
       {(system === null || (isWeb && !searching)) && (
@@ -291,10 +292,10 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
           {system === null ? (
             <>
               <Spinner size={12} label={null} />
-              Looking for installed fonts…
+              {t('Looking for installed fonts…')}
             </>
           ) : (
-            'Installed fonts are listed in the desktop app.'
+            t('Installed fonts are listed in the desktop app.')
           )}
         </div>
       )}
@@ -319,10 +320,10 @@ async function addFontFile(): Promise<string | null> {
     store.addFonts([font]);
     const now = useEditor.getState().project;
     if (now) await registerProjectFonts(now);
-    toast.success(`Added ${font.family}`, 'It is saved with this project, so it travels with it.');
+    toast.success(t('Added {family}', { family: font.family }), t('It is saved with this project, so it travels with it.'));
     return now?.fonts?.find((f) => f.file === font.file)?.family ?? font.family;
   } catch (err) {
-    toast.error('Could not add the font', err instanceof Error ? err.message : String(err));
+    toast.error(t('Could not add the font'), err instanceof Error ? err.message : String(err));
     return null;
   }
 }

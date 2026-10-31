@@ -7,6 +7,7 @@ import { IconButton, SegmentedControl, type SegmentedOption } from '../../kit';
 import { useEditorUi } from '../editorUi';
 import { FAMILY_ICONS } from '../familyMeta';
 
+import { t } from '../../../i18n';
 const NO_FAMILIES: FamilyId[] = [];
 
 export interface FamilySwitcherProps {
@@ -35,15 +36,15 @@ export function FamilySwitcher({ labels }: FamilySwitcherProps) {
     <div className="flex items-center gap-1">
       {families.length > 0 && (
         <SegmentedControl<FamilyId>
-          aria-label="Device family"
+          aria-label={t('Device family')}
           value={active}
           onValueChange={(id) => useEditor.getState().setActiveFamily(id)}
           options={options}
         />
       )}
       <IconButton
-        label="Device families"
-        tooltip="Add or remove device families"
+        label={t('Device families')}
+        tooltip={t('Add or remove device families')}
         tooltipSide="bottom"
         icon={<Plus />}
         onClick={() => useEditorUi.getState().openDialog('families')}

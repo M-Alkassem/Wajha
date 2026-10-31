@@ -29,6 +29,7 @@ import {
   withAlpha,
 } from './color';
 
+import { t } from '../../i18n';
 export interface ColorFieldProps {
   /** "#RRGGBB" or "#RRGGBBAA". */
   value: string;
@@ -158,7 +159,7 @@ export const ColorField = forwardRef<HTMLButtonElement, ColorFieldProps>(functio
       align={align}
       width={248}
       className="kit-colorful flex flex-col gap-3"
-      aria-label={`${name} picker`}
+      aria-label={t('{name} picker', { name })}
     >
       <ColorPickerPanel color={current} alpha={alpha} palette={palette} onLive={emit} onCommit={commit} />
     </PopoverContent>
@@ -238,7 +239,7 @@ export const ColorField = forwardRef<HTMLButtonElement, ColorFieldProps>(functio
               <span aria-hidden className="h-3.5 w-px shrink-0 bg-line" />
               <NumberField
                 variant="bare"
-                aria-label={`${name} opacity`}
+                aria-label={t('{name} opacity', { name })}
                 value={alphaToPercent(a)}
                 min={0}
                 max={100}
@@ -412,7 +413,7 @@ export function ColorPickerPanel({ color, alpha, palette, onLive, onCommit, inpu
         <Picker color={alpha ? color : rgb} onChange={onLive} onChangeEnd={() => onCommit()} />
       </div>
       <div className="flex items-center gap-1.5">
-        {Dropper && <IconButton label="Pick a colour from the screen" variant="solid" size="md" icon={<Pipette />} onClick={pickFromScreen} />}
+        {Dropper && <IconButton label={t('Pick a colour from the screen')} variant="solid" size="md" icon={<Pipette />} onClick={pickFromScreen} />}
         <div className={cx('flex h-7 min-w-0 flex-1 items-center gap-1 rounded-sm px-2 text-xs', FIELD_SHELL)}>
           <span aria-hidden className="text-text-3 select-none">
             #
@@ -427,7 +428,7 @@ export function ColorPickerPanel({ color, alpha, palette, onLive, onCommit, inpu
         </div>
         {alpha && (
           <NumberField
-            aria-label="Opacity"
+            aria-label={t('Opacity')}
             value={alphaToPercent(a)}
             min={0}
             max={100}
@@ -439,8 +440,8 @@ export function ColorPickerPanel({ color, alpha, palette, onLive, onCommit, inpu
           />
         )}
       </div>
-      {paletteColors.length > 0 && <SwatchGroup title="Theme" colors={paletteColors} value={color} onPick={(c) => onCommit(alpha ? c : splitAlpha(c).rgb)} />}
-      {recentColors.length > 0 && <SwatchGroup title="Recent" colors={recentColors} value={color} onPick={(c) => onCommit(alpha ? c : splitAlpha(c).rgb)} />}
+      {paletteColors.length > 0 && <SwatchGroup title={t('Theme')} colors={paletteColors} value={color} onPick={(c) => onCommit(alpha ? c : splitAlpha(c).rgb)} />}
+      {recentColors.length > 0 && <SwatchGroup title={t('Recent')} colors={recentColors} value={color} onPick={(c) => onCommit(alpha ? c : splitAlpha(c).rgb)} />}
     </>
   );
 }
@@ -458,7 +459,7 @@ function SwatchGroup({ title, colors, value, onPick }: { title: string; colors: 
   return (
     <div className="flex flex-col gap-1.5">
       <div className="text-2xs font-medium text-text-3">{title}</div>
-      <div role="group" aria-label={`${title} colours`} className="grid grid-cols-8 gap-1.5">
+      <div role="group" aria-label={t('{title} colours', { title })} className="grid grid-cols-8 gap-1.5">
         {colors.map((c) => {
           const selected = colorsEqual(c, value);
           return (

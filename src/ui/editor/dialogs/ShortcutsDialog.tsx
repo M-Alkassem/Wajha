@@ -12,14 +12,15 @@ import { useOpenSession } from './dialogState';
 import { displayShortcuts, filterShortcuts, groupShortcuts, type ShortcutLike } from './shortcutsModel';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
 /** Keys of the sidebar lists: they act on the focused row, so they are not in the editor-wide table. */
 const LIST_SHORTCUTS: readonly ShortcutLike[] = [
-  { id: 'moveSlide', label: 'Move slide up or down (slides list)', keys: [MOVE_UP_KEYS, MOVE_DOWN_KEYS], group: 'Slides' },
-  { id: 'moveLayer', label: 'Bring layer forward or send it backward (layers list)', keys: [MOVE_UP_KEYS, MOVE_DOWN_KEYS], group: 'Arrange' },
+  { id: 'moveSlide', label: t('Move slide up or down (slides list)'), keys: [MOVE_UP_KEYS, MOVE_DOWN_KEYS], group: 'Slides' },
+  { id: 'moveLayer', label: t('Bring layer forward or send it backward (layers list)'), keys: [MOVE_UP_KEYS, MOVE_DOWN_KEYS], group: 'Arrange' },
 ];
 
 /** Held with a drag on the stage, which handles it itself (see Stage.tsx). */
-const STAGE_SHORTCUTS: readonly ShortcutLike[] = [{ id: 'pan', label: 'Pan the stage (hold and drag)', keys: ['space'], group: 'View' }];
+const STAGE_SHORTCUTS: readonly ShortcutLike[] = [{ id: 'pan', label: t('Pan the stage (hold and drag)'), keys: ['space'], group: 'View' }];
 
 const SHORTCUTS: readonly ShortcutLike[] = [...EDITOR_SHORTCUTS, ...LIST_SHORTCUTS, ...STAGE_SHORTCUTS];
 
@@ -39,8 +40,8 @@ function ShortcutsBody({ open, onOpenChange }: EditorDialogProps) {
       <DialogContent
         size="md"
         icon={<Keyboard />}
-        title="Keyboard shortcuts"
-        description="Work faster with the keyboard. Shortcuts pause while you type in a field."
+        title={t('Keyboard shortcuts')}
+        description={t('Work faster with the keyboard. Shortcuts pause while you type in a field.')}
         flush
         bodyClassName="flex flex-col"
         onEscapeKeyDown={(e) => {
@@ -52,7 +53,7 @@ function ShortcutsBody({ open, onOpenChange }: EditorDialogProps) {
         footerStart={
           opener ? (
             <span className="flex items-center gap-1.5">
-              Press <Kbd keys={opener} /> in the editor to open this list.
+              {t('Press')} <Kbd keys={opener} /> {t('in the editor to open this list.')}
             </span>
           ) : undefined
         }
@@ -61,17 +62,17 @@ function ShortcutsBody({ open, onOpenChange }: EditorDialogProps) {
           <Input
             ref={searchRef}
             type="search"
-            aria-label="Search shortcuts"
-            placeholder="Search shortcuts"
+            aria-label={t('Search shortcuts')}
+            placeholder={t('Search shortcuts')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             leadingIcon={<Search />}
-            suffix={query ? <IconButton size="sm" label="Clear search" tooltip={false} icon={<X />} onClick={() => setQuery('')} className="-mr-1" /> : undefined}
+            suffix={query ? <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} onClick={() => setQuery('')} className="-mr-1" /> : undefined}
           />
         </div>
         <div className="h-[min(520px,calc(100vh-280px))] overflow-y-auto border-t border-line px-5 pt-4 pb-5">
           {groups.length === 0 ? (
-            <EmptyState size="sm" className="h-full" icon={<Keyboard />} title={`No shortcut matches “${query.trim()}”`} description="Try an action like “zoom” or a key like “shift”." />
+            <EmptyState size="sm" className="h-full" icon={<Keyboard />} title={t('No shortcut matches “{v}”', { v: query.trim() })} description={t('Try an action like “zoom” or a key like “shift”.')} />
           ) : (
             <div className="flex flex-col gap-5">
               {groups.map(({ group, items }) => (
@@ -86,7 +87,7 @@ function ShortcutsBody({ open, onOpenChange }: EditorDialogProps) {
                         <span className="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
                           {displayShortcuts(s.keys).map((parts, i) => (
                             <Fragment key={i}>
-                              {i > 0 && <span className="text-2xs text-text-3">or</span>}
+                              {i > 0 && <span className="text-2xs text-text-3">{t('or')}</span>}
                               <Kbd keys={parts} />
                             </Fragment>
                           ))}

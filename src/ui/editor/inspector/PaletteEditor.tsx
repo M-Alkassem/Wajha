@@ -10,6 +10,7 @@ import { ColorChip, ColorPickerPanel, Popover, PopoverContent, PopoverTrigger, T
 import { suggestPaletteColor } from './format';
 import { useLive } from './live';
 
+import { t } from '../../../i18n';
 export const PALETTE_MAX = 8;
 
 interface SwatchEdit {
@@ -53,7 +54,7 @@ export const PaletteEditor = memo(function PaletteEditor({ palette }: { palette:
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Theme palette">
+    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={t('Theme palette')}>
       {palette.map((color, i) => (
         // Keyed by position: a key that followed the colour would remount (and close) the picker while dragging.
         <div key={i} className="group/swatch relative">
@@ -67,7 +68,7 @@ export const PaletteEditor = memo(function PaletteEditor({ palette }: { palette:
             <PopoverTrigger asChild>
               <button
                 type="button"
-                aria-label={`Palette colour ${i + 1}: ${color}. Delete removes it`}
+                aria-label={t('Palette colour {v}: {color}. Delete removes it', { v: i + 1, color })}
                 onKeyDown={onSwatchKey(i)}
                 className={cx(
                   'block size-[26px] rounded-[7px] p-[3px] outline-none transition-[box-shadow,background-color] duration-(--dur-fast)',
@@ -78,7 +79,7 @@ export const PaletteEditor = memo(function PaletteEditor({ palette }: { palette:
                 <ColorChip color={color} className="size-full rounded-[4px]" />
               </button>
             </PopoverTrigger>
-            <PopoverContent side="bottom" align="start" width={248} className="kit-colorful flex flex-col gap-3" aria-label={`Palette colour ${i + 1}`}>
+            <PopoverContent side="bottom" align="start" width={248} className="kit-colorful flex flex-col gap-3" aria-label={t('Palette colour {v}', { v: i + 1 })}>
               <ColorPickerPanel
                 color={color}
                 alpha={false}
@@ -95,7 +96,7 @@ export const PaletteEditor = memo(function PaletteEditor({ palette }: { palette:
             <button
               type="button"
               tabIndex={-1}
-              aria-label={`Remove palette colour ${i + 1}`}
+              aria-label={t('Remove palette colour {v}', { v: i + 1 })}
               onClick={() => remove(i)}
               className={cx(
                 'absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full border border-line-strong bg-popover text-text-2 shadow-sm',
@@ -108,10 +109,10 @@ export const PaletteEditor = memo(function PaletteEditor({ palette }: { palette:
         </div>
       ))}
       {palette.length < PALETTE_MAX && (
-        <Tooltip content="Add a colour">
+        <Tooltip content={t('Add a colour')}>
           <button
             type="button"
-            aria-label="Add a colour"
+            aria-label={t('Add a colour')}
             onClick={add}
             className={cx(
               'flex size-[26px] items-center justify-center rounded-[7px] border border-dashed border-line-strong text-text-3 outline-none',

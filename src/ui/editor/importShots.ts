@@ -23,6 +23,7 @@ import { MAX_SLIDES, selectActiveSlideIndex, toast, useEditor } from '../../stor
 import { planSort, wantsSorting, type ShotCandidate } from './sortShots';
 import { storeAllowance } from './stage/frame';
 
+import { t } from '../../i18n';
 /**
  * Browser File objects as ImportFile records. Nothing is read here: the
  * importer reads each file when its turn comes and only when it is within
@@ -52,7 +53,7 @@ function reportSkipped(report: ImportReport): void {
   const first = report.skipped[0];
   const more = report.skipped.length > 1 ? ` (+${report.skipped.length - 1} more)` : '';
   toast.warning(
-    report.skipped.length === 1 ? `Skipped ${first.name}` : `Skipped ${report.skipped.length} files`,
+    report.skipped.length === 1 ? t('Skipped {name}', { name: first.name }) : t('Skipped {length} files', { length: report.skipped.length }),
     `${first.message}${more}`,
   );
 }
@@ -145,15 +146,15 @@ function limitSentence(family: FamilyId): string {
 function reportPlaced(placed: number, offered: number, room: number, family: FamilyId): void {
   const left = offered - placed;
   if (left <= 0) {
-    if (placed > 0) toast.success(placed === 1 ? 'Screenshot added' : `${placed} screenshots added`);
+    if (placed > 0) toast.success(placed === 1 ? t('Screenshot added') : t('{placed} screenshots added', { placed }));
     return;
   }
   if (placed > 0) {
-    toast.warning(`Added ${placed} of ${offered} screenshots`, `${limitSentence(family)}, so ${left} ${left === 1 ? 'was' : 'were'} left out.`);
+    toast.warning(t('Added {placed} of {offered} screenshots', { placed, offered }), t('{limitSentence}, so {left} {v} left out.', { limitSentence: limitSentence(family), left, v: left === 1 ? 'was' : 'were' }));
   } else if (room === 0) {
-    toast.warning('No screenshots added', `${limitSentence(family)}; slides after ${FAMILIES[family]?.maxSlides} are not exported.`);
+    toast.warning(t('No screenshots added'), t('{limitSentence}; slides after {v} are not exported.', { limitSentence: limitSentence(family), v: FAMILIES[family]?.maxSlides }));
   } else {
-    toast.warning('No screenshots added', 'They could not be placed on the slides.');
+    toast.warning(t('No screenshots added'), t('They could not be placed on the slides.'));
   }
 }
 
@@ -185,7 +186,7 @@ export async function importScreenshots(files: readonly File[] | readonly Import
       report.skipped.push(...one.skipped);
     }
   } catch (err) {
-    toast.error('Could not import images', err instanceof Error ? err.message : String(err));
+    toast.error(t('Could not import images'), err instanceof Error ? err.message : String(err));
     return 0;
   }
   reportSkipped(report);
@@ -205,7 +206,7 @@ export async function pickScreenshotsForSlot(slideId: string, slot: string): Pro
   try {
     report = await pickAndImportImagesWithReport(project.id);
   } catch (err) {
-    toast.error('Could not import images', err instanceof Error ? err.message : String(err));
+    toast.error(t('Could not import images'), err instanceof Error ? err.message : String(err));
     return 0;
   }
   reportSkipped(report);
@@ -329,7 +330,7 @@ async function importSorted(projectId: string, shots: readonly Candidate[], unre
         assets.push(...one.assets);
         skipped.push(...one.skipped);
       } catch (err) {
-        toast.error('Could not import images', err instanceof Error ? err.message : String(err));
+        toast.error(t('Could not import images'), err instanceof Error ? err.message : String(err));
         return placed;
       }
     }
@@ -341,15 +342,15 @@ async function importSorted(projectId: string, shots: readonly Candidate[], unre
     if (n) lines.push(`${groupName(group.family, group.lang, start.languages.length)}: ${n}`);
   }
   reportSkipped({ assets: [], skipped });
-  if (placed) toast.success(placed === 1 ? 'Sorted 1 screenshot' : `Sorted ${placed} screenshots`, lines.join(' · '));
-  if (left) toast.warning(`${left} ${left === 1 ? 'screenshot was' : 'screenshots were'} left out`, 'The stores take a limited number of screenshots per device and language.');
+  if (placed) toast.success(placed === 1 ? t('Sorted 1 screenshot') : t('Sorted {placed} screenshots', { placed }), lines.join(' · '));
+  if (left) toast.warning(t('{left} {v} left out', { left, v: left === 1 ? 'screenshot was' : 'screenshots were' }), t('The stores take a limited number of screenshots per device and language.'));
   for (const [family, rest] of plan.otherFamily) {
     toast.push({
       kind: 'info',
-      title: `${rest.length} ${rest.length === 1 ? 'screenshot is' : 'screenshots are'} for ${FAMILIES[family].label}`,
-      description: 'This project does not have that device yet.',
+      title: t('{length} {v} for {label}', { length: rest.length, v: rest.length === 1 ? 'screenshot is' : 'screenshots are', label: FAMILIES[family].label }),
+      description: t('This project does not have that device yet.'),
       action: {
-        label: `Add ${FAMILIES[family].shortLabel}`,
+        label: t('Add {shortLabel}', { shortLabel: FAMILIES[family].shortLabel }),
         run: () => {
           if (useEditor.getState().project?.id !== projectId) return;
           useEditor.getState().enableFamily(family);
@@ -359,7 +360,7 @@ async function importSorted(projectId: string, shots: readonly Candidate[], unre
     });
   }
   const odd = plan.unmatched.length + unreadable;
-  if (odd) toast.warning(`Skipped ${odd} ${odd === 1 ? 'file' : 'files'}`, 'They are not screenshots of any device in this project.');
-  if (!placed && !plan.otherFamily.size && !odd && !left) toast.warning('No screenshots added', 'They could not be placed on the slides.');
+  if (odd) toast.warning(t('Skipped {odd} {v}', { odd, v: odd === 1 ? 'file' : 'files' }), t('They are not screenshots of any device in this project.'));
+  if (!placed && !plan.otherFamily.size && !odd && !left) toast.warning(t('No screenshots added'), t('They could not be placed on the slides.'));
   return placed;
 }

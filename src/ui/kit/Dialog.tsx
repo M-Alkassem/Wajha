@@ -6,6 +6,7 @@ import { createFocusReturn, focusOrigin, type FocusReturn } from './focusReturn'
 import { IconButton } from './IconButton';
 import { isToastTarget, registerModal } from './layers';
 
+import { t } from '../../i18n';
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
@@ -117,7 +118,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
         {/* Last in DOM order so opening focuses the first field or button, not "Close" (and its tooltip). */}
         {!hideClose && (
           <DialogPrimitive.Close asChild>
-            <IconButton label="Close" shortcut="escape" size="md" icon={<X />} className="absolute top-3.5 right-3" />
+            <IconButton label={t('Close')} shortcut="escape" size="md" icon={<X />} className="absolute top-3.5 right-3" />
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

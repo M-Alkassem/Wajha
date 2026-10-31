@@ -8,6 +8,7 @@ import { Field, NumberField, Section, Slider, cx, type FieldProps } from '../../
 import { dialTurnStarted, normalizeRotation, rotationFromPointer } from './format';
 import { useLive } from './live';
 
+import { t } from '../../../i18n';
 /* Sections ---------------------------------------------------------------- */
 
 /** Open/closed state per section id, for the session (not persisted). */
@@ -233,13 +234,13 @@ export const RotationDial = memo(function RotationDial({ value, onChange, onComm
       ref={ref}
       role="slider"
       tabIndex={disabled ? -1 : 0}
-      aria-label="Rotation dial"
+      aria-label={t('Rotation dial')}
       aria-valuemin={-180}
       aria-valuemax={180}
       aria-valuenow={Math.round(deg)}
       aria-valuetext={`${Math.round(deg)}°`}
       aria-disabled={disabled || undefined}
-      title="Drag to rotate · Shift snaps to 15° · double-click resets"
+      title={t('Drag to rotate · Shift snaps to 15° · double-click resets')}
       onPointerDown={(e) => {
         if (disabled || e.button !== 0) return;
         e.preventDefault();

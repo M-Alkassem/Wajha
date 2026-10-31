@@ -23,6 +23,7 @@ import { elementEntries, renderContextEntries, renderDropdownEntries, slideEntri
 import { cornerRadius, overLimitText, slideRadius } from './frame';
 import { HEADER_H } from './stageLayout';
 
+import { t } from '../../../i18n';
 const EMPTY_ASSETS: Record<string, AssetInfo> = Object.freeze({}) as Record<string, AssetInfo>;
 
 export interface SlideFrameProps {
@@ -63,7 +64,7 @@ const SlideHeader = memo(function SlideHeader({ slideId, index, width, active, f
           <button
             type="button"
             aria-current={active ? 'true' : undefined}
-            aria-label={over ? `Slide ${index + 1}, ${overLimitText(family)}` : `Slide ${index + 1}`}
+            aria-label={over ? t('Slide {v}, {overLimitText}', { v: index + 1, overLimitText: overLimitText(family) }) : t('Slide {v}', { v: index + 1 })}
             onClick={() => useEditor.getState().select(null, slideId)}
             className={cx(
               'pointer-events-auto flex h-6 min-w-0 items-center gap-1 rounded-sm px-0.5 text-2xs font-medium tabular-nums outline-none',
@@ -83,7 +84,7 @@ const SlideHeader = memo(function SlideHeader({ slideId, index, width, active, f
       <button
         type="button"
         aria-current={active ? 'true' : undefined}
-        aria-label={`Slide ${index + 1}`}
+        aria-label={t('Slide {v}', { v: index + 1 })}
         onClick={() => useEditor.getState().select(null, slideId)}
         className={cx(
           'pointer-events-auto flex h-6 min-w-0 items-center gap-1.5 rounded-sm px-1 text-xs font-medium tabular-nums outline-none',
@@ -93,14 +94,14 @@ const SlideHeader = memo(function SlideHeader({ slideId, index, width, active, f
         )}
       >
         {active && <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-accent" />}
-        <span className="truncate">{narrow ? index + 1 : `Slide ${index + 1}`}</span>
+        <span className="truncate">{narrow ? index + 1 : t('Slide {v}', { v: index + 1 })}</span>
       </button>
       <span className="min-w-0 flex-1" />
       {over && (
         <Tooltip content={overLimitText(family)}>
           <span tabIndex={0} aria-label={overLimitText(family)} className="pointer-events-auto flex rounded-[4px] outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-focus" data-qa="over-limit">
             <Badge variant="warning" size="sm" icon={<TriangleAlert aria-hidden />}>
-              {narrow ? null : 'Not exported'}
+              {narrow ? null : t('Not exported')}
             </Badge>
           </span>
         </Tooltip>
@@ -108,8 +109,8 @@ const SlideHeader = memo(function SlideHeader({ slideId, index, width, active, f
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <IconButton
-            label={`Slide ${index + 1} options`}
-            tooltip="Slide options"
+            label={t('Slide {v} options', { v: index + 1 })}
+            tooltip={t('Slide options')}
             icon={<Ellipsis />}
             size="sm"
             className={cx(
@@ -185,7 +186,7 @@ export const SlideFrame = memo(function SlideFrame(props: SlideFrameProps) {
   return (
     <div
       role="group"
-      aria-label={`Slide ${index + 1} of ${count}`}
+      aria-label={t('Slide {v} of {count}', { v: index + 1, count })}
       data-slide-frame={slideId}
       className={cx('group/frame absolute', active && 'z-10')}
       style={{ left, top: top - HEADER_H, width, height: height + HEADER_H }}
@@ -270,7 +271,7 @@ export const AddSlideTile = memo(function AddSlideTile({ left, top, width, heigh
       type="button"
       disabled={disabled}
       onClick={onAdd}
-      aria-label="Add slide"
+      aria-label={t('Add slide')}
       data-qa="add-slide"
       className={cx(
         'group/add flex size-full flex-col items-center justify-center gap-2.5 border border-dashed border-line-strong text-text-3 outline-none',
@@ -290,13 +291,13 @@ export const AddSlideTile = memo(function AddSlideTile({ left, top, width, heigh
       >
         <Plus aria-hidden strokeWidth={2.25} />
       </span>
-      {!compact && <span className="text-xs font-medium">Add slide</span>}
+      {!compact && <span className="text-xs font-medium">{t('Add slide')}</span>}
     </button>
   );
   return (
     <div className="absolute" style={{ left, top, width, height }}>
       {disabled ? (
-        <Tooltip content={`A project can have up to ${MAX_SLIDES} slides`}>
+        <Tooltip content={t('A project can have up to {MAX_SLIDES} slides', { MAX_SLIDES })}>
           <span tabIndex={0} className="block size-full rounded-md outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             {button}
           </span>

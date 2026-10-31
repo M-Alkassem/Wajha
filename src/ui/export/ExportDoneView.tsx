@@ -13,6 +13,7 @@ import { FamilyIcon, StatusMark } from '../editor/dialogs/parts';
 import { formatBytes, formatDuration, type OverflowEntry } from './exportModel';
 import type { ExportOutcome } from './runProjectExport';
 
+import { t } from '../../i18n';
 export interface ExportDoneViewProps {
   outcome: ExportOutcome;
   /** Files the run was going to write. */
@@ -77,12 +78,12 @@ export function ExportDoneView({ outcome, total, downloaded, onJump }: ExportDon
           <div className="flex max-w-[480px] items-center gap-2 rounded-full border border-line bg-field py-1 pr-3.5 pl-2.5 text-xs text-text-2 light:bg-surface">
             {downloaded ? <Download aria-hidden className="size-3.5 shrink-0 text-text-3" /> : <Folder aria-hidden className="size-3.5 shrink-0 text-accent-fg" />}
             <span className="truncate" title={target.path ?? undefined}>
-              {downloaded ? `Downloaded ${target.label}.zip` : `Saved to ${target.label}`}
+              {downloaded ? t('Downloaded {label}.zip', { label: target.label }) : t('Saved to {label}', { label: target.label })}
             </span>
           </div>
         )}
         {perFamily.length > 1 && (
-          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-text-3" aria-label="Files per device">
+          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-text-3" aria-label={t('Files per device')}>
             {perFamily.map(({ family, files }) => (
               <li key={family} className="flex items-center gap-1.5">
                 <FamilyIcon family={family} className="size-3.5" />
@@ -121,7 +122,7 @@ function ResultCard({ tone, icon, title, description, children }: { tone: 'dange
 
 function Failures({ failures }: { failures: ExportOutcome['report']['failed'] }) {
   return (
-    <ResultCard tone="danger" icon={<TriangleAlert />} title={`${plural(failures.length, 'file')} failed`}>
+    <ResultCard tone="danger" icon={<TriangleAlert />} title={t('{plural} failed', { plural: plural(failures.length, 'file') })}>
       <ul className="max-h-[156px] divide-y divide-line overflow-y-auto">
         {failures.map(({ job, error }) => (
           <li key={job.path} className="flex flex-col gap-0.5 px-3 py-2">
@@ -142,8 +143,8 @@ function Overflow({ entries, onJump }: { entries: OverflowEntry[]; onJump(t: Jum
     <ResultCard
       tone="warning"
       icon={<Type />}
-      title={`Text doesn't fit on ${plural(slides, 'slide')}`}
-      description="Even at its smallest size it needs more lines than allowed. Shorten it, or allow more lines."
+      title={t("Text doesn't fit on {plural}", { plural: plural(slides, 'slide') })}
+      description={t('Even at its smallest size it needs more lines than allowed. Shorten it, or allow more lines.')}
     >
       <ul className="max-h-[188px] divide-y divide-line overflow-y-auto">
         {entries.map((e) => (
@@ -155,7 +156,7 @@ function Overflow({ entries, onJump }: { entries: OverflowEntry[]; onJump(t: Jum
             >
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <span className="text-xs font-medium text-text">
-                  Slide {e.slideIndex + 1} · {e.label}
+                  {t('Slide')} {e.slideIndex + 1} · {e.label}
                 </span>
                 <span className="truncate text-2xs text-text-3">
                   {listJoin(e.langs.map(languageName))} · {e.sizes.join(', ')}
@@ -178,7 +179,7 @@ export function ExportErrorView({ message }: { message: string }) {
         <TriangleAlert />
       </StatusMark>
       <div role="alert" className="flex max-w-[440px] flex-col items-center gap-1">
-        <h3 className="text-[17px] leading-6 font-semibold tracking-[-0.01em] text-text">The export didn't finish</h3>
+        <h3 className="text-[17px] leading-6 font-semibold tracking-[-0.01em] text-text">{t("The export didn't finish")}</h3>
         <p className="text-ui text-text-2">{message}</p>
       </div>
     </div>

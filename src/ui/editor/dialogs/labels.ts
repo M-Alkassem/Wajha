@@ -4,11 +4,12 @@
 import { FAMILIES, isRtl, languageInfo } from '../../../model/catalog';
 import type { FamilyId, LangCode, StoreId } from '../../../model/types';
 
+import { t } from '../../../i18n';
 const KNOWN_KEYS: Record<string, string> = {
   headline: 'Headline',
-  subtitle: 'Subtitle',
-  caption: 'Caption',
-  title: 'Title',
+  subtitle: t('Subtitle'),
+  caption: t('Caption'),
+  title: t('Title'),
   body: 'Body',
   badge: 'Badge',
   cta: 'Call to action',

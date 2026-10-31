@@ -48,6 +48,7 @@ import { AddElementMenu } from './AddElementMenu';
 import { MOVE_DOWN_KEYS, MOVE_UP_KEYS, moveDelta, restrictToVerticalAxis, scrollIntoViewWithin, sortInstructions, useListSensors } from './dnd';
 import { elementLabel } from './labels';
 
+import { t } from '../../../i18n';
 const NO_ELEMENTS: readonly SlideElement[] = [];
 const MODIFIERS = [restrictToVerticalAxis];
 
@@ -164,7 +165,7 @@ export function LayersPanel() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex h-10 shrink-0 items-center gap-1.5 pr-2 pl-3">
-        <span className="text-xs font-semibold text-text">Slide {slideIndex + 1}</span>
+        <span className="text-xs font-semibold text-text">{t('Slide')} {slideIndex + 1}</span>
         <span className="truncate text-2xs text-text-3">· {FAMILIES[family].label}</span>
         <span className="ml-auto" />
         <AddElementMenu />
@@ -175,8 +176,8 @@ export function LayersPanel() {
           <EmptyState
             size="sm"
             icon={<Layers />}
-            title="This slide is empty"
-            description="Add a headline, a device with your screenshot, shapes or images."
+            title={t('This slide is empty')}
+            description={t('Add a headline, a device with your screenshot, shapes or images.')}
             actions={<AddElementMenu variant="button" align="start" />}
           />
         </div>
@@ -194,7 +195,7 @@ export function LayersPanel() {
             <SortableContext items={ids} strategy={verticalListSortingStrategy}>
               <div
                 role="listbox"
-                aria-label={`Layers of slide ${slideIndex + 1}`}
+                aria-label={t('Layers of slide {v}', { v: slideIndex + 1 })}
                 className="flex flex-col gap-px px-1.5 pb-2"
                 onPointerLeave={() => useEditor.getState().hover(null)}
               >
@@ -226,19 +227,19 @@ export function LayersPanel() {
         <div className="flex min-h-10 shrink-0 items-center gap-2 border-t border-line py-1.5 pr-2 pl-3 text-2xs text-text-3">
           {own ? <Unlink className="size-3.5 shrink-0" /> : <Link2 className="size-3.5 shrink-0 text-accent-fg" />}
           <span className="min-w-0 flex-1 leading-[14px]">
-            {own ? `Own ${FAMILIES[family].shortLabel} layout` : `Follows the ${FAMILIES[primary].shortLabel} layout until edited`}
+            {own ? t('Own {shortLabel} layout', { shortLabel: FAMILIES[family].shortLabel }) : t('Follows the {shortLabel} layout until edited', { shortLabel: FAMILIES[primary].shortLabel })}
           </span>
           {own && (
-            <Tooltip content={`Follow the ${FAMILIES[primary].label} layout instead`} side="top">
+            <Tooltip content={t('Follow the {label} layout instead', { label: FAMILIES[primary].label })} side="top">
               <Button
                 size="sm"
                 variant="ghost"
                 leadingIcon={<RotateCcw />}
                 onClick={() => {
-                  if (useEditor.getState().resetLayout(slide.id, family)) toast.success('Layout reset', `It now follows the ${FAMILIES[primary].label} layout.`);
+                  if (useEditor.getState().resetLayout(slide.id, family)) toast.success(t('Layout reset'), t('It now follows the {label} layout.', { label: FAMILIES[primary].label }));
                 }}
               >
-                Reset
+                {t('Reset')}
               </Button>
             </Tooltip>
           )}
@@ -324,7 +325,7 @@ const LayerRow = memo(function LayerRow({ el, label, selected, slideId, family, 
                 size="sm"
                 tooltip={false}
                 tabIndex={-1}
-                label={locked ? 'Unlock' : 'Lock'}
+                label={locked ? t('Unlock') : t('Lock')}
                 icon={locked ? <Lock /> : <LockOpen />}
                 className={cx('size-5!', !locked && 'opacity-60 hover:opacity-100')}
                 onClick={(e) => {
@@ -336,7 +337,7 @@ const LayerRow = memo(function LayerRow({ el, label, selected, slideId, family, 
                 size="sm"
                 tooltip={false}
                 tabIndex={-1}
-                label={hidden ? 'Show' : 'Hide'}
+                label={hidden ? t('Show') : t('Hide')}
                 icon={hidden ? <EyeOff /> : <Eye />}
                 className={cx('size-5!', !hidden && 'opacity-60 hover:opacity-100')}
                 onClick={(e) => {
@@ -364,39 +365,39 @@ const LayerRow = memo(function LayerRow({ el, label, selected, slideId, family, 
             renameAfterMenu.current = true;
           }}
         >
-          Rename
+          {t('Rename')}
         </ContextMenuItem>
         <ContextMenuItem icon={<Copy />} shortcut={shortcutKeys('duplicate')} onSelect={() => ed().duplicateElement(slideId, family, el.id)}>
-          Duplicate
+          {t('Duplicate')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem icon={<ArrowUpToLine />} disabled={isTop} onSelect={() => ed().bringToFront(slideId, family, el.id)}>
-          Bring to front
+          {t('Bring to front')}
         </ContextMenuItem>
         <ContextMenuItem icon={<ChevronUp />} disabled={isTop} shortcut={MOVE_UP_KEYS} onSelect={() => onMove(slideId, family, el.id, -1)}>
-          Bring forward
+          {t('Bring forward')}
         </ContextMenuItem>
         <ContextMenuItem icon={<ChevronDown />} disabled={isBottom} shortcut={MOVE_DOWN_KEYS} onSelect={() => onMove(slideId, family, el.id, 1)}>
-          Send backward
+          {t('Send backward')}
         </ContextMenuItem>
         <ContextMenuItem icon={<ArrowDownToLine />} disabled={isBottom} onSelect={() => ed().sendToBack(slideId, family, el.id)}>
-          Send to back
+          {t('Send to back')}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem icon={hidden ? <Eye /> : <EyeOff />} onSelect={() => ed().toggleHidden(slideId, family, el.id)}>
-          {hidden ? 'Show' : 'Hide'}
+          {hidden ? t('Show') : t('Hide')}
         </ContextMenuItem>
         <ContextMenuItem icon={locked ? <LockOpen /> : <Lock />} onSelect={() => ed().toggleLocked(slideId, family, el.id)}>
-          {locked ? 'Unlock' : 'Lock'}
+          {locked ? t('Unlock') : t('Lock')}
         </ContextMenuItem>
         {el.name && (
           <ContextMenuItem icon={<RotateCcw />} onSelect={() => ed().updateElement(slideId, family, el.id, { name: '' })}>
-            Use automatic name
+            {t('Use automatic name')}
           </ContextMenuItem>
         )}
         <ContextMenuSeparator />
         <ContextMenuItem icon={<Trash2 />} danger shortcut="backspace" onSelect={() => ed().deleteElement(slideId, family, el.id)}>
-          Delete
+          {t('Delete')}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

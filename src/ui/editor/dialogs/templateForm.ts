@@ -5,14 +5,15 @@
 import { LIMITS, cleanName, isTemplateId } from '../../../model/rules';
 import type { TemplateCategory } from '../../../model/types';
 
+import { t } from '../../../i18n';
 export const CATEGORY_OPTIONS: readonly { value: TemplateCategory; label: string; description: string }[] = [
-  { value: 'minimal', label: 'Minimal', description: 'Calm layouts with room to breathe' },
-  { value: 'bold', label: 'Bold', description: 'Big type and strong colour' },
-  { value: 'gradient', label: 'Gradient', description: 'Colour washes and soft glows' },
-  { value: 'dark', label: 'Dark', description: 'Dark backgrounds, bright accents' },
-  { value: 'playful', label: 'Playful', description: 'Shapes, tilts and fun' },
-  { value: 'panorama', label: 'Panorama', description: 'One scene across every slide' },
-  { value: 'elegant', label: 'Elegant', description: 'Refined type and quiet colour' },
+  { value: 'minimal', label: t('Minimal'), description: t('Calm layouts with room to breathe') },
+  { value: 'bold', label: t('Bold'), description: t('Big type and strong colour') },
+  { value: 'gradient', label: t('Gradient'), description: t('Colour washes and soft glows') },
+  { value: 'dark', label: t('Dark'), description: t('Dark backgrounds, bright accents') },
+  { value: 'playful', label: t('Playful'), description: t('Shapes, tilts and fun') },
+  { value: 'panorama', label: t('Panorama'), description: t('One scene across every slide') },
+  { value: 'elegant', label: t('Elegant'), description: t('Refined type and quiet colour') },
 ];
 
 export const isCategory = (v: unknown): v is TemplateCategory => CATEGORY_OPTIONS.some((c) => c.value === v);

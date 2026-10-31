@@ -12,6 +12,7 @@ import { fromPct, normalizeRotation, toPct } from './format';
 import { useLive } from './live';
 import { patchTarget, type Target } from './state';
 
+import { t } from '../../../i18n';
 export interface LayoutSectionProps {
   el: SlideElement;
   target: Target;
@@ -30,11 +31,11 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
   const store = useEditor.getState;
 
   return (
-    <InspectorSection id="layout" title="Layout" borderless>
-      <Row label="Position">
+    <InspectorSection id="layout" title={t('Layout')} borderless>
+      <Row label={t('Position')}>
         <Pair>
           <NumberField
-            label="X"
+            label={t('X')}
             labelTitle="Horizontal position, % of the canvas width"
             value={toPct(el.x)}
             min={-200}
@@ -45,7 +46,7 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
             {...x}
           />
           <NumberField
-            label="Y"
+            label={t('Y')}
             labelTitle="Vertical position, % of the canvas height"
             value={toPct(el.y)}
             min={-200}
@@ -58,7 +59,7 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
         </Pair>
       </Row>
       {children}
-      <Row label="Rotation">
+      <Row label={t('Rotation')}>
         <div className="flex items-center gap-2">
           <NumberField
             label={<RotateCw />}
@@ -76,24 +77,24 @@ export const LayoutSection = memo(function LayoutSection({ el, target, index, co
           <RotationDial value={el.rotation} onChange={rotation.onChange} onCommit={rotation.onCommit} />
         </div>
       </Row>
-      <SliderRow label="Opacity" value={toPct(el.opacity)} apply={applyOpacity} min={0} max={100} step={1} precision={0} unit="%" />
-      <Row label="Arrange">
+      <SliderRow label={t('Opacity')} value={toPct(el.opacity)} apply={applyOpacity} min={0} max={100} step={1} precision={0} unit="%" />
+      <Row label={t('Arrange')}>
         <div className="flex items-center gap-0.5">
-          <IconButton size="md" label="Bring to front" icon={<BringToFront />} disabled={index >= count - 1} onClick={() => store().bringToFront(slideId, family, elementId)} />
-          <IconButton size="md" label="Bring forward" icon={<ArrowUp />} disabled={index >= count - 1} onClick={() => store().bringForward(slideId, family, elementId)} />
-          <IconButton size="md" label="Send backward" icon={<ArrowDown />} disabled={index <= 0} onClick={() => store().sendBackward(slideId, family, elementId)} />
-          <IconButton size="md" label="Send to back" icon={<SendToBack />} disabled={index <= 0} onClick={() => store().sendToBack(slideId, family, elementId)} />
+          <IconButton size="md" label={t('Bring to front')} icon={<BringToFront />} disabled={index >= count - 1} onClick={() => store().bringToFront(slideId, family, elementId)} />
+          <IconButton size="md" label={t('Bring forward')} icon={<ArrowUp />} disabled={index >= count - 1} onClick={() => store().bringForward(slideId, family, elementId)} />
+          <IconButton size="md" label={t('Send backward')} icon={<ArrowDown />} disabled={index <= 0} onClick={() => store().sendBackward(slideId, family, elementId)} />
+          <IconButton size="md" label={t('Send to back')} icon={<SendToBack />} disabled={index <= 0} onClick={() => store().sendToBack(slideId, family, elementId)} />
           <Divider orientation="vertical" className="mx-1 my-1.5" />
           <IconButton
             size="md"
-            label={el.locked ? 'Unlock' : 'Lock on canvas'}
+            label={el.locked ? t('Unlock') : t('Lock on canvas')}
             icon={el.locked ? <Lock /> : <LockOpen />}
             active={!!el.locked}
             onClick={() => store().toggleLocked(slideId, family, elementId)}
           />
           <IconButton
             size="md"
-            label={el.hidden ? 'Show' : 'Hide'}
+            label={el.hidden ? t('Show') : t('Hide')}
             icon={el.hidden ? <EyeOff /> : <Eye />}
             active={!!el.hidden}
             onClick={() => store().toggleHidden(slideId, family, elementId)}

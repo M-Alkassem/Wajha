@@ -21,6 +21,8 @@ import { useLive } from './live';
 import { ShadowSection } from './ShadowSection';
 import { patchTarget, patchTargetWith, slideById, usePalette, type Target } from './state';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 export interface DevicePanelProps {
   el: DeviceElement;
   target: Target;
@@ -40,17 +42,17 @@ export const DevicePanel = memo(function DevicePanel({ el, target, index, count 
   );
   return (
     <>
-      <InspectorSection id="device.shot" title="Screenshot">
+      <InspectorSection id="device.shot" title={t('Screenshot')}>
         <ScreenshotCard slot={el.slot} frame={el.frame} target={target} />
       </InspectorSection>
-      <InspectorSection id="device.frame" title="Frame">
+      <InspectorSection id="device.frame" title={t('Frame')}>
         <FramePicker value={el.frame} style={el.style} family={target.family} onChange={setFrame} />
       </InspectorSection>
       <StyleSection style={el.style} target={target} palette={palette} />
-      <InspectorSection id="device.size" title="Size">
-        <SliderRow label="Width" value={toPct(el.width)} apply={applyWidth} min={10} max={150} inputMin={2} inputMax={400} step={0.5} precision={2} unit="%" />
+      <InspectorSection id="device.size" title={t('Size')}>
+        <SliderRow label={t('Width')} value={toPct(el.width)} apply={applyWidth} min={10} max={150} inputMin={2} inputMax={400} step={0.5} precision={2} unit="%" />
         {el.frame === 'none' && (
-          <SliderRow label="Corners" value={toPct(el.cornerRadius)} apply={applyCorners} min={0} max={50} step={0.5} precision={1} unit="%" />
+          <SliderRow label={t('Corners')} value={toPct(el.cornerRadius)} apply={applyCorners} min={0} max={50} step={0.5} precision={1} unit="%" />
         )}
       </InspectorSection>
       <ShadowSection id="device.shadow" el={el} target={target} defaultShadow={defaultShadow} palette={palette} />
@@ -161,12 +163,12 @@ const ScreenshotCard = memo(function ScreenshotCard({ slot, frame, target }: { s
           <div className="flex flex-col gap-0.5">
             <p className="flex items-center gap-1.5 text-xs font-medium text-text">
               <StatusDot tone="warning" />
-              No screenshot
+              {t('No screenshot')}
             </p>
-            <p className="text-xs leading-4 text-text-3">{dropping ? 'Drop to add it.' : 'Drop an image here or choose one. A mock screen shows until then.'}</p>
+            <p className="text-xs leading-4 text-text-3">{dropping ? t('Drop to add it.') : t('Drop an image here or choose one. A mock screen shows until then.')}</p>
           </div>
           <Button size="sm" variant="primary" leadingIcon={<ImagePlus />} loading={busy} onClick={() => void pick()} className="self-start">
-            Choose…
+            {t('Choose…')}
           </Button>
         </div>
       </div>
@@ -184,7 +186,7 @@ const ScreenshotCard = memo(function ScreenshotCard({ slot, frame, target }: { s
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-0.5">
           <div className="flex min-w-0 flex-col gap-0.5">
             <p className="truncate text-xs font-medium text-text" title={info?.name} dir="auto">
-              {info?.name ?? 'Missing image'}
+              {info?.name ?? t('Missing image')}
             </p>
             {info && (
               <p className="truncate text-2xs text-text-3 tabular-nums">
@@ -194,17 +196,17 @@ const ScreenshotCard = memo(function ScreenshotCard({ slot, frame, target }: { s
             )}
             <p className="mt-1 flex items-center gap-1.5 text-2xs text-text-2">
               <StatusDot tone={status === 'own' ? 'success' : 'muted'} />
-              {status === 'own' ? (lang === base && languageCount > 1 ? `${langName} · default` : langName) : `${baseName} · fallback`}
+              {status === 'own' ? (lang === base && languageCount > 1 ? t('{langName} · default', { langName }) : langName) : t('{baseName} · fallback', { baseName })}
             </p>
           </div>
           <div className="flex items-center gap-1">
             <Button size="sm" leadingIcon={status === 'base' ? <ImagePlus /> : <ImageUp />} loading={busy} onClick={() => void pick()}>
-              {status === 'base' ? `Add ${langShort}…` : 'Replace…'}
+              {status === 'base' ? t('Add {langShort}…', { langShort }) : t('Replace…')}
             </Button>
             {status === 'own' && (
-              <Tooltip content={lang === base ? 'Remove the screenshot' : `Remove the ${langName} screenshot (falls back to ${baseName})`}>
+              <Tooltip content={lang === base ? t('Remove the screenshot') : t('Remove the {langName} screenshot (falls back to {baseName})', { langName, baseName })}>
                 <Button size="sm" variant="ghost" leadingIcon={<Trash2 />} onClick={() => useEditor.getState().setShot(slideId, family, slot, lang, null)}>
-                  Remove
+                  {t('Remove')}
                 </Button>
               </Tooltip>
             )}
@@ -215,7 +217,7 @@ const ScreenshotCard = memo(function ScreenshotCard({ slot, frame, target }: { s
         <p className="flex items-start gap-1.5 text-xs leading-4 text-text-3">
           <Languages aria-hidden className="mt-px size-3.5 shrink-0" />
           <span>
-            Using {baseName} screenshot — add one for {langName}
+            {tx('Using {baseName} screenshot — add one for {langName}', { baseName, langName })}
           </span>
         </p>
       )}
@@ -226,16 +228,16 @@ const ScreenshotCard = memo(function ScreenshotCard({ slot, frame, target }: { s
 /* Frame ------------------------------------------------------------------------ */
 
 const FRAMES: { id: DeviceFrameId; label: string }[] = [
-  { id: 'iphone', label: 'iPhone' },
-  { id: 'ipad', label: 'iPad' },
-  { id: 'android-phone', label: 'Android' },
-  { id: 'android-tablet', label: 'Tablet' },
-  { id: 'macbook', label: 'MacBook' },
-  { id: 'watch', label: 'Watch' },
-  { id: 'tv', label: 'TV' },
-  { id: 'vision', label: 'Vision Pro' },
-  { id: 'browser', label: 'Browser' },
-  { id: 'none', label: 'None' },
+  { id: 'iphone', label: t('iPhone') },
+  { id: 'ipad', label: t('iPad') },
+  { id: 'android-phone', label: t('Android') },
+  { id: 'android-tablet', label: t('Tablet') },
+  { id: 'macbook', label: t('MacBook') },
+  { id: 'watch', label: t('Watch') },
+  { id: 'tv', label: t('TV') },
+  { id: 'vision', label: t('Vision Pro') },
+  { id: 'browser', label: t('Browser') },
+  { id: 'none', label: t('None') },
 ];
 
 interface FramePickerProps {
@@ -266,7 +268,7 @@ export const FramePicker = memo(function FramePicker({ value, style: liveStyle, 
     refs.current[next]?.focus();
   };
   return (
-    <div role="radiogroup" aria-label="Device frame" className="grid grid-cols-4 gap-1.5" onKeyDown={onKeyDown}>
+    <div role="radiogroup" aria-label={t('Device frame')} className="grid grid-cols-4 gap-1.5" onKeyDown={onKeyDown}>
       {FRAMES.map((f, i) => {
         const selected = f.id === value;
         return (
@@ -278,7 +280,7 @@ export const FramePicker = memo(function FramePicker({ value, style: liveStyle, 
             type="button"
             role="radio"
             aria-checked={selected}
-            aria-label={FRAME_LABEL[f.id] === 'Screenshot' ? 'No frame' : FRAME_LABEL[f.id]}
+            aria-label={FRAME_LABEL[f.id] === 'Screenshot' ? t('No frame') : FRAME_LABEL[f.id]}
             tabIndex={selected ? 0 : -1}
             onClick={() => !selected && onChange(f.id)}
             className={cx(
@@ -454,34 +456,34 @@ const StyleSection = memo(function StyleSection({ style, target, palette }: { st
   };
 
   return (
-    <InspectorSection id="device.style" title="Style">
-      <div className="flex items-center gap-1 px-px py-0.5" role="group" aria-label="Colour presets">
+    <InspectorSection id="device.style" title={t('Style')}>
+      <div className="flex items-center gap-1 px-px py-0.5" role="group" aria-label={t('Colour presets')}>
         {METALS.map(swatch)}
         <span aria-hidden className="mx-1 h-4 w-px shrink-0 bg-line-strong" />
         {CLAYS.map(swatch)}
       </div>
-      <Row label="Colour">
-        <ColorField label="Body colour" value={style.color} alpha={false} palette={palette} {...color} />
+      <Row label={t('Colour')}>
+        <ColorField label={t('Body colour')} value={style.color} alpha={false} palette={palette} {...color} />
       </Row>
-      <Row label="Finish">
+      <Row label={t('Finish')}>
         <SegmentedControl<FrameStyle['finish']>
           fullWidth
           value={style.finish}
           options={[
-            { value: 'metal', label: 'Metal', tooltip: 'Polished metal with a soft sheen' },
-            { value: 'matte', label: 'Matte' },
-            { value: 'clay', label: 'Clay', tooltip: 'Solid, soft mockup look' },
+            { value: 'metal', label: t('Metal'), tooltip: t('Polished metal with a soft sheen') },
+            { value: 'matte', label: t('Matte') },
+            { value: 'clay', label: t('Clay'), tooltip: t('Solid, soft mockup look') },
           ]}
           onValueChange={(finish) => patchTarget(target, { style: { finish } })}
         />
       </Row>
-      <Row label="Bezel">
+      <Row label={t('Bezel')}>
         <SegmentedControl<FrameStyle['bezel']>
           fullWidth
           value={style.bezel}
           options={[
-            { value: 'black', label: 'Black' },
-            { value: 'match', label: 'Match body' },
+            { value: 'black', label: t('Black') },
+            { value: 'match', label: t('Match body') },
           ]}
           onValueChange={(bezel) => patchTarget(target, { style: { bezel } })}
         />

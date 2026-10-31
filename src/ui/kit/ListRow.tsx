@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { cx } from './cx';
 
+import { t } from '../../i18n';
 export interface ListRowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect' | 'children'> {
   label: ReactNode;
   icon?: ReactNode;
@@ -175,7 +176,7 @@ export const ListRow = forwardRef<HTMLDivElement, ListRowProps>(function ListRow
           ref={inputRef}
           dir="auto"
           value={draft}
-          aria-label="Name"
+          aria-label={t('Name')}
           maxLength={200}
           onChange={(e) => setDraft(e.target.value)}
           onClick={(e) => e.stopPropagation()}

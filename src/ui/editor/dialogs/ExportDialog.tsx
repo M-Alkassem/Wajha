@@ -41,6 +41,7 @@ import { jumpTo, useEditorWhileOpen, useOpenSession, type JumpTarget } from './d
 import { plural } from './labels';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
 type Phase =
   | { name: 'setup' }
   /** Waiting for the destination picker. */
@@ -250,12 +251,12 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
     if (phase.name === 'picking') return;
     if (phase.name === 'running') {
       const ok = await confirmDialog({
-        title: 'Stop the export?',
+        title: t('Stop the export?'),
         message: isWeb
-          ? 'The files rendered so far are not downloaded. You can export again any time.'
-          : `Files already written to ${phase.target.label} stay there. You can export again any time.`,
-        confirmLabel: 'Stop export',
-        cancelLabel: 'Keep exporting',
+          ? t('The files rendered so far are not downloaded. You can export again any time.')
+          : t('Files already written to {label} stay there. You can export again any time.', { label: phase.target.label }),
+        confirmLabel: t('Stop export'),
+        cancelLabel: t('Keep exporting'),
         danger: true,
       });
       if (!ok) return;
@@ -277,7 +278,7 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
     try {
       await getPlatform().revealTarget(target);
     } catch (err) {
-      toast.error('Could not open the folder', errorMessage(err));
+      toast.error(t('Could not open the folder'), errorMessage(err));
     }
   }, []);
 
@@ -330,7 +331,7 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
             onStructureChange={onStructureChange}
           />
         </div>
-        <aside className="min-h-0 overflow-y-auto border-l border-line bg-panel light:bg-surface" aria-label="Export summary">
+        <aside className="min-h-0 overflow-y-auto border-l border-line bg-panel light:bg-surface" aria-label={t('Export summary')}>
           <ExportSummaryPanel
             project={project}
             plan={plan}
@@ -344,15 +345,15 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
         </aside>
       </div>
     );
-    footerStart = problem ? <span className="truncate text-warning">{problem}</span> : <span className="truncate">{busy && !isWeb ? 'Waiting for you to choose a folder…' : hint}</span>;
+    footerStart = problem ? <span className="truncate text-warning">{problem}</span> : <span className="truncate">{busy && !isWeb ? t('Waiting for you to choose a folder…') : hint}</span>;
     footer = (
       <>
         <Button onClick={() => void requestClose()} disabled={busy}>
-          Cancel
+          {t('Cancel')}
         </Button>
         <Tooltip content="" shortcut="mod+enter">
           <Button variant="brand" leadingIcon={<Download />} loading={busy} disabled={!!problem} onClick={() => void start()}>
-            {files > 0 ? `Export ${plural(files, 'file')}` : 'Export'}
+            {files > 0 ? t('Export {plural}', { plural: plural(files, 'file') }) : t('Export')}
           </Button>
         </Tooltip>
       </>
@@ -363,10 +364,10 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
         <ExportProgressView progress={phase.progress} startedAt={phase.startedAt} preview={preview} format={format} stopping={stopping} targetLabel={phase.target.label} />
       </div>
     );
-    footerStart = <span className="truncate">{isWeb ? `Downloads as “${phase.target.label}.zip” when done.` : `Writing to ${phase.target.path ?? phase.target.label}`}</span>;
+    footerStart = <span className="truncate">{isWeb ? t('Downloads as “{label}.zip” when done.', { label: phase.target.label }) : t('Writing to {v}', { v: phase.target.path ?? phase.target.label })}</span>;
     footer = (
       <Button onClick={stop} disabled={stopping}>
-        {stopping ? 'Stopping…' : 'Cancel'}
+        {stopping ? t('Stopping…') : t('Cancel')}
       </Button>
     );
   } else if (phase.name === 'done') {
@@ -381,12 +382,12 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
       <>
         {canReveal && (
           <Button leadingIcon={<FolderOpen />} onClick={() => void reveal(outcome.target)}>
-            {os === 'windows' ? 'Show in Explorer' : os === 'linux' ? 'Open folder' : 'Show in Finder'}
+            {os === 'windows' ? t('Show in Explorer') : os === 'linux' ? t('Open folder') : t('Show in Finder')}
           </Button>
         )}
-        <Button onClick={() => setPhase({ name: 'setup' })}>Export again</Button>
+        <Button onClick={() => setPhase({ name: 'setup' })}>{t('Export again')}</Button>
         <Button variant="primary" onClick={() => onOpenChange(false)} autoFocus>
-          Done
+          {t('Done')}
         </Button>
       </>
     );
@@ -398,9 +399,9 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
     );
     footer = (
       <>
-        <Button onClick={() => setPhase({ name: 'setup' })}>Back to settings</Button>
+        <Button onClick={() => setPhase({ name: 'setup' })}>{t('Back to settings')}</Button>
         <Button variant="primary" onClick={() => void start()} autoFocus>
-          Try again
+          {t('Try again')}
         </Button>
       </>
     );
@@ -416,7 +417,7 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
       <DialogContent
         size="xl"
         icon={<Download />}
-        title="Export screenshots"
+        title={t('Export screenshots')}
         description={DESCRIPTIONS[phase.name]}
         flush
         footer={footer}

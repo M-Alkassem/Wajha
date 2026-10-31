@@ -10,6 +10,7 @@ import { openProjectFile, useLibrary } from './library';
 import { TemplateCard } from './TemplateCard';
 import { heroPreviewProject, requestPreviewFonts } from './templates';
 
+import { t } from '../../i18n';
 /**
  * First run: the hero (what Wajha does, the two ways in) beside a fan of
  * live slides, then a row of built-in templates that open the new-project
@@ -30,32 +31,32 @@ export function EmptyLibrary() {
             id="home-hero-title"
             className="mt-7 font-display text-[40px] leading-[46px] font-semibold tracking-[-0.035em] text-balance text-text 2xl:text-[46px] 2xl:leading-[52px]"
           >
-            Make your app store page{' '}
-            <span className="bg-[image:var(--brand-gradient)] bg-clip-text text-transparent light:bg-[image:var(--brand-gradient-strong)]">shine</span>
+            {t('Make your app store page')}{' '}
+            <span className="bg-[image:var(--brand-gradient)] bg-clip-text text-transparent light:bg-[image:var(--brand-gradient-strong)]">{t('shine')}</span>
           </h1>
           <p className="mt-4 max-w-[460px] text-[15px] leading-6 text-pretty text-text-2">
-            Design App Store and Google Play screenshots from beautiful templates, then export every size, device and language in one go.
+            {t('Design App Store and Google Play screenshots from beautiful templates, then export every size, device and language in one go.')}
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-2.5">
             <Button variant="primary" size="lg" leadingIcon={<Plus />} onClick={() => openNew()}>
-              Create your first project
+              {t('Create your first project')}
             </Button>
             <Button size="lg" leadingIcon={<FolderOpen />} loading={importing} onClick={() => void openProjectFile()}>
-              Open a .wajha file
+              {t('Open a .wajha file')}
             </Button>
           </div>
           <ul className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-xs text-text-3 [&_svg]:size-3.5">
             <li className="flex items-center gap-1.5">
               <WifiOff aria-hidden />
-              Works offline
+              {t('Works offline')}
             </li>
             <li className="flex items-center gap-1.5">
               <ShieldCheck aria-hidden />
-              No account, no tracking
+              {t('No account, no tracking')}
             </li>
             <li className="flex items-center gap-1.5">
               <Heart aria-hidden />
-              Free and open source
+              {t('Free and open source')}
             </li>
           </ul>
         </div>
@@ -67,12 +68,12 @@ export function EmptyLibrary() {
           <div className="mb-4 flex items-end justify-between gap-4">
             <div className="flex flex-col gap-0.5">
               <h2 id="home-featured-title" className="text-[15px] leading-5 font-semibold tracking-[-0.01em] text-text">
-                Start from a template
+                {t('Start from a template')}
               </h2>
-              <p className="text-xs text-text-3">Every template comes with mock screens, sample copy and layouts for each device.</p>
+              <p className="text-xs text-text-3">{t('Every template comes with mock screens, sample copy and layouts for each device.')}</p>
             </div>
             <Button variant="ghost" trailingIcon={<ArrowRight />} onClick={() => openNew({ source: 'builtin' })}>
-              Browse all templates
+              {t('Browse all templates')}
             </Button>
           </div>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
@@ -93,7 +94,7 @@ function AppIcon() {
       <span aria-hidden className="kit-glow pointer-events-none absolute -inset-20 opacity-[0.16] light:opacity-[0.14]" />
       <span className="relative flex size-full items-center justify-center rounded-[16px] bg-[var(--brand-night)] shadow-lg ring-1 ring-line-strong">
         <span aria-hidden className="absolute inset-0 rounded-[inherit] opacity-45" style={{ background: 'radial-gradient(60% 55% at 50% 64%, var(--brand-pink), transparent)' }} />
-        <Logo size={42} title="Wajha" className="relative" />
+        <Logo size={42} title={t('Wajha')} className="relative" />
       </span>
     </span>
   );

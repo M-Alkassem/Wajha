@@ -9,6 +9,7 @@ import type { DeviceFrameId, Fill, FamilyId, LangCode, Project, ShapeKind, Slide
 import { RANGES } from '../../../model/rules';
 import { deviceGeometry, deviceScreenAspect } from '../../../engine';
 
+import { t } from '../../../i18n';
 /* Units ------------------------------------------------------------------ */
 
 /** Rounds away float noise (0.075 * 100 = 7.499999999999999). */
@@ -92,23 +93,23 @@ export function humanizeKey(key: string): string {
 }
 
 export const FRAME_LABEL: Record<DeviceFrameId, string> = {
-  iphone: 'iPhone',
-  ipad: 'iPad',
-  'android-phone': 'Android phone',
-  'android-tablet': 'Android tablet',
-  macbook: 'MacBook',
-  watch: 'Watch',
-  tv: 'TV',
-  vision: 'Vision Pro',
-  browser: 'Browser',
-  none: 'Screenshot',
+  iphone: t('iPhone'),
+  ipad: t('iPad'),
+  'android-phone': t('Android phone'),
+  'android-tablet': t('Android tablet'),
+  macbook: t('MacBook'),
+  watch: t('Watch'),
+  tv: t('TV'),
+  vision: t('Vision Pro'),
+  browser: t('Browser'),
+  none: t('Screenshot'),
 };
 
 export const SHAPE_LABEL: Record<ShapeKind, string> = {
-  circle: 'Circle',
-  rect: 'Rectangle',
-  blob: 'Blob',
-  ring: 'Ring',
+  circle: t('Circle'),
+  rect: t('Rectangle'),
+  blob: t('Blob'),
+  ring: t('Ring'),
 };
 
 /** File name without its extension, for image layers. */
@@ -146,15 +147,15 @@ export function languageLabel(code: LangCode): string {
 /* Fonts ------------------------------------------------------------------ */
 
 export const WEIGHT_NAMES: Record<number, string> = {
-  100: 'Thin',
-  200: 'Extra Light',
-  300: 'Light',
-  400: 'Regular',
-  500: 'Medium',
-  600: 'Semibold',
-  700: 'Bold',
-  800: 'Extra Bold',
-  900: 'Black',
+  100: t('Thin'),
+  200: t('Extra Light'),
+  300: t('Light'),
+  400: t('Regular'),
+  500: t('Medium'),
+  600: t('Semibold'),
+  700: t('Bold'),
+  800: t('Extra Bold'),
+  900: t('Black'),
 };
 
 /** The bundled font with this CSS family, if any. */
@@ -204,11 +205,11 @@ export interface FontGroup {
 }
 
 const CATEGORY_LABEL: Record<FontInfo['category'], string> = {
-  sans: 'Sans serif',
-  display: 'Display',
-  serif: 'Serif',
-  multi: 'Multi-script',
-  arabic: 'Arabic',
+  sans: t('Sans serif'),
+  display: t('Display'),
+  serif: t('Serif'),
+  multi: t('Multi-script'),
+  arabic: t('Arabic'),
 };
 
 const CATEGORY_ORDER: FontInfo['category'][] = ['sans', 'display', 'serif', 'arabic', 'multi'];
@@ -222,7 +223,7 @@ export function fontGroups(systemFonts: readonly string[], query: string, ownFon
   const groups: FontGroup[] = [];
   // Fonts the project brought along come first: they are why someone added them.
   const own = ownFonts.filter((f) => f && matches(f, f)).map((f) => ({ family: f, label: f, category: 'system' as const }));
-  if (own.length) groups.push({ id: 'own', label: 'Your fonts', fonts: own });
+  if (own.length) groups.push({ id: 'own', label: t('Your fonts'), fonts: own });
   for (const cat of CATEGORY_ORDER) {
     const fonts = BUNDLED_FONTS.filter((f) => f.category === cat && matches(f.label, f.family)).map((f) => ({ family: f.family, label: f.label, category: f.category }));
     if (fonts.length) groups.push({ id: cat, label: CATEGORY_LABEL[cat], fonts });
@@ -236,7 +237,7 @@ export function fontGroups(systemFonts: readonly string[], query: string, ownFon
     seen.add(key);
     if (matches(name, name)) system.push({ family: name, label: name, category: 'system' });
   }
-  if (system.length) groups.push({ id: 'system', label: 'System', fonts: system });
+  if (system.length) groups.push({ id: 'system', label: t('System'), fonts: system });
   return groups;
 }
 

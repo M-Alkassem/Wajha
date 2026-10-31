@@ -15,6 +15,8 @@ import { listJoin, plural, storeName } from './labels';
 import { FamilyIcon } from './parts';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 export function FamiliesDialog({ open, onOpenChange }: EditorDialogProps) {
   const session = useOpenSession(open);
   return <FamiliesSession key={session} open={open} onOpenChange={onOpenChange} />;
@@ -40,7 +42,7 @@ function FamiliesBody({ project, open, onOpenChange }: EditorDialogProps & { pro
     if (!p || p.families.length <= 1) return;
     const confirmation = disableConfirmation(p, family);
     if (confirmation) {
-      const ok = await confirmDialog({ ...confirmation, confirmLabel: 'Turn off' });
+      const ok = await confirmDialog({ ...confirmation, confirmLabel: t('Turn off') });
       if (!ok) return;
     }
     useEditor.getState().disableFamily(family);
@@ -51,12 +53,12 @@ function FamiliesBody({ project, open, onOpenChange }: EditorDialogProps & { pro
       <DialogContent
         size="md"
         icon={<MonitorSmartphone />}
-        title="Devices & stores"
-        description="Design once and every device adapts. Turn on the devices your app ships on."
+        title={t('Devices & stores')}
+        description={t('Design once and every device adapts. Turn on the devices your app ships on.')}
         footerStart={<span className="truncate">{`${plural(enabled.length, 'device')}: ${listJoin(enabled.map((f) => FAMILIES[f].label))}`}</span>}
         footer={
           <Button variant="primary" onClick={() => onOpenChange(false)}>
-            Done
+            {t('Done')}
           </Button>
         }
       >
@@ -130,22 +132,22 @@ function FamilyCard({ family, on, primary, primaryLabel, ownSlides, slideCount, 
           ))}
           {primary && (
             <Badge size="sm" variant="accent">
-              Primary
+              {t('Primary')}
             </Badge>
           )}
         </span>
         <span className="text-xs text-text-3 tabular-nums">
-          {info.design.width} × {info.design.height} canvas · {slideLimitLabel(family)} · {plural(info.sizes.length, 'export size')}
+          {tx('{width} × {height} canvas · {slideLimitLabel} · {plural}', { width: info.design.width, height: info.design.height, slideLimitLabel: slideLimitLabel(family), plural: plural(info.sizes.length, 'export size') })}
         </span>
         {primary ? (
-          <span className="text-xs text-accent-fg">Primary — other devices adapt from its layouts</span>
+          <span className="text-xs text-accent-fg">{t('Primary — other devices adapt from its layouts')}</span>
         ) : on ? (
           <span className="text-xs text-text-3">{adaptNote(primaryLabel, ownSlides, slideCount)}</span>
         ) : null}
       </label>
       <span className="mt-2 flex shrink-0">
         {last ? (
-          <Tooltip content="A project needs at least one device">
+          <Tooltip content={t('A project needs at least one device')}>
             <span className="flex">{switchControl}</span>
           </Tooltip>
         ) : (

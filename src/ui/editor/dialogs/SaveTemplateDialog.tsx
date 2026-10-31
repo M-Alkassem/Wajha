@@ -21,6 +21,8 @@ import { languageName } from './labels';
 import { CATEGORY_OPTIONS, addTags, isCategory, removeTag, resolveTemplateId } from './templateForm';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 const PREVIEW_COUNT = 3;
 const PREVIEW_MAX_H = 168;
 const PREVIEW_MAX_W = 132;
@@ -36,9 +38,9 @@ async function exportTemplateFile(template: Template): Promise<void> {
     const bytes = await exportTemplateArchive(template.id);
     const platform = getPlatform();
     const saved = await platform.saveFile(`${sanitizeSegment(template.name)}.wajha-template`, bytes);
-    if (saved) toast.success('Template exported', platform.kind === 'web' ? `Downloaded ${saved}.` : saved);
+    if (saved) toast.success(t('Template exported'), platform.kind === 'web' ? t('Downloaded {saved}.', { saved }) : saved);
   } catch (err) {
-    toast.error('Could not export the template', message(err));
+    toast.error(t('Could not export the template'), message(err));
   }
 }
 
@@ -101,9 +103,9 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
       if (replaces) {
         const existing = mine.find((t) => t.id === id);
         const ok = await confirmDialog({
-          title: `Replace “${existing?.name ?? clean}”?`,
-          message: 'You already have a template with this name. Saving replaces its design, description and tags.',
-          confirmLabel: 'Replace',
+          title: t('Replace “{v}”?', { v: existing?.name ?? clean }),
+          message: t('You already have a template with this name. Saving replaces its design, description and tags.'),
+          confirmLabel: t('Replace'),
         });
         if (!ok) return;
       }
@@ -118,14 +120,14 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
       const template = await saveProjectAsTemplate({ id, name: clean, author: 'You', description: cleanText(description.trim()), category, tags }, preview);
       toast.push({
         kind: 'success',
-        title: 'Template saved',
-        description: `“${template.name}” is in My templates on the home screen.`,
-        action: { label: 'Export file…', run: () => void exportTemplateFile(template) },
+        title: t('Template saved'),
+        description: t('“{name}” is in My templates on the home screen.', { name: template.name }),
+        action: { label: t('Export file…'), run: () => void exportTemplateFile(template) },
         duration: 9000,
       });
       onOpenChange(false);
     } catch (err) {
-      toast.error('Could not save the template', message(err));
+      toast.error(t('Could not save the template'), message(err));
     } finally {
       if (alive.current) setSaving(false);
     }
@@ -136,8 +138,8 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
       <DialogContent
         size="md"
         icon={<BookmarkPlus />}
-        title="Save as template"
-        description="Reuse this design in new projects, or share it as a file."
+        title={t('Save as template')}
+        description={t('Reuse this design in new projects, or share it as a file.')}
         onOpenAutoFocus={(e) => {
           e.preventDefault();
           nameRef.current?.focus();
@@ -146,10 +148,10 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
         footer={
           <>
             <Button onClick={() => onOpenChange(false)} disabled={saving}>
-              Cancel
+              {t('Cancel')}
             </Button>
             <Button type="submit" form={formId} variant="primary" loading={saving} disabled={!cleanName(name)}>
-              Save template
+              {t('Save template')}
             </Button>
           </>
         }
@@ -167,7 +169,7 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
               ))}
             </div>
             <figcaption className="text-xs leading-4 text-text-3">
-              Keeps the theme, layouts and {languageName(base)} texts as sample copy. Screenshots stay in this project.
+              {tx('Keeps the theme, layouts and {languageName} texts as sample copy. Screenshots stay in this project.', { languageName: languageName(base) })}
             </figcaption>
           </figure>
 
@@ -179,7 +181,7 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
               void save();
             }}
           >
-            <Field label="Name" layout="stacked" error={error ?? undefined}>
+            <Field label={t('Name')} layout="stacked" error={error ?? undefined}>
               <Input
                 ref={nameRef}
                 value={name}
@@ -189,10 +191,10 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
                   setName(e.target.value);
                   if (error) setError(null);
                 }}
-                placeholder="e.g. Sunset glow"
+                placeholder={t('e.g. Sunset glow')}
               />
             </Field>
-            <Field label="Description" layout="stacked" trailing={<span className="text-2xs text-text-3">Optional</span>}>
+            <Field label={t('Description')} layout="stacked" trailing={<span className="text-2xs text-text-3">{t('Optional')}</span>}>
               <Textarea
                 value={description}
                 autoGrow
@@ -201,11 +203,11 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
                 maxLength={500}
                 disabled={saving}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="What makes this design special, which apps it suits…"
+                placeholder={t('What makes this design special, which apps it suits…')}
               />
             </Field>
             <div className="grid grid-cols-[168px_minmax(0,1fr)] gap-3">
-              <Field label="Category" layout="stacked">
+              <Field label={t('Category')} layout="stacked">
                 <Select
                   value={category}
                   disabled={saving}
@@ -213,7 +215,7 @@ function SaveTemplateBody({ project, open, onOpenChange }: EditorDialogProps & {
                   options={CATEGORY_OPTIONS.map((c) => ({ value: c.value, label: c.label, description: c.description }))}
                 />
               </Field>
-              <Field label="Tags" layout="stacked" hint="Separate with commas">
+              <Field label={t('Tags')} layout="stacked" hint={t('Separate with commas')}>
                 <TagInput tags={tags} onChange={setTags} disabled={saving} />
               </Field>
             </div>
@@ -264,7 +266,7 @@ function TagInput({ tags, onChange, disabled }: { tags: string[]; onChange(tags:
           </span>
           <button
             type="button"
-            aria-label={`Remove tag ${tag}`}
+            aria-label={t('Remove tag {tag}', { tag })}
             onClick={() => onChange(removeTag(tags, tag))}
             className="flex size-4 shrink-0 items-center justify-center rounded-[3px] text-text-3 outline-none hover:bg-field-hover hover:text-text focus-visible:outline-2 focus-visible:outline-focus"
           >
@@ -279,7 +281,7 @@ function TagInput({ tags, onChange, disabled }: { tags: string[]; onChange(tags:
         value={draft}
         disabled={disabled || full}
         aria-describedby={field['aria-describedby']}
-        placeholder={tags.length ? '' : full ? '' : 'fitness, dark'}
+        placeholder={tags.length ? '' : full ? '' : t('fitness, dark')}
         onChange={(e) => {
           const value = e.target.value;
           const cut = Math.max(value.lastIndexOf(','), value.lastIndexOf('،'));

@@ -17,6 +17,7 @@ import {
 } from '../../kit';
 import { useEditorUi } from '../editorUi';
 
+import { t } from '../../../i18n';
 const NO_LANGUAGES: LangCode[] = [];
 
 export interface LanguageMenuProps {
@@ -32,11 +33,11 @@ export function LanguageMenu({ showName }: LanguageMenuProps) {
 
   return (
     <DropdownMenu>
-      <Tooltip content="Preview language" side="bottom">
+      <Tooltip content={t('Preview language')} side="bottom">
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            aria-label={`Preview language: ${info.name}`}
+            aria-label={t('Preview language: {name}', { name: info.name })}
             className={cx(
               'inline-flex h-7 max-w-[200px] min-w-0 shrink-0 items-center gap-1.5 rounded-sm pr-1.5 pl-1 text-ui text-text-2 outline-none select-none',
               'transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text aria-expanded:bg-surface-2 aria-expanded:text-text',
@@ -56,7 +57,7 @@ export function LanguageMenu({ showName }: LanguageMenuProps) {
         </DropdownMenuTrigger>
       </Tooltip>
       <DropdownMenuContent align="end" className="w-[272px]">
-        <DropdownMenuLabel>Preview language</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('Preview language')}</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={active} onValueChange={(code) => useEditor.getState().setActiveLang(code)}>
           {languages.map((code, i) => {
             const l = languageInfo(code);
@@ -69,13 +70,13 @@ export function LanguageMenu({ showName }: LanguageMenuProps) {
                   {l.name !== l.native && <span className="min-w-0 shrink-[2] truncate text-text-3">{l.name}</span>}
                   <span className="ml-auto flex shrink-0 items-center gap-1 pl-1">
                     {i === 0 && (
-                      <Badge size="sm" title="Base language: the others fall back to it">
-                        Base
+                      <Badge size="sm" title={t('Base language: the others fall back to it')}>
+                        {t('Base')}
                       </Badge>
                     )}
                     {l.rtl && (
-                      <Badge size="sm" title="Right-to-left">
-                        RTL
+                      <Badge size="sm" title={t('Right-to-left')}>
+                        {t('RTL')}
                       </Badge>
                     )}
                   </span>
@@ -86,10 +87,10 @@ export function LanguageMenu({ showName }: LanguageMenuProps) {
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem icon={<Languages />} onSelect={() => useEditorUi.getState().openDialog('languages')}>
-          Manage languages…
+          {t('Manage languages…')}
         </DropdownMenuItem>
         <DropdownMenuItem icon={<Sheet />} onSelect={() => useEditorUi.getState().openDialog('translations')}>
-          Translations…
+          {t('Translations…')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

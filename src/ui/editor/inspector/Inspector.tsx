@@ -16,6 +16,8 @@ import { SlidePanel } from './SlidePanel';
 import { useTargetElement, type Target } from './state';
 import { TextPanel } from './TextPanel';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 export function Inspector() {
   const hasProject = useEditor((s) => s.project !== null);
   const slideId = useEditor((s) => s.activeSlideId);
@@ -27,7 +29,7 @@ export function Inspector() {
   if (!hasProject || !slideId) {
     body = (
       <div className="flex flex-1 items-center justify-center">
-        <EmptyState size="sm" icon={<MousePointer2 />} title="Nothing to inspect" description="Open a project to edit its slides." />
+        <EmptyState size="sm" icon={<MousePointer2 />} title={t('Nothing to inspect')} description={t('Open a project to edit its slides.')} />
       </div>
     );
   } else if (selection && selectedExists) {
@@ -98,8 +100,8 @@ const SlideInspector = memo(function SlideInspector({ slideId, family }: { slide
           <GalleryVerticalEnd />
         </span>
         <h2 className="min-w-0 flex-1 truncate text-ui font-semibold text-text">
-          Slide {position + 1}
-          <span className="ml-1.5 font-normal text-text-3 tabular-nums">of {total}</span>
+          {t('Slide')} {position + 1}
+          <span className="ml-1.5 font-normal text-text-3 tabular-nums">{tx('of {total}', { total })}</span>
         </h2>
       </header>
       <ScrollArea className="min-h-0 flex-1" viewportClassName="overscroll-contain">

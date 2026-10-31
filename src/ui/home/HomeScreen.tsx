@@ -17,6 +17,8 @@ import { importTemplateBytes } from './sources';
 import { cancelThumbnailRequests } from './thumbs';
 import { HomeTopBar } from './TopBar';
 
+import { t } from '../../i18n';
+import { tx } from '../../i18n/react';
 export function HomeScreen() {
   const searchRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -83,9 +85,9 @@ function HomeContent() {
       <div className="flex flex-1 items-center justify-center p-8">
         <EmptyState
           icon={<TriangleAlert />}
-          title="Your projects could not be read"
-          description={error ?? 'Something went wrong while reading the library.'}
-          actions={<Button onClick={() => void refreshProjects()}>Try again</Button>}
+          title={t('Your projects could not be read')}
+          description={error ?? t('Something went wrong while reading the library.')}
+          actions={<Button onClick={() => void refreshProjects()}>{t('Try again')}</Button>}
         />
       </div>
     );
@@ -120,16 +122,16 @@ function Library() {
   const none = shown.length === 0;
   // Isolated, so a right-to-left query keeps its quotes around it.
   const quoted = <>“<bdi>{shorten(query, 40)}</bdi>”</>;
-  const noMatch = <>No projects match {quoted}</>;
+  const noMatch = <>{tx('No projects match {quoted}', { quoted })}</>;
 
   return (
     <div className="mx-auto w-full max-w-[1680px] px-8 pt-7 pb-14">
       <div className="mb-5 flex min-h-12 items-start justify-between gap-4">
         <div className="flex min-w-0 flex-col gap-1">
-          <h1 className="font-display text-[22px] leading-7 font-semibold tracking-[-0.02em] text-text">{searching ? 'Search results' : 'Projects'}</h1>
+          <h1 className="font-display text-[22px] leading-7 font-semibold tracking-[-0.02em] text-text">{searching ? t('Search results') : t('Projects')}</h1>
           {/* Announces every result count; no match only to screen readers, as the empty state below shows it. */}
           <p className={cx('text-xs text-text-3', none && 'sr-only')} aria-live="polite">
-            {!searching ? `${plural(projects.length, 'project')} · ${where}` : none ? noMatch : <>{plural(shown.length, 'project')} matching {quoted}</>}
+            {!searching ? `${plural(projects.length, 'project')} · ${where}` : none ? noMatch : <>{tx('{plural} matching {quoted}', { plural: plural(shown.length, 'project'), quoted })}</>}
           </p>
         </div>
       </div>
@@ -138,8 +140,8 @@ function Library() {
           className="py-20"
           icon={<SearchX />}
           title={noMatch}
-          description={`Check the spelling, or clear the search to see ${projects.length === 1 ? 'your project' : `all ${projects.length} projects`}.`}
-          actions={<Button onClick={() => setQuery('')}>Clear search</Button>}
+          description={t('Check the spelling, or clear the search to see {v}.', { v: projects.length === 1 ? 'your project' : `all ${projects.length} projects` })}
+          actions={<Button onClick={() => setQuery('')}>{t('Clear search')}</Button>}
         />
       ) : (
         <ProjectGrid projects={shown} showNewTile={!searching} />
@@ -196,21 +198,21 @@ async function openDroppedFile(file: File): Promise<void> {
   if (!kind) {
     const image = /\.(png|jpe?g|webp)$/i.test(file.name);
     toast.error(
-      `Wajha can’t open “${shorten(file.name, 48)}” here`,
-      image ? 'Open a project first, then drop screenshots onto its slides.' : 'Drop a .wajha project or a .wajha-template file.',
+      t('Wajha can’t open “{shorten}” here', { shorten: shorten(file.name, 48) }),
+      image ? t('Open a project first, then drop screenshots onto its slides.') : t('Drop a .wajha project or a .wajha-template file.'),
     );
     return;
   }
   // Checked before reading: the open dialog applies the same limit.
   if (file.size > OPEN_FILE_MAX_BYTES[kind]) {
-    toast.error(`Could not open “${shorten(file.name, 48)}”`, `The file is larger than ${megabytes(OPEN_FILE_MAX_BYTES[kind])}.`);
+    toast.error(t('Could not open “{shorten}”', { shorten: shorten(file.name, 48) }), t('The file is larger than {megabytes}.', { megabytes: megabytes(OPEN_FILE_MAX_BYTES[kind]) }));
     return;
   }
   let data: Uint8Array;
   try {
     data = new Uint8Array(await file.arrayBuffer());
   } catch (e) {
-    toast.error(`Could not read “${shorten(file.name, 48)}”`, errorText(e));
+    toast.error(t('Could not read “{shorten}”', { shorten: shorten(file.name, 48) }), errorText(e));
     return;
   }
   if (kind === 'project') {
@@ -276,8 +278,8 @@ function DropOverlay() {
           <FileDown />
         </span>
         <div className="flex flex-col gap-1">
-          <span className="text-[15px] font-semibold text-text">Drop to open</span>
-          <span className="text-xs text-text-2">A .wajha project opens in the editor; a .wajha-template joins My templates.</span>
+          <span className="text-[15px] font-semibold text-text">{t('Drop to open')}</span>
+          <span className="text-xs text-text-2">{t('A .wajha project opens in the editor; a .wajha-template joins My templates.')}</span>
         </div>
       </div>
     </div>

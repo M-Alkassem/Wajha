@@ -11,6 +11,7 @@ import { coveringBoxes, labelSpot, screenBox, type MarkBox } from './hints';
 import type { Guide } from './snapping';
 import { stageBoxes, useRenderSnapshot, useStageUi, type DropTarget, type GestureVisual, type StageBox } from './stageStore';
 
+import { t } from '../../../i18n';
 /** Handle square side (CSS px). */
 export const HANDLE_SIZE = 8;
 /** Distance from the top edge to the rotation knob. */
@@ -154,8 +155,8 @@ function HintLabel({ spot, layout }: { spot: Box; layout: HintLayout }) {
         <ImageUp aria-hidden className={layout === 'icon' ? 'size-3.5' : 'size-4 shrink-0'} strokeWidth={2} />
         {layout !== 'icon' && (
           <span className="flex flex-col whitespace-nowrap">
-            <span className="text-2xs leading-3.5 font-medium">Drop a screenshot</span>
-            <span className="text-[10px] leading-3 text-tooltip-text/70">or double-click</span>
+            <span className="text-2xs leading-3.5 font-medium">{t('Drop a screenshot')}</span>
+            <span className="text-[10px] leading-3 text-tooltip-text/70">{t('or double-click')}</span>
           </span>
         )}
       </div>

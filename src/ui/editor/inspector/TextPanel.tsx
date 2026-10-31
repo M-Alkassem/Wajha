@@ -36,6 +36,8 @@ import { useLive } from './live';
 import { ShadowSection } from './ShadowSection';
 import { patchTarget, refreshFonts, slideById, usePalette, type Target } from './state';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 const TEXT_SHADOW = { color: '#00000059', blur: 0.012, x: 0, y: 0.004 };
 const HIGHLIGHT_SHORTCUT = 'mod+b';
 /** Pause in typing after which missing font subsets are requested. */
@@ -81,7 +83,7 @@ const TextContent = memo(function TextContent({ target, textKey, maxLines, size 
   // A focus request opens the section first; the field takes the request once it is mounted.
   const signal = useFocusRequest(target.elementId);
   return (
-    <InspectorSection id="text.content" title="Text" openSignal={signal}>
+    <InspectorSection id="text.content" title={t('Text')} openSignal={signal}>
       <TextField target={target} textKey={textKey} maxLines={maxLines} size={size} />
     </InspectorSection>
   );
@@ -162,7 +164,7 @@ function TextField({ target, textKey, maxLines, size }: TextContentProps) {
     <>
       <Textarea
         ref={ref}
-        aria-label={`Text in ${languageLabel(lang)}`}
+        aria-label={t('Text in {languageLabel}', { languageLabel: languageLabel(lang) })}
         value={value}
         placeholder={placeholder}
         dir={dir}
@@ -180,18 +182,18 @@ function TextField({ target, textKey, maxLines, size }: TextContentProps) {
         <p className="flex items-center gap-1.5 text-xs leading-4 text-text-3">
           <Languages aria-hidden className="size-3.5 shrink-0" />
           <span className="min-w-0 truncate">
-            Using {languageLabel(base)} text · type to translate
+            {tx('Using {languageLabel} text · type to translate', { languageLabel: languageLabel(base) })}
           </span>
         </p>
       )}
       <div className="flex items-center justify-between gap-2">
         <p className="min-w-0 text-xs leading-4 text-text-3">
-          Wrap words in <span className="font-medium text-text-2">*asterisks*</span> to highlight
+          {t('Wrap words in')} <span className="font-medium text-text-2">{t('*asterisks*')}</span> {t('to highlight')}
         </p>
         <IconButton
           size="sm"
           variant="solid"
-          label="Highlight selected words"
+          label={t('Highlight selected words')}
           shortcut={HIGHLIGHT_SHORTCUT}
           icon={<Highlighter />}
           onMouseDown={(e) => e.preventDefault()}
@@ -226,15 +228,15 @@ function OverflowNote({ target, maxLines, size }: { target: Target; maxLines: nu
       <p className="flex items-start gap-1.5">
         <TriangleAlert aria-hidden className="mt-px size-3.5 shrink-0 text-warning" />
         <span className="min-w-0 text-balance">
-          Too long for {maxLines === 1 ? 'one line' : `${maxLines} lines`}, even shrunk to 60%.
+          {t('Too long for')} {maxLines === 1 ? t('one line') : t('{maxLines} lines', { maxLines })}{t(', even shrunk to 60%.')}
         </span>
       </p>
       <div className="flex flex-wrap gap-1.5 pl-5">
         <Button size="sm" onClick={() => patchTarget(target, { style: { maxLines: more } })}>
-          Allow {more} lines
+          {tx('Allow {more} lines', { more })}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => patchTarget(target, { style: { size: smallerTextSize(size) } })}>
-          Smaller text
+          {t('Smaller text')}
         </Button>
       </div>
     </div>
@@ -255,15 +257,15 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
 
   const alignOptions = useMemo<SegmentedOption<TextStyle['align']>[]>(() => {
     // Visual order is always left, centre, right; in right-to-left languages "start" is the right edge.
-    const left: SegmentedOption<TextStyle['align']> = { value: rtl ? 'end' : 'start', icon: <TextAlignStart />, tooltip: rtl ? 'Align left (end)' : 'Align left (start)' };
-    const right: SegmentedOption<TextStyle['align']> = { value: rtl ? 'start' : 'end', icon: <TextAlignEnd />, tooltip: rtl ? 'Align right (start)' : 'Align right (end)' };
-    return [left, { value: 'center', icon: <TextAlignCenter />, tooltip: 'Align centre' }, right];
+    const left: SegmentedOption<TextStyle['align']> = { value: rtl ? 'end' : 'start', icon: <TextAlignStart />, tooltip: rtl ? t('Align left (end)') : t('Align left (start)') };
+    const right: SegmentedOption<TextStyle['align']> = { value: rtl ? 'start' : 'end', icon: <TextAlignEnd />, tooltip: rtl ? t('Align right (start)') : t('Align right (end)') };
+    return [left, { value: 'center', icon: <TextAlignCenter />, tooltip: t('Align centre') }, right];
   }, [rtl]);
 
   return (
-    <InspectorSection id="text.type" title="Typography">
+    <InspectorSection id="text.type" title={t('Typography')}>
       <FontPicker
-        aria-label="Font"
+        aria-label={t('Font')}
         value={style.font}
         onChange={(font) => {
           if (patchTarget(target, { style: { font, weight: clampWeight(style.weight, weightRange(font)) } })) refreshFonts();
@@ -271,7 +273,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
       />
       <Pair>
         <Select
-          aria-label="Weight"
+          aria-label={t('Weight')}
           value={String(Math.round(style.weight))}
           options={weights}
           onValueChange={(v) => {
@@ -281,7 +283,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         <NumberField
           label={<ALargeSmall />}
           labelTitle="Font size, % of the shorter canvas side"
-          aria-label="Font size"
+          aria-label={t('Font size')}
           value={toPct(style.size)}
           min={0.4}
           max={100}
@@ -295,7 +297,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         <NumberField
           label={<LineHeight />}
           labelTitle="Line height, times the font size"
-          aria-label="Line height"
+          aria-label={t('Line height')}
           value={style.lineHeight}
           min={0.5}
           max={4}
@@ -306,7 +308,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         <NumberField
           label={<LetterSpacing />}
           labelTitle="Letter spacing, em (not applied to Arabic and other joined scripts)"
-          aria-label="Letter spacing"
+          aria-label={t('Letter spacing')}
           value={style.letterSpacing}
           min={-0.5}
           max={2}
@@ -319,13 +321,13 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
       <Pair>
         <div className="flex min-w-0 items-center gap-1">
           <SegmentedControl<TextStyle['align']>
-            aria-label="Alignment"
+            aria-label={t('Alignment')}
             value={style.align}
             options={alignOptions}
             onValueChange={(align) => patchTarget(target, { style: { align } })}
           />
           <IconButton
-            label="Uppercase"
+            label={t('Uppercase')}
             icon={<CaseUpper />}
             active={style.transform === 'uppercase'}
             onClick={() => patchTarget(target, { style: { transform: style.transform === 'uppercase' ? 'none' : 'uppercase' } })}
@@ -334,10 +336,10 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
         <NumberField
           label={<Rows3 />}
           labelTitle="Maximum lines; longer text shrinks to fit (empty = no limit)"
-          aria-label="Maximum lines"
+          aria-label={t('Maximum lines')}
           value={style.maxLines > 0 ? style.maxLines : Number.NaN}
           unit={style.maxLines === 1 ? 'line' : style.maxLines > 1 ? 'lines' : undefined}
-          placeholder="No limit"
+          placeholder={t('No limit')}
           min={0}
           max={50}
           step={1}
@@ -356,20 +358,20 @@ const ColourSection = memo(function ColourSection({ style, target, palette }: { 
   const color = useLive<string>((c) => patchTarget(target, { style: { color: c } }));
   const highlight = useLive<string>((c) => patchTarget(target, { style: { highlight: c } }));
   return (
-    <InspectorSection id="text.colour" title="Colour">
-      <Row label="Text">
-        <ColorField label="Text colour" value={style.color} palette={palette} {...color} />
+    <InspectorSection id="text.colour" title={t('Colour')}>
+      <Row label={t('Text')}>
+        <ColorField label={t('Text colour')} value={style.color} palette={palette} {...color} />
       </Row>
-      <Row label="Highlight">
-        <ColorField label="Highlight colour" value={style.highlight} palette={palette} {...highlight} />
+      <Row label={t('Highlight')}>
+        <ColorField label={t('Highlight colour')} value={style.highlight} palette={palette} {...highlight} />
       </Row>
-      <Row label="Style">
+      <Row label={t('Style')}>
         <SegmentedControl<TextStyle['highlightMode']>
           fullWidth
           value={style.highlightMode}
           options={[
-            { value: 'color', label: 'Colour', tooltip: 'Highlighted words take the highlight colour' },
-            { value: 'marker', label: 'Marker', tooltip: 'A rounded marker is painted behind highlighted words' },
+            { value: 'color', label: t('Colour'), tooltip: t('Highlighted words take the highlight colour') },
+            { value: 'marker', label: t('Marker'), tooltip: t('A rounded marker is painted behind highlighted words') },
           ]}
           onValueChange={(highlightMode) => patchTarget(target, { style: { highlightMode } })}
         />
@@ -381,19 +383,19 @@ const ColourSection = memo(function ColourSection({ style, target, palette }: { 
 /* Box (inside Layout) ------------------------------------------------------------ */
 
 const ANCHORS: SegmentedOption<TextElement['valign']>[] = [
-  { value: 'top', icon: <ArrowDownFromLine />, tooltip: 'Anchor top: the text grows downward' },
-  { value: 'middle', icon: <UnfoldVertical />, tooltip: 'Anchor middle: the text grows both ways' },
-  { value: 'bottom', icon: <ArrowUpFromLine />, tooltip: 'Anchor bottom: the text grows upward' },
+  { value: 'top', icon: <ArrowDownFromLine />, tooltip: t('Anchor top: the text grows downward') },
+  { value: 'middle', icon: <UnfoldVertical />, tooltip: t('Anchor middle: the text grows both ways') },
+  { value: 'bottom', icon: <ArrowUpFromLine />, tooltip: t('Anchor bottom: the text grows upward') },
 ];
 
 const TextBoxRow = memo(function TextBoxRow({ el, target }: { el: TextElement; target: Target }) {
   const width = useLive<number>((v) => patchTarget(target, { width: fromPct(v) }));
   return (
-    <Row label="Text box">
+    <Row label={t('Text box')}>
       <Pair>
-        <NumberField label="W" labelTitle="Box width, % of the shorter canvas side" value={toPct(el.width)} min={2} max={600} step={0.5} precision={2} unit="%" {...width} />
+        <NumberField label={t('W')} labelTitle="Box width, % of the shorter canvas side" value={toPct(el.width)} min={2} max={600} step={0.5} precision={2} unit="%" {...width} />
         <SegmentedControl<TextElement['valign']>
-          aria-label="Vertical anchor"
+          aria-label={t('Vertical anchor')}
           fullWidth
           value={el.valign}
           options={ANCHORS}

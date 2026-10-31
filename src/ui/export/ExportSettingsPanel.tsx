@@ -11,14 +11,16 @@ import { FamilyIcon, RadioCards, SectionHeading, type RadioCardOption } from '..
 import { languageName, localeFor, nativeName, storeName, storesOf } from '../editor/dialogs/labels';
 import type { TreeLine } from './exportModel';
 
+import { t } from '../../i18n';
+import { tx } from '../../i18n/react';
 /** Why the iPhone has two default sizes (Apple's current rules). */
 const IPHONE_SIZES_NOTE =
   'App Store Connect asks for two iPhone sets: 6.3″ for the iPhone 17, 17 Pro and 16 Pro, and 6.9″ for the large models (6.5″ also works instead). Smaller iPhones show scaled versions of these.';
 
 const STRUCTURES: readonly RadioCardOption<ExportStructure>[] = [
-  { value: 'stores', title: 'Stores', description: 'App Store and Google Play folders', icon: <Store /> },
-  { value: 'fastlane', title: 'fastlane', description: 'Drop into your app repository', icon: <Rocket /> },
-  { value: 'flat', title: 'Flat', description: 'One folder per size and language', icon: <FolderTree /> },
+  { value: 'stores', title: t('Stores'), description: t('App Store and Google Play folders'), icon: <Store /> },
+  { value: 'fastlane', title: 'fastlane', description: t('Drop into your app repository'), icon: <Rocket /> },
+  { value: 'flat', title: t('Flat'), description: t('One folder per size and language'), icon: <FolderTree /> },
 ];
 
 export interface ExportSettingsPanelProps {
@@ -46,7 +48,7 @@ export function ExportSettingsPanel(props: ExportSettingsPanelProps) {
   return (
     <div className={cx('flex flex-col gap-7 px-5 pt-4 pb-6', disabled && 'pointer-events-none opacity-60')} aria-disabled={disabled || undefined}>
       <section aria-labelledby={`${ids}-sizes`} className="flex flex-col gap-3">
-        <SectionHeading id={`${ids}-sizes`}>Sizes</SectionHeading>
+        <SectionHeading id={`${ids}-sizes`}>{t('Sizes')}</SectionHeading>
         <div className="flex flex-col gap-4">
           {project.families.map((family) => (
             <FamilySizes key={family} family={family} selected={sizes} onChange={props.onSizeChange} />
@@ -55,35 +57,35 @@ export function ExportSettingsPanel(props: ExportSettingsPanelProps) {
       </section>
 
       <section aria-labelledby={`${ids}-langs`} className="flex flex-col gap-3">
-        <SectionHeading id={`${ids}-langs`}>Languages</SectionHeading>
+        <SectionHeading id={`${ids}-langs`}>{t('Languages')}</SectionHeading>
         <LanguageTable languages={project.languages} selected={languages} stores={stores} onChange={props.onLanguageChange} />
       </section>
 
       <section aria-labelledby={`${ids}-format`} className="flex flex-col gap-3">
-        <SectionHeading id={`${ids}-format`}>Format</SectionHeading>
+        <SectionHeading id={`${ids}-format`}>{t('Format')}</SectionHeading>
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-4">
             <div className="w-40 shrink-0">
               <SegmentedControl
-                aria-label="Format"
+                aria-label={t('Format')}
                 value={format}
                 onValueChange={props.onFormatChange}
                 fullWidth
                 options={[
-                  { value: 'png', label: 'PNG' },
-                  { value: 'jpeg', label: 'JPEG' },
+                  { value: 'png', label: t('PNG') },
+                  { value: 'jpeg', label: t('JPEG') },
                 ]}
               />
             </div>
             <p className="min-w-0 text-xs leading-4 text-text-2">
-              {format === 'png' ? 'Lossless 24-bit, no transparency: what both stores accept.' : 'Smaller files. Fine for photos, softer on text and edges.'}
+              {format === 'png' ? t('Lossless 24-bit, no transparency: what both stores accept.') : t('Smaller files. Fine for photos, softer on text and edges.')}
             </p>
           </div>
           {format === 'jpeg' && (
             <div className="flex items-center gap-4">
-              <span className="w-40 shrink-0 text-xs text-text-2">Quality</span>
+              <span className="w-40 shrink-0 text-xs text-text-2">{t('Quality')}</span>
               <Slider
-                aria-label="JPEG quality"
+                aria-label={t('JPEG quality')}
                 value={Math.round(quality * 100)}
                 min={50}
                 max={100}
@@ -100,7 +102,7 @@ export function ExportSettingsPanel(props: ExportSettingsPanelProps) {
       </section>
 
       <section aria-labelledby={`${ids}-structure`} className="flex flex-col gap-3">
-        <SectionHeading id={`${ids}-structure`}>Folder structure</SectionHeading>
+        <SectionHeading id={`${ids}-structure`}>{t('Folder structure')}</SectionHeading>
         <RadioCards aria-labelledby={`${ids}-structure`} value={structure} onValueChange={props.onStructureChange} options={STRUCTURES} />
         <FolderPreview lines={tree} caption={treeCaption} />
       </section>
@@ -128,10 +130,10 @@ const FamilySizes = memo(function FamilySizes({
         <span className="text-xs font-medium text-text">{info.label}</span>
         <span className="text-xs text-text-3">{info.stores.map(storeName).join(', ')}</span>
         {family === 'iphone' && (
-          <IconButton size="sm" label="Why two iPhone sizes?" tooltip={IPHONE_SIZES_NOTE} icon={<Info />} className="-my-1 text-text-3" />
+          <IconButton size="sm" label={t('Why two iPhone sizes?')} tooltip={IPHONE_SIZES_NOTE} icon={<Info />} className="-my-1 text-text-3" />
         )}
         <span className={cx('ml-auto text-2xs tabular-nums', count === 0 ? 'text-warning' : 'text-text-3')}>
-          {count === 0 ? 'Not exported' : `${count} of ${info.sizes.length}`}
+          {count === 0 ? t('Not exported') : t('{count} of {length}', { count, length: info.sizes.length })}
         </span>
       </div>
       <div className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-field light:bg-raised">
@@ -151,10 +153,10 @@ const SizeRow = memo(function SizeRow({ size, checked, onChange }: { size: Expor
       <Tooltip content={size.devices} side="top" align="start">
         <span className="truncate text-ui text-text">{size.label}</span>
       </Tooltip>
-      <span className="sr-only">for {size.devices}</span>
+      <span className="sr-only">{tx('for {devices}', { devices: size.devices })}</span>
       {size.required && (
         <Badge size="sm" variant="accent">
-          Required
+          {t('Required')}
         </Badge>
       )}
       <span className="ml-auto shrink-0 font-mono text-2xs text-text-3 tabular-nums">
@@ -181,7 +183,7 @@ const LanguageTable = memo(function LanguageTable({
     <div className="overflow-hidden rounded-lg border border-line bg-field light:bg-raised">
       <div className="flex h-7 items-center gap-2.5 border-b border-line px-3 text-2xs font-medium text-text-3" aria-hidden>
         <span className="w-4 shrink-0" />
-        <span className="flex-1">Language</span>
+        <span className="flex-1">{t('Language')}</span>
         {stores.map((s) => (
           <span key={s} className="w-24 shrink-0 text-right">
             {storeName(s)}
@@ -225,7 +227,7 @@ const LanguageRow = memo(function LanguageRow({
         )}
         {base && (
           <Badge size="sm" variant="neutral">
-            Base
+            {t('Base')}
           </Badge>
         )}
       </span>
@@ -237,10 +239,10 @@ const LanguageRow = memo(function LanguageRow({
             {locale}
           </span>
         ) : (
-          <Tooltip key={store} content={`${storeName(store)} has no ${name} localization, so ${name} is skipped for ${storeName(store)} sizes.`}>
+          <Tooltip key={store} content={t('{storeName} has no {name} localization, so {name2} is skipped for {storeName2} sizes.', { storeName: storeName(store), name, name2: name, storeName2: storeName(store) })}>
             <span className="w-24 shrink-0 text-right text-2xs font-medium text-warning">
               <span className="sr-only">{storeName(store)}: </span>
-              Not offered
+              {t('Not offered')}
             </span>
           </Tooltip>
         );
@@ -256,9 +258,9 @@ const FolderPreview = memo(function FolderPreview({ lines, caption }: { lines: r
     <figure className="flex flex-col gap-2 rounded-lg border border-line bg-field px-3 pt-2.5 pb-3 light:bg-surface">
       <figcaption className="text-2xs font-medium text-text-3">{caption}</figcaption>
       {lines.length === 0 ? (
-        <p className="py-3 text-xs text-text-3">Select a size and a language to see where files go.</p>
+        <p className="py-3 text-xs text-text-3">{t('Select a size and a language to see where files go.')}</p>
       ) : (
-        <ul className="flex flex-col font-mono text-2xs leading-5 text-text-2" aria-label="Files and folders">
+        <ul className="flex flex-col font-mono text-2xs leading-5 text-text-2" aria-label={t('Files and folders')}>
           {lines.map((line, i) => (
             <TreeRow key={i} line={line} />
           ))}

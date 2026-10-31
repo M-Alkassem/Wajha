@@ -11,16 +11,17 @@ import { ensureFonts, setAssetReader } from '../../runtime';
 import { readTemplateAsset } from '../../storage';
 import { matchesSearch } from './format';
 
+import { t } from '../../i18n';
 export const CATEGORY_ORDER: readonly TemplateCategory[] = TEMPLATE_CATEGORIES;
 
 export const CATEGORY_LABEL: Readonly<Record<TemplateCategory, string>> = {
-  minimal: 'Minimal',
-  bold: 'Bold',
-  gradient: 'Gradient',
-  dark: 'Dark',
-  playful: 'Playful',
-  panorama: 'Panorama',
-  elegant: 'Elegant',
+  minimal: t('Minimal'),
+  bold: t('Bold'),
+  gradient: t('Gradient'),
+  dark: t('Dark'),
+  playful: t('Playful'),
+  panorama: t('Panorama'),
+  elegant: t('Elegant'),
 };
 
 export function categoryLabel(c: string): string {
@@ -93,9 +94,9 @@ export function blankPreviewProject(family: FamilyId, lang: LangCode): Project {
 }
 
 const HERO_COPY: ReadonlyArray<{ headline: string; subtitle: string }> = [
-  { headline: 'Plan your day *beautifully*', subtitle: 'Tasks, calendar and notes in one calm place.' },
-  { headline: 'Focus on what *matters*', subtitle: 'Smart lists bring today’s priorities to the top.' },
-  { headline: 'See how far you’ve *come*', subtitle: 'Weekly insights that keep you going.' },
+  { headline: 'Plan your day *beautifully*', subtitle: t('Tasks, calendar and notes in one calm place.') },
+  { headline: 'Focus on what *matters*', subtitle: t('Smart lists bring today’s priorities to the top.') },
+  { headline: 'See how far you’ve *come*', subtitle: t('Weekly insights that keep you going.') },
 ];
 
 let heroSample: Project | null = null;

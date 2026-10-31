@@ -6,6 +6,7 @@ import { hashVariant, projectInitials } from './format';
 import { useInView } from './hooks';
 import { requestThumbnail, slideBackgrounds, useProjectThumbnail } from './thumbs';
 
+import { t } from '../../i18n';
 /** The picture's well, like a template tile's: 16:10, 12 px padding, slides 6 px apart. */
 const WELL_ASPECT = 16 / 10;
 const WELL_PAD = 12;
@@ -76,7 +77,7 @@ export const ProjectThumb = memo(function ProjectThumb({ id, name, updatedAt, fa
         <div className="absolute inset-0 z-[1] flex items-center justify-center bg-[var(--overlay)]">
           <span className="flex h-7 items-center gap-2 rounded-full border border-line bg-[var(--glass)] px-3 text-xs font-medium text-text shadow-md backdrop-blur-md">
             <Spinner size={13} label={null} />
-            Opening…
+            {t('Opening…')}
           </span>
         </div>
       )}

@@ -12,6 +12,7 @@ import { fromPct, toPct } from './format';
 import { useLive } from './live';
 import { patchTarget, readElement, type Target } from './state';
 
+import { t } from '../../../i18n';
 /** Last shadow of each element while it is switched off, for this session. */
 const remembered = new Map<string, Shadow>();
 
@@ -68,22 +69,22 @@ export const ShadowSection = memo(function ShadowSection({ id, el, target, defau
   };
 
   return (
-    <InspectorSection id={id} title="Shadow" action={<Switch size="sm" aria-label="Shadow" checked={!!shadow} onCheckedChange={toggle} />}>
+    <InspectorSection id={id} title={t('Shadow')} action={<Switch size="sm" aria-label={t('Shadow')} checked={!!shadow} onCheckedChange={toggle} />}>
       {shadow ? (
         <>
-          <Row label="Colour">
-            <ColorField label="Shadow colour" value={shadow.color} palette={palette} {...color} />
+          <Row label={t('Colour')}>
+            <ColorField label={t('Shadow colour')} value={shadow.color} palette={palette} {...color} />
           </Row>
-          <SliderRow label="Blur" value={toPct(shadow.blur)} apply={applyBlur} min={0} max={20} inputMax={200} step={0.1} precision={2} unit="%" />
-          <Row label="Offset">
+          <SliderRow label={t('Blur')} value={toPct(shadow.blur)} apply={applyBlur} min={0} max={20} inputMax={200} step={0.1} precision={2} unit="%" />
+          <Row label={t('Offset')}>
             <Pair>
-              <NumberField label="X" labelTitle="Horizontal offset, % of the shorter canvas side" value={toPct(shadow.x)} min={-200} max={200} step={0.1} precision={2} unit="%" {...x} />
-              <NumberField label="Y" labelTitle="Vertical offset, % of the shorter canvas side" value={toPct(shadow.y)} min={-200} max={200} step={0.1} precision={2} unit="%" {...y} />
+              <NumberField label={t('X')} labelTitle="Horizontal offset, % of the shorter canvas side" value={toPct(shadow.x)} min={-200} max={200} step={0.1} precision={2} unit="%" {...x} />
+              <NumberField label={t('Y')} labelTitle="Vertical offset, % of the shorter canvas side" value={toPct(shadow.y)} min={-200} max={200} step={0.1} precision={2} unit="%" {...y} />
             </Pair>
           </Row>
         </>
       ) : (
-        <p className="text-xs leading-4 text-text-3">Lifts the {el.kind === 'text' ? 'text' : el.kind === 'device' ? 'device' : 'image'} off the background.</p>
+        <p className="text-xs leading-4 text-text-3">{t('Lifts the')} {el.kind === 'text' ? 'text' : el.kind === 'device' ? 'device' : 'image'} {t('off the background.')}</p>
       )}
     </InspectorSection>
   );

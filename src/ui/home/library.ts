@@ -19,6 +19,7 @@ import {
 import { confirmDialog, deleteProjectById, openProjectById, subscribeProject, toast } from '../../store';
 import { archiveFileName, shorten } from './format';
 
+import { t } from '../../i18n';
 export type LibraryStatus = 'loading' | 'ready' | 'error';
 export type ProjectBusy = 'opening' | 'renaming' | 'duplicating' | 'exporting' | 'deleting';
 
@@ -159,7 +160,7 @@ export async function openProject(id: string): Promise<void> {
   try {
     await openProjectById(id);
   } catch (e) {
-    toast.error('Could not open the project', errorText(e));
+    toast.error(t('Could not open the project'), errorText(e));
     void refreshProjects();
   } finally {
     setBusy(id, null);
@@ -213,7 +214,7 @@ export async function renameProject(id: string, rawName: string, refocus = false
     await saveProject({ ...project, name, updatedAt: Date.now() });
   } catch (e) {
     rename(previous);
-    toast.error('Could not rename the project', errorText(e));
+    toast.error(t('Could not rename the project'), errorText(e));
   } finally {
     setBusy(id, null);
   }
@@ -230,7 +231,7 @@ export async function duplicateProjectById(id: string): Promise<void> {
     await refreshProjects();
     requestFocus(copy.id);
   } catch (e) {
-    toast.error('Could not duplicate the project', errorText(e));
+    toast.error(t('Could not duplicate the project'), errorText(e));
   } finally {
     setBusy(id, null);
   }
@@ -243,9 +244,9 @@ export async function exportProjectFile(id: string): Promise<void> {
   try {
     const bytes = await exportProjectArchive(id);
     const saved = await getPlatform().saveFile(archiveFileName(meta.name, 'wajha'), bytes);
-    if (saved) toast.success('Project exported', saved);
+    if (saved) toast.success(t('Project exported'), saved);
   } catch (e) {
-    if (!isCancel(e)) toast.error('Could not export the project', errorText(e));
+    if (!isCancel(e)) toast.error(t('Could not export the project'), errorText(e));
   } finally {
     setBusy(id, null);
   }
@@ -256,9 +257,9 @@ export async function deleteProjectWithConfirm(id: string): Promise<void> {
   if (!meta || useLibrary.getState().busy[id]) return;
   const where = getPlatform().kind === 'desktop' ? 'this computer' : 'this browser';
   const ok = await confirmDialog({
-    title: `Delete “${shorten(meta.name)}”?`,
-    message: `The project and its screenshots will be removed from ${where}. This cannot be undone.`,
-    confirmLabel: 'Delete project',
+    title: t('Delete “{shorten}”?', { shorten: shorten(meta.name) }),
+    message: t('The project and its screenshots will be removed from {where}. This cannot be undone.', { where }),
+    confirmLabel: t('Delete project'),
     danger: true,
   });
   if (!ok) return;
@@ -272,7 +273,7 @@ export async function deleteProjectWithConfirm(id: string): Promise<void> {
     useLibrary.setState((s) => ({ projects: s.projects.filter((m) => m.id !== id) }));
     if (neighbour && focusIsOn(id)) requestFocus(neighbour.id);
   } catch (e) {
-    toast.error('Could not delete the project', errorText(e));
+    toast.error(t('Could not delete the project'), errorText(e));
   } finally {
     setBusy(id, null);
   }
@@ -288,7 +289,7 @@ export async function importProjectBytes(data: Uint8Array, fileName: string): Pr
     void refreshProjects();
     await openProjectById(meta.id);
   } catch (e) {
-    toast.error(`Could not open “${shorten(fileName, 48)}”`, errorText(e));
+    toast.error(t('Could not open “{shorten}”', { shorten: shorten(fileName, 48) }), errorText(e));
   } finally {
     useLibrary.setState({ importing: false });
   }
@@ -301,7 +302,7 @@ export async function openProjectFile(): Promise<void> {
   try {
     file = await getPlatform().openFile('project');
   } catch (e) {
-    if (!isCancel(e)) toast.error('Could not open the file', errorText(e));
+    if (!isCancel(e)) toast.error(t('Could not open the file'), errorText(e));
     return;
   }
   if (file) await importProjectBytes(file.data, file.name);

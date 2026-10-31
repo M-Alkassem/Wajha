@@ -20,6 +20,8 @@ import { FRAME_LABEL, fontLabel, shotStatus, type ShotStatus } from './format';
 import { PaletteEditor } from './PaletteEditor';
 import { refreshFonts, slideById, useEditorDeep, usePalette } from './state';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 export interface SlidePanelProps {
   slideId: string;
   family: FamilyId;
@@ -32,9 +34,9 @@ export const SlidePanel = memo(function SlidePanel({ slideId, family }: SlidePan
       <SlideSection slideId={slideId} family={family} palette={palette} />
       <ScreenshotsSection slideId={slideId} family={family} />
       <ThemeSection palette={palette} />
-      <InspectorSection id="theme.palette" title="Palette">
+      <InspectorSection id="theme.palette" title={t('Palette')}>
         <PaletteEditor palette={palette} />
-        <Hint>Offered first in every colour picker. Mock screens use the first colour as their accent.</Hint>
+        <Hint>{t('Offered first in every colour picker. Mock screens use the first colour as their accent.')}</Hint>
       </InspectorSection>
       <FontsSection />
       <ProjectSection />
@@ -86,28 +88,28 @@ const SlideSection = memo(function SlideSection({ slideId, family, palette }: { 
   );
 
   return (
-    <InspectorSection id="slide.background" title="Slide">
+    <InspectorSection id="slide.background" title={t('Slide')}>
       <div className="flex min-h-7 items-center justify-between gap-2">
-        <Switch label="Use theme background" checked={own === null} onCheckedChange={followTheme} />
+        <Switch label={t('Use theme background')} checked={own === null} onCheckedChange={followTheme} />
       </div>
-      {own && familyCount > 1 && <Hint>Applies to this slide’s {FAMILIES[family].label} layout.</Hint>}
+      {own && familyCount > 1 && <Hint>{tx('Applies to this slide’s {label} layout.', { label: FAMILIES[family].label })}</Hint>}
       {own && <BackgroundFields scope={`slide:${slideId}:${family}`} value={own} applyFill={applyFill} read={current} updatePattern={updatePattern} palette={palette} />}
       {customLayout && (
         <div className="mt-1 flex items-center gap-2 rounded-md border border-line bg-surface px-2.5 py-2 light:bg-raised">
           <LayoutTemplate aria-hidden className="size-3.5 shrink-0 text-text-3" />
           <p className="min-w-0 flex-1 text-xs leading-4 text-text-2">
-            Own {FAMILIES[family].shortLabel} layout, independent of {FAMILIES[primary].shortLabel}.
+            {tx('Own {shortLabel} layout, independent of {shortLabel2}.', { shortLabel: FAMILIES[family].shortLabel, shortLabel2: FAMILIES[primary].shortLabel })}
           </p>
           <Button
             size="sm"
             variant="ghost"
             leadingIcon={<RotateCcw />}
-            title={`Follow the ${FAMILIES[primary].label} layout instead`}
+            title={t('Follow the {label} layout instead', { label: FAMILIES[primary].label })}
             onClick={() => {
               if (useEditor.getState().resetLayout(slideId, family)) toastWithUndo('Layout reset', `It now follows the ${FAMILIES[primary].label} layout.`);
             }}
           >
-            Reset
+            {t('Reset')}
           </Button>
         </div>
       )}
@@ -156,14 +158,14 @@ const ScreenshotsSection = memo(function ScreenshotsSection({ slideId, family }:
   };
 
   return (
-    <InspectorSection id="slide.shots" title="Screenshots">
+    <InspectorSection id="slide.shots" title={t('Screenshots')}>
       {rows.length === 0 ? (
-        <Hint icon={<MonitorSmartphone />}>No device on this slide. Add one to show a screenshot.</Hint>
+        <Hint icon={<MonitorSmartphone />}>{t('No device on this slide. Add one to show a screenshot.')}</Hint>
       ) : (
         rows.map((row) => (
           <div key={row.device.id} className="flex flex-col gap-0.5">
             {rows.length > 1 && <p className="px-1.5 pt-1 pb-0.5 text-2xs font-medium text-text-3">{row.device.label}</p>}
-            <div role="listbox" aria-label={`${row.device.label} screenshots by language`} className="-mx-1.5 flex flex-col gap-px">
+            <div role="listbox" aria-label={t('{label} screenshots by language', { label: row.device.label })} className="-mx-1.5 flex flex-col gap-px">
               {row.langs.map(({ code, status }) => {
                 const info = languageInfo(code);
                 return (
@@ -184,7 +186,7 @@ const ScreenshotsSection = memo(function ScreenshotsSection({ slideId, family }:
                     selected={false}
                     aria-current={code === activeLang || undefined}
                     className={cx(code === activeLang && 'bg-surface-2')}
-                    title={`Show the ${info.name} screenshot`}
+                    title={t('Show the {name} screenshot', { name: info.name })}
                     onSelect={() => open(row.device.id, code)}
                   />
                 );
@@ -224,17 +226,17 @@ const ThemeSection = memo(function ThemeSection({ palette }: { palette: readonly
 
   if (!background) return null;
   return (
-    <InspectorSection id="theme.background" title="Theme">
+    <InspectorSection id="theme.background" title={t('Theme')}>
       <BackgroundFields scope="theme" value={background} applyFill={applyFill} read={readThemeBackground} updatePattern={updatePattern} palette={palette} />
       <div className="mt-1 flex flex-col gap-1">
-        <Switch label="Panorama" checked={panorama} onCheckedChange={(on) => useEditor.getState().setPanorama(on)} />
+        <Switch label={t('Panorama')} checked={panorama} onCheckedChange={(on) => useEditor.getState().setPanorama(on)} />
         <Hint className="pl-9">
-          {slideCount > 1 ? `One background flows across all ${slideCount} slides, like a single wide picture.` : 'One background flows across all slides, like a single wide picture.'}
+          {slideCount > 1 ? t('One background flows across all {slideCount} slides, like a single wide picture.', { slideCount }) : t('One background flows across all slides, like a single wide picture.')}
         </Hint>
       </div>
       <div className="flex flex-col gap-1">
-        <Switch label="Dark mock screens" checked={mockDark} onCheckedChange={(on) => useEditor.getState().setMockDark(on)} />
-        <Hint className="pl-9">Placeholder app screens shown until a screenshot is added.</Hint>
+        <Switch label={t('Dark mock screens')} checked={mockDark} onCheckedChange={(on) => useEditor.getState().setMockDark(on)} />
+        <Hint className="pl-9">{t('Placeholder app screens shown until a screenshot is added.')}</Hint>
       </div>
     </InspectorSection>
   );
@@ -256,7 +258,7 @@ const FontsSection = memo(function FontsSection() {
   const apply = () => {
     const s = useEditor.getState();
     if (!s.applyFonts(h, b)) {
-      toast.info('Every text already uses these fonts');
+      toast.info(t('Every text already uses these fonts'));
       setDraft(null);
       return;
     }
@@ -266,16 +268,16 @@ const FontsSection = memo(function FontsSection() {
   };
 
   return (
-    <InspectorSection id="theme.fonts" title="Fonts">
-      <Row label="Heading">
+    <InspectorSection id="theme.fonts" title={t('Fonts')}>
+      <Row label={t('Heading')}>
         <FontPicker value={h} onChange={(f) => setDraft({ basis, heading: f, body: b })} />
       </Row>
-      <Row label="Body">
+      <Row label={t('Body')}>
         <FontPicker value={b} onChange={(f) => setDraft({ basis, heading: h, body: f })} />
       </Row>
       <div className="grid gap-x-2" style={{ gridTemplateColumns: `${LABEL_WIDTH}px minmax(0, 1fr)` }}>
         <Button size="sm" variant={changed ? 'primary' : 'secondary'} leadingIcon={<Type />} className="col-start-2 justify-self-start" onClick={apply}>
-          Apply to all text
+          {t('Apply to all text')}
         </Button>
       </div>
     </InspectorSection>
@@ -284,7 +286,7 @@ const FontsSection = memo(function FontsSection() {
 
 /** Success toast with an Undo action. */
 function toastWithUndo(title: string, description: string): void {
-  toast.push({ kind: 'success', title, description, action: { label: 'Undo', run: () => useEditor.getState().undo() } });
+  toast.push({ kind: 'success', title, description, action: { label: t('Undo'), run: () => useEditor.getState().undo() } });
 }
 
 /* Project --------------------------------------------------------------------- */
@@ -303,32 +305,32 @@ const ProjectSection = memo(function ProjectSection() {
   const more = languages.length - shown.length;
 
   return (
-    <InspectorSection id="project" title="Project" borderless>
-      <ChipGroup label="Devices" manageLabel="Manage devices" onManage={() => openDialog('families')}>
+    <InspectorSection id="project" title={t('Project')} borderless>
+      <ChipGroup label={t('Devices')} manageLabel="Manage devices" onManage={() => openDialog('families')}>
           {families.map((f, i) => (
-            <Chip key={f} active={f === activeFamily} title={i === 0 ? `${FAMILIES[f].label} (primary: other devices adapt its layouts)` : FAMILIES[f].label} onClick={() => useEditor.getState().setActiveFamily(f)}>
+            <Chip key={f} active={f === activeFamily} title={i === 0 ? t('{label} (primary: other devices adapt its layouts)', { label: FAMILIES[f].label }) : FAMILIES[f].label} onClick={() => useEditor.getState().setActiveFamily(f)}>
               {FAMILIES[f].shortLabel}
             </Chip>
           ))}
       </ChipGroup>
-      <ChipGroup label="Languages" manageLabel="Manage languages" onManage={() => openDialog('languages')}>
+      <ChipGroup label={t('Languages')} manageLabel="Manage languages" onManage={() => openDialog('languages')}>
           {shown.map((code, i) => {
             const info = languageInfo(code);
             return (
-              <Chip key={code} active={code === activeLang} title={i === 0 ? `${info.name}: base language, used where a translation is missing` : info.name} onClick={() => useEditor.getState().setActiveLang(code)}>
+              <Chip key={code} active={code === activeLang} title={i === 0 ? t('{name}: base language, used where a translation is missing', { name: info.name }) : info.name} onClick={() => useEditor.getState().setActiveLang(code)}>
                 <span className="truncate">{info.name}</span>
-                {i === 0 && languages.length > 1 && <span className="text-2xs font-normal opacity-70">Base</span>}
+                {i === 0 && languages.length > 1 && <span className="text-2xs font-normal opacity-70">{t('Base')}</span>}
               </Chip>
             );
           })}
           {more > 0 && (
-            <Chip active={false} title="Show every language" onClick={() => openDialog('languages')}>
-              +{more} more
+            <Chip active={false} title={t('Show every language')} onClick={() => openDialog('languages')}>
+              {tx('+{more} more', { more })}
             </Chip>
           )}
       </ChipGroup>
       <Button size="sm" leadingIcon={<Languages />} onClick={() => openDialog('translations')} className="self-start">
-        Translations…
+        {t('Translations…')}
       </Button>
     </InspectorSection>
   );
@@ -344,7 +346,7 @@ function ChipGroup({ label, manageLabel, onManage, children }: { label: string; 
           {label}
         </span>
         <Button size="sm" variant="ghost" leadingIcon={<Settings2 />} aria-label={manageLabel} onClick={onManage} className="-my-1 -mr-0.5">
-          Manage…
+          {t('Manage…')}
         </Button>
       </div>
       <div role="group" aria-labelledby={id} className="flex flex-wrap gap-1">

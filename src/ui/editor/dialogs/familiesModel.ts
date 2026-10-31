@@ -5,6 +5,7 @@ import { FAMILIES } from '../../../model/catalog';
 import type { FamilyId, Project } from '../../../model/types';
 import { plural } from './labels';
 
+import { t } from '../../../i18n';
 /** Screenshots placed for a family (every slide, slot and language). */
 export function familyShotCount(project: Project, family: FamilyId): number {
   let n = 0;
@@ -34,5 +35,5 @@ export function disableConfirmation(project: Project, family: FamilyId): { title
   if (shots > 0) parts.push(`${label} has ${plural(shots, 'screenshot')}. They stay in the project and come back when you turn ${label} on again, but nothing is exported for it.`);
   else parts.push(`Nothing is exported for ${label} while it is off; its layouts stay in the project.`);
   if (primary) parts.push(`${FAMILIES[project.families[1]].label} becomes the primary device, and devices without their own layouts adapt from it.`);
-  return { title: `Turn off ${label}?`, message: parts.join(' ') };
+  return { title: t('Turn off {label}?', { label }), message: parts.join(' ') };
 }

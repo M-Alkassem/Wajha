@@ -15,6 +15,7 @@ import { LIMITS, cleanName, cleanText } from '../model/rules';
 import type { AppSettings } from '../model/types';
 import { loadSettings as readSettings, saveSettings as writeSettings } from '../storage';
 
+import { t } from '../i18n';
 export type Route = { name: 'home' } | { name: 'editor'; projectId: string };
 
 export type ToastKind = 'info' | 'success' | 'error' | 'warning';
@@ -207,7 +208,7 @@ export function createAppStore() {
           } catch (e) {
             get().pushToast({
               kind: 'error',
-              title: 'Settings were not saved',
+              title: t('Settings were not saved'),
               description: e instanceof Error ? e.message : String(e),
             });
           }

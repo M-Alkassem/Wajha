@@ -8,6 +8,7 @@ import type { LangCode, Project, Slide } from '../../../model/types';
 import type { CsvImportResult } from '../../../export/types';
 import { languageName, listJoin, plural, textKeyLabel } from './labels';
 
+import { t } from '../../../i18n';
 export interface TranslationRow {
   /** Unique per slide and key. */
   id: string;
@@ -164,8 +165,8 @@ export function importSummary(r: Pick<CsvImportResult, 'updatedCells' | 'addedLa
   // One count for both causes: a slide number the project lacks, and a key that is empty or one the model refuses.
   if (r.skippedRows) notes.push(`Skipped ${plural(r.skippedRows, 'row')} with no matching slide or no valid key.`);
   const description = notes.join(' ') || undefined;
-  if (r.updatedCells > 0) return { kind: 'success', title: `Updated ${plural(r.updatedCells, 'text')}`, description };
-  if (r.addedLanguages.length) return { kind: 'success', title: 'Translations imported', description };
+  if (r.updatedCells > 0) return { kind: 'success', title: t('Updated {plural}', { plural: plural(r.updatedCells, 'text') }), description };
+  if (r.addedLanguages.length) return { kind: 'success', title: t('Translations imported'), description };
   // Skipped rows were never compared, so only a file without any can be said to match.
-  return { kind: 'info', title: 'Nothing to update', description: description ?? 'Every text in the file matches the project.' };
+  return { kind: 'info', title: t('Nothing to update'), description: description ?? t('Every text in the file matches the project.') };
 }

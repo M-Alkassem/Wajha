@@ -8,6 +8,7 @@ import { getPlatform } from '../../../platform';
 import { exportProjectArchive } from '../../../storage';
 import { flushProject, goHome, toast, useApp, useEditor } from '../../../store';
 
+import { t } from '../../../i18n';
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 let leaving: Promise<void> | null = null;
@@ -25,9 +26,9 @@ export function leaveEditor(): Promise<void> {
     } catch (err) {
       useApp.getState().pushToast({
         kind: 'error',
-        title: 'Your latest changes are not saved',
-        description: `${message(err)} Stay to try again, or leave and lose them.`,
-        action: { label: 'Leave anyway', run: () => void goHome({ discard: true }) },
+        title: t('Your latest changes are not saved'),
+        description: t('{message} Stay to try again, or leave and lose them.', { message: message(err) }),
+        action: { label: t('Leave anyway'), run: () => void goHome({ discard: true }) },
         duration: 12000,
       });
     } finally {
@@ -43,7 +44,7 @@ export async function retrySave(): Promise<boolean> {
     await flushProject();
     return true;
   } catch (err) {
-    toast.error('Still could not save', message(err));
+    toast.error(t('Still could not save'), message(err));
     return false;
   }
 }
@@ -66,7 +67,7 @@ export async function exportProjectFile(): Promise<void> {
   exporting = true;
   const progress: { toast: string | null } = { toast: null };
   const timer = setTimeout(() => {
-    progress.toast = useApp.getState().pushToast({ kind: 'info', title: 'Preparing the project file…', duration: 0 });
+    progress.toast = useApp.getState().pushToast({ kind: 'info', title: t('Preparing the project file…'), duration: 0 });
   }, 400);
   try {
     await flushProject();
@@ -75,9 +76,9 @@ export async function exportProjectFile(): Promise<void> {
     // The save dialog is the progress from here on.
     if (progress.toast) useApp.getState().dismissToast(progress.toast);
     const saved = await getPlatform().saveFile(projectFileName(project.name), bytes);
-    if (saved) toast.success('Project file saved', saved);
+    if (saved) toast.success(t('Project file saved'), saved);
   } catch (err) {
-    toast.error('Could not export the project', message(err));
+    toast.error(t('Could not export the project'), message(err));
   } finally {
     clearTimeout(timer);
     if (progress.toast) useApp.getState().dismissToast(progress.toast);

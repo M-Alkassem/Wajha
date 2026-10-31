@@ -1,4 +1,5 @@
-/**
+
+import { t } from '../../i18n';/**
  * Keyboard shortcut helpers shared by Kbd, Tooltip, the menus and the app's
  * own key handling. Shortcuts are written once, platform-neutral, as
  * "mod+shift+z": `mod` is Command on macOS and Control elsewhere.
@@ -29,7 +30,7 @@ const MAC_ORDER: Modifier[] = ['ctrl', 'alt', 'shift', 'meta'];
 const PC_ORDER: Modifier[] = ['ctrl', 'alt', 'shift', 'meta'];
 
 const MAC_MODIFIER_LABEL: Record<Modifier, string> = { ctrl: '⌃', alt: '⌥', shift: '⇧', meta: '⌘' };
-const PC_MODIFIER_LABEL: Record<Modifier, string> = { ctrl: 'Ctrl', alt: 'Alt', shift: 'Shift', meta: 'Win' };
+const PC_MODIFIER_LABEL: Record<Modifier, string> = { ctrl: t('Ctrl'), alt: t('Alt'), shift: t('Shift'), meta: t('Win') };
 const MODIFIER_WORD: Record<Modifier, { mac: string; pc: string }> = {
   ctrl: { mac: 'Control', pc: 'Control' },
   alt: { mac: 'Option', pc: 'Alt' },

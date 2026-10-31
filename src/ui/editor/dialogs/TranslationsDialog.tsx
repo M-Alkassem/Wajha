@@ -17,6 +17,8 @@ import { TranslationsGrid } from './TranslationsGrid';
 import { importPayload, importSummary, legacyCsvEncoding, matchesQuery, regroup, rowIsMissing, translationRows, translationStats } from './translationsModel';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
+import { tx } from '../../../i18n/react';
 function message(err: unknown): string {
   if (typeof err === 'string') return err;
   return err instanceof Error && err.message ? err.message : 'Unknown error';
@@ -80,9 +82,9 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
     try {
       const platform = getPlatform();
       const saved = await platform.saveFile(`${sanitizeSegment(p.name)} translations.csv`, new TextEncoder().encode(textsToCsv(p)));
-      if (saved) toast.success('Translations exported', platform.kind === 'web' ? `Downloaded ${saved}.` : saved);
+      if (saved) toast.success(t('Translations exported'), platform.kind === 'web' ? t('Downloaded {saved}.', { saved }) : saved);
     } catch (err) {
-      toast.error('Could not export the translations', message(err));
+      toast.error(t('Could not export the translations'), message(err));
     } finally {
       if (alive.current) setBusy(null);
     }
@@ -100,7 +102,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       try {
         result = csvToTexts(p, text);
       } catch (err) {
-        toast.error(`Could not import ${file.name || 'the file'}`, message(err));
+        toast.error(t('Could not import {v}', { v: file.name || 'the file' }), message(err));
         return;
       }
       const payload = importPayload(p, result);
@@ -109,7 +111,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       toast.push({ kind: summary.kind, title: summary.title, description: summary.description });
       if (alive.current && onlyMissing) takeSnapshot();
     } catch (err) {
-      toast.error('Could not open the file', message(err));
+      toast.error(t('Could not open the file'), message(err));
     } finally {
       if (alive.current) setBusy(null);
     }
@@ -127,7 +129,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
         />
       </div>
       <span className="text-xs whitespace-nowrap text-text-2 tabular-nums">
-        <span className="font-medium text-text">{stats.translated.toLocaleString('en-US')}</span> of {plural(stats.total, 'text')} translated
+        <span className="font-medium text-text">{stats.translated.toLocaleString('en-US')}</span> {tx('of {plural} translated', { plural: plural(stats.total, 'text') })}
       </span>
     </div>
   ) : (
@@ -140,8 +142,8 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       <EmptyState
         className="h-full"
         icon={<Type />}
-        title="No texts yet"
-        description="Add a headline, subtitle or caption to a slide and it shows up here in every language."
+        title={t('No texts yet')}
+        description={t('Add a headline, subtitle or caption to a slide and it shows up here in every language.')}
       />
     );
   } else if (rows.length === 0) {
@@ -149,8 +151,8 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       <EmptyState
         className="h-full"
         icon={<Search />}
-        title={`No texts match “${query.trim()}”`}
-        description="Search looks at text names, slide numbers and every translation."
+        title={t('No texts match “{v}”', { v: query.trim() })}
+        description={t('Search looks at text names, slide numbers and every translation.')}
         actions={
           <Button
             onClick={() => {
@@ -158,7 +160,7 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
               searchRef.current?.focus();
             }}
           >
-            Clear search
+            {t('Clear search')}
           </Button>
         }
       />
@@ -166,9 +168,9 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       <EmptyState
         className="h-full"
         icon={<CircleCheck />}
-        title="Everything is translated"
-        description={`Every text has a translation in ${hasTargets ? 'every language' : languageName(project.languages[0])}.`}
-        actions={<Button onClick={() => toggleMissing(false)}>Show all texts</Button>}
+        title={t('Everything is translated')}
+        description={t('Every text has a translation in {v}.', { v: hasTargets ? 'every language' : languageName(project.languages[0]) })}
+        actions={<Button onClick={() => toggleMissing(false)}>{t('Show all texts')}</Button>}
       />
     );
   } else {
@@ -180,11 +182,11 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
       <DialogContent
         size="full"
         icon={<Languages />}
-        title="Translations"
-        description="Edit every text in every language. Empty translations show the base text in the store screenshots."
+        title={t('Translations')}
+        description={t('Edit every text in every language. Empty translations show the base text in the store screenshots.')}
         headerAction={
           <Button variant="ghost" size="sm" leadingIcon={<Languages />} onClick={manageLanguages}>
-            Manage languages
+            {t('Manage languages')}
           </Button>
         }
         flush
@@ -204,19 +206,19 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
         footerStart={
           <span className="flex items-center gap-3 truncate">
             <span className="flex items-center gap-1.5">
-              <Kbd keys="enter" /> Next row
+              <Kbd keys="enter" /> {t('Next row')}
             </span>
             <span className="flex items-center gap-1.5">
-              <Kbd keys="shift+enter" /> New line
+              <Kbd keys="shift+enter" /> {t('New line')}
             </span>
             <span className="truncate">
-              <span className="font-mono text-text">*word*</span> highlights a word
+              <span className="font-mono text-text">{t('*word*')}</span> {t('highlights a word')}
             </span>
           </span>
         }
         footer={
           <Button variant="primary" onClick={() => onOpenChange(false)}>
-            Done
+            {t('Done')}
           </Button>
         }
       >
@@ -224,24 +226,24 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
           <Input
             ref={searchRef}
             type="search"
-            aria-label="Search texts"
-            placeholder="Search texts"
+            aria-label={t('Search texts')}
+            placeholder={t('Search texts')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             leadingIcon={<Search />}
-            suffix={query ? <IconButton size="sm" label="Clear search" tooltip={false} icon={<X />} onClick={() => setQuery('')} className="-mr-1" /> : undefined}
+            suffix={query ? <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} onClick={() => setQuery('')} className="-mr-1" /> : undefined}
             containerClassName="w-64"
           />
-          <Switch label="Only missing" checked={onlyMissing} onCheckedChange={toggleMissing} disabled={allRows.length === 0} />
+          <Switch label={t('Only missing')} checked={onlyMissing} onCheckedChange={toggleMissing} disabled={allRows.length === 0} />
           <div className="flex-1" />
           {counter}
           <Divider orientation="vertical" className="my-3" />
           <div className="flex items-center gap-2">
             <Button size="md" leadingIcon={<Upload />} loading={busy === 'import'} disabled={busy !== null && busy !== 'import'} onClick={() => void importCsv()}>
-              Import CSV
+              {t('Import CSV')}
             </Button>
             <Button size="md" leadingIcon={<Download />} loading={busy === 'export'} disabled={(busy !== null && busy !== 'export') || allRows.length === 0} onClick={() => void exportCsv()}>
-              Export CSV
+              {t('Export CSV')}
             </Button>
           </div>
         </div>
@@ -249,10 +251,10 @@ function TranslationsBody({ project, open, onOpenChange }: EditorDialogProps & {
           <div className="flex shrink-0 items-center gap-3 border-b border-line bg-accent-soft px-5 py-2.5">
             <Languages aria-hidden className="size-4 shrink-0 text-accent-fg" />
             <p className="min-w-0 flex-1 text-xs text-text">
-              This project has one language. Add languages to translate your screenshots, or import a CSV with more language columns.
+              {t('This project has one language. Add languages to translate your screenshots, or import a CSV with more language columns.')}
             </p>
             <Button size="sm" variant="primary" onClick={manageLanguages}>
-              Add languages
+              {t('Add languages')}
             </Button>
           </div>
         )}

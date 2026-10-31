@@ -21,11 +21,12 @@ import { useEditorUi } from '../editorUi';
 import { FRAME_ICONS } from '../familyMeta';
 import { FAMILIES } from '../../../model/catalog';
 
+import { t } from '../../../i18n';
 /** Copy a new text layer starts with, so it is visible on the slide right away. */
 const SAMPLE_TEXT: Record<TextRole, string> = {
-  headline: 'Your headline',
-  subtitle: 'A short line about this screen',
-  caption: 'New',
+  headline: t('Your headline'),
+  subtitle: t('A short line about this screen'),
+  caption: t('New'),
 };
 
 /** Images added at once from the picker (each becomes a layer). */
@@ -37,7 +38,7 @@ function reportSkipped(report: ImportReport): void {
   if (!report.skipped.length) return;
   const first = report.skipped[0];
   const more = report.skipped.length > 1 ? ` (+${report.skipped.length - 1} more)` : '';
-  toast.warning(report.skipped.length === 1 ? `Skipped ${first.name}` : `Skipped ${report.skipped.length} files`, `${first.message}${more}`);
+  toast.warning(report.skipped.length === 1 ? t('Skipped {name}', { name: first.name }) : t('Skipped {length} files', { length: report.skipped.length }), `${first.message}${more}`);
 }
 
 /** Adds a layer to the active slide and family; returns its id (it is selected by the store). */
@@ -45,7 +46,7 @@ function addLayer(kind: ElementKind, init?: AddElementInit): string | null {
   const s = useEditor.getState();
   if (!s.project || !s.activeSlideId) return null;
   const id = s.addElement(s.activeSlideId, s.activeFamily, kind, init);
-  if (!id) toast.warning('Could not add the layer', 'This slide already has as many layers as it can hold.');
+  if (!id) toast.warning(t('Could not add the layer'), t('This slide already has as many layers as it can hold.'));
   return id;
 }
 
@@ -71,7 +72,7 @@ async function addImages(): Promise<void> {
   try {
     report = await pickAndImportImagesWithReport(project.id);
   } catch (err) {
-    toast.error('Could not import images', err instanceof Error ? err.message : String(err));
+    toast.error(t('Could not import images'), err instanceof Error ? err.message : String(err));
     return;
   }
   reportSkipped(report);
@@ -85,15 +86,15 @@ async function addImages(): Promise<void> {
     addLayer('image', { assetId: asset.id, patch: offset ? { x: 0.5 + offset, y: 0.5 + offset } : undefined });
   });
   if (report.assets.length > MAX_IMAGES_AT_ONCE) {
-    toast.info(`Added the first ${MAX_IMAGES_AT_ONCE} images`, `Up to ${MAX_IMAGES_AT_ONCE} images can be added at a time.`);
+    toast.info(t('Added the first {MAX_IMAGES_AT_ONCE} images', { MAX_IMAGES_AT_ONCE }), t('Up to {MAX_IMAGES_AT_ONCE} images can be added at a time.', { MAX_IMAGES_AT_ONCE }));
   }
 }
 
 const SHAPES: { shape: ShapeKind; label: string; icon: ReactNode }[] = [
-  { shape: 'circle', label: 'Circle', icon: <Circle /> },
-  { shape: 'rect', label: 'Rounded rect', icon: <Square /> },
-  { shape: 'blob', label: 'Blob', icon: <Shapes /> },
-  { shape: 'ring', label: 'Ring', icon: <CircleDashed /> },
+  { shape: 'circle', label: t('Circle'), icon: <Circle /> },
+  { shape: 'rect', label: t('Rounded rect'), icon: <Square /> },
+  { shape: 'blob', label: t('Blob'), icon: <Shapes /> },
+  { shape: 'ring', label: t('Ring'), icon: <CircleDashed /> },
 ];
 
 export interface AddElementMenuProps {
@@ -117,10 +118,10 @@ export function AddElementMenu({ variant = 'icon', align = 'end' }: AddElementMe
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         {variant === 'icon' ? (
-          <IconButton label="Add layer" icon={<Plus />} size="sm" className="aria-expanded:bg-surface-2 aria-expanded:text-text" />
+          <IconButton label={t('Add layer')} icon={<Plus />} size="sm" className="aria-expanded:bg-surface-2 aria-expanded:text-text" />
         ) : (
           <Button size="sm" leadingIcon={<Plus />}>
-            Add layer
+            {t('Add layer')}
           </Button>
         )}
       </DropdownMenuTrigger>
@@ -136,20 +137,20 @@ export function AddElementMenu({ variant = 'icon', align = 'end' }: AddElementMe
         }}
       >
         <DropdownMenuItem icon={<Heading1 />} onSelect={() => text('headline')}>
-          Headline
+          {t('Headline')}
         </DropdownMenuItem>
         <DropdownMenuItem icon={<Type />} onSelect={() => text('subtitle')}>
-          Subtitle
+          {t('Subtitle')}
         </DropdownMenuItem>
         <DropdownMenuItem icon={<CaseUpper />} onSelect={() => text('caption')}>
-          Caption
+          {t('Caption')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem icon={<DeviceIcon />} onSelect={() => addLayer('device')}>
-          Device
+          {t('Device')}
         </DropdownMenuItem>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger icon={<Shapes />}>Shape</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger icon={<Shapes />}>{t('Shape')}</DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="min-w-[176px]">
             {SHAPES.map((s) => (
               <DropdownMenuItem key={s.shape} icon={s.icon} onSelect={() => addLayer('shape', { shape: s.shape })}>
@@ -159,7 +160,7 @@ export function AddElementMenu({ variant = 'icon', align = 'end' }: AddElementMe
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuItem icon={<ImagePlus />} onSelect={() => void addImages()}>
-          Image…
+          {t('Image…')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

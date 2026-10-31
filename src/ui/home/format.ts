@@ -7,6 +7,7 @@ import { FAMILIES } from '../../model/catalog';
 import type { FamilyId } from '../../model/types';
 import { sanitizeSegment } from '../../export/paths';
 
+import { t } from '../../i18n';
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
@@ -154,18 +155,18 @@ export function archiveKind(fileName: string): 'project' | 'template' | null {
 
 /** Names used for device families on the home screen (shorter than the catalog's for the feature graphic). */
 export const FAMILY_NAME: Readonly<Record<FamilyId, string>> = {
-  iphone: 'iPhone',
-  'iphone-landscape': 'iPhone landscape',
-  ipad: 'iPad',
-  'ipad-landscape': 'iPad landscape',
-  'android-phone': 'Android phone',
-  'android-landscape': 'Android landscape',
-  'android-tablet': 'Android tablet',
-  mac: 'Mac',
-  watch: 'Apple Watch',
-  'apple-tv': 'Apple TV',
-  vision: 'Vision Pro',
-  'play-feature': 'Feature graphic',
+  iphone: t('iPhone'),
+  'iphone-landscape': t('iPhone landscape'),
+  ipad: t('iPad'),
+  'ipad-landscape': t('iPad landscape'),
+  'android-phone': t('Android phone'),
+  'android-landscape': t('Android landscape'),
+  'android-tablet': t('Android tablet'),
+  mac: t('Mac'),
+  watch: t('Apple Watch'),
+  'apple-tv': t('Apple TV'),
+  vision: t('Vision Pro'),
+  'play-feature': t('Feature graphic'),
 };
 
 /** "iPhone and Android phone", "iPhone, iPad and Mac". */

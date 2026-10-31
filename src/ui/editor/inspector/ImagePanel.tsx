@@ -14,6 +14,7 @@ import { LayoutSection } from './LayoutSection';
 import { ShadowSection } from './ShadowSection';
 import { patchTarget, usePalette, type Target } from './state';
 
+import { t } from '../../../i18n';
 const IMAGE_SHADOW = { color: '#00000059', blur: 0.05, x: 0, y: 0.02 };
 /** Thumbnail box inside the 8 px padded preview well (content width 276 minus padding and border). */
 const PREVIEW_W = 258;
@@ -32,12 +33,12 @@ export const ImagePanel = memo(function ImagePanel({ el, target, index, count }:
   const applyCorners = useCallback((v: number) => patchTarget(target, { cornerRadius: fromPct(v) }), [target]);
   return (
     <>
-      <InspectorSection id="image.source" title="Image">
+      <InspectorSection id="image.source" title={t('Image')}>
         <ImageSource assetId={el.assetId} target={target} />
       </InspectorSection>
-      <InspectorSection id="image.size" title="Size">
-        <SliderRow label="Width" value={toPct(el.width)} apply={applyWidth} min={5} max={150} inputMin={1} inputMax={800} step={0.5} precision={2} unit="%" />
-        <SliderRow label="Corners" value={toPct(el.cornerRadius)} apply={applyCorners} min={0} max={50} step={0.5} precision={1} unit="%" />
+      <InspectorSection id="image.size" title={t('Size')}>
+        <SliderRow label={t('Width')} value={toPct(el.width)} apply={applyWidth} min={5} max={150} inputMin={1} inputMax={800} step={0.5} precision={2} unit="%" />
+        <SliderRow label={t('Corners')} value={toPct(el.cornerRadius)} apply={applyCorners} min={0} max={50} step={0.5} precision={1} unit="%" />
       </InspectorSection>
       <ShadowSection id="image.shadow" el={el} target={target} defaultShadow={IMAGE_SHADOW} palette={palette} />
       <LayoutSection el={el} target={target} index={index} count={count} />
@@ -82,7 +83,7 @@ const ImageSource = memo(function ImageSource({ assetId, target }: { assetId: st
       <div className="flex min-w-0 items-center gap-2">
         <div className="flex min-w-0 flex-1 flex-col">
           <p className="truncate text-xs font-medium text-text" dir="auto" title={info?.name}>
-            {info?.name ?? 'Missing image'}
+            {info?.name ?? t('Missing image')}
           </p>
           {info && (
             <p className="truncate text-2xs text-text-3 tabular-nums">
@@ -92,7 +93,7 @@ const ImageSource = memo(function ImageSource({ assetId, target }: { assetId: st
           )}
         </div>
         <Button size="sm" leadingIcon={<ImageUp />} loading={busy} onClick={() => void replace()}>
-          Replace…
+          {t('Replace…')}
         </Button>
       </div>
     </div>

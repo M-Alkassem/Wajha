@@ -16,6 +16,7 @@ import { listJoin, plural } from './labels';
 import { searchLanguages } from './languagesModel';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
 export function LanguagesDialog({ open, onOpenChange }: EditorDialogProps) {
   const session = useOpenSession(open);
   return <LanguagesSession key={session} open={open} onOpenChange={onOpenChange} />;
@@ -49,11 +50,11 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
     const others = searchLanguages(query, LANGUAGES.filter((l) => !langs.includes(l.code)));
     const list: Item[] = [];
     if (ownMatches.length) {
-      list.push({ kind: 'heading', id: 'own', label: 'In this project' });
+      list.push({ kind: 'heading', id: 'own', label: t('In this project') });
       for (const info of ownMatches) list.push({ kind: 'language', info, inProject: true, base: info.code === langs[0] });
     }
     if (others.length) {
-      list.push({ kind: 'heading', id: 'more', label: query.trim() ? 'Add a language' : 'More languages' });
+      list.push({ kind: 'heading', id: 'more', label: query.trim() ? t('Add a language') : t('More languages') });
       for (const info of others) list.push({ kind: 'language', info, inProject: false, base: false });
     }
     return list;
@@ -69,9 +70,9 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
     const name = languageInfo(code).name;
     const next = p.languages[0] === code ? languageInfo(p.languages[1]).name : null;
     const ok = await confirmDialog({
-      title: `Remove ${name}?`,
-      message: `Its texts and screenshots are removed from every slide.${next ? ` ${next} becomes the base language.` : ''} You can undo this.`,
-      confirmLabel: `Remove ${name}`,
+      title: t('Remove {name}?', { name }),
+      message: t('Its texts and screenshots are removed from every slide.{v} You can undo this.', { v: next ? ` ${next} becomes the base language.` : '' }),
+      confirmLabel: t('Remove {name}', { name }),
       danger: true,
     });
     if (ok) useEditor.getState().removeLanguage(code);
@@ -121,8 +122,8 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
       <DialogContent
         size="md"
         icon={<Languages />}
-        title="Languages"
-        description="Texts are per language and shared by every device. Screenshots and texts not translated yet fall back to the base language."
+        title={t('Languages')}
+        description={t('Texts are per language and shared by every device. Screenshots and texts not translated yet fall back to the base language.')}
         flush
         bodyClassName="flex flex-col"
         onEscapeKeyDown={(e) => {
@@ -134,7 +135,7 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
         footerStart={<span className="truncate">{`${plural(langs.length, 'language')}: ${listJoin(names)}`}</span>}
         footer={
           <Button variant="primary" onClick={close}>
-            Done
+            {t('Done')}
           </Button>
         }
       >
@@ -142,34 +143,34 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
           <Input
             ref={searchRef}
             type="search"
-            aria-label="Search languages"
-            placeholder={`Search ${LANGUAGES.length} languages`}
+            aria-label={t('Search languages')}
+            placeholder={t('Search {length} languages', { length: LANGUAGES.length })}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onSearchKeyDown}
             leadingIcon={<Search />}
-            suffix={query ? <IconButton size="sm" label="Clear search" tooltip={false} icon={<X />} onClick={() => setQuery('')} className="-mr-1" /> : undefined}
+            suffix={query ? <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} onClick={() => setQuery('')} className="-mr-1" /> : undefined}
           />
         </div>
         <div
           ref={listRef}
           role="list"
-          aria-label="Languages"
+          aria-label={t('Languages')}
           onKeyDown={onListKeyDown}
           className="h-[min(440px,calc(100vh-300px))] overflow-y-auto border-t border-line px-3 pb-3"
         >
           {items.length === 0 ? (
-            <EmptyState size="sm" className="h-full" icon={<Search />} title={`No language matches “${query.trim()}”`} description="Try its English or native name, or a code like “pt-BR”." />
+            <EmptyState size="sm" className="h-full" icon={<Search />} title={t('No language matches “{v}”', { v: query.trim() })} description={t('Try its English or native name, or a code like “pt-BR”.')} />
           ) : (
             items.map((item) =>
               item.kind === 'heading' ? (
                 <div key={`h:${item.id}`} role="presentation" className="flex items-baseline gap-2.5 px-2 pt-4 pb-1.5">
                   <span className="flex-1 text-2xs font-semibold tracking-[0.06em] text-text-3 uppercase">{item.label}</span>
                   <span aria-hidden className="w-[76px] shrink-0 text-right text-2xs text-text-3">
-                    App Store
+                    {t('App Store')}
                   </span>
                   <span aria-hidden className="w-[76px] shrink-0 text-right text-2xs text-text-3">
-                    Google Play
+                    {t('Google Play')}
                   </span>
                 </div>
               ) : (
@@ -228,7 +229,7 @@ function LanguageRow({ info, inProject, base, only, disabledAdd, flash, onAdd, o
       )}
     >
       {only ? (
-        <Tooltip content="A project needs at least one language">
+        <Tooltip content={t('A project needs at least one language')}>
           <span className="flex">{checkbox}</span>
         </Tooltip>
       ) : (
@@ -243,24 +244,24 @@ function LanguageRow({ info, inProject, base, only, disabledAdd, flash, onAdd, o
         )}
         {base && (
           <Badge size="sm" variant="accent">
-            Base
+            {t('Base')}
           </Badge>
         )}
         {info.rtl && (
           <Badge size="sm" variant="neutral">
-            RTL
+            {t('RTL')}
           </Badge>
         )}
       </label>
       {inProject && !base && (
-        <Tooltip content="The base language fills in texts and screenshots that are not translated yet.">
+        <Tooltip content={t('The base language fills in texts and screenshots that are not translated yet.')}>
           <Button
             size="sm"
             variant="ghost"
             onClick={() => onMakeBase(info.code)}
             className="opacity-0 group-focus-within/lang:opacity-100 group-hover/lang:opacity-100 focus-visible:opacity-100"
           >
-            Make base
+            {t('Make base')}
           </Button>
         </Tooltip>
       )}
@@ -281,10 +282,10 @@ function StoreLocale({ store, code, name }: { store: string; code: string | null
     );
   }
   return (
-    <Tooltip content={`${store} has no ${name} localization. ${name} is skipped for ${store} sizes when you export.`}>
+    <Tooltip content={t('{store} has no {name} localization. {name2} is skipped for {store2} sizes when you export.', { store, name, name2: name, store2: store })}>
       <span className="w-[76px] shrink-0 text-right text-2xs font-medium text-warning">
         <span className="sr-only">{store}: </span>
-        Not offered
+        {t('Not offered')}
       </span>
     </Tooltip>
   );

@@ -15,6 +15,7 @@ import {
   type ToastKind,
 } from './toast';
 
+import { t } from '../../i18n';
 export type ToasterPosition = 'bottom-right' | 'bottom-center' | 'top-right' | 'top-center';
 
 export interface ToasterProps {
@@ -38,10 +39,10 @@ export interface ToasterProps {
 }
 
 const KIND: Record<ToastKind, { icon: ReactNode; tint: string; label: string }> = {
-  info: { icon: <Info />, tint: 'text-accent-fg', label: 'Info' },
-  success: { icon: <CircleCheck />, tint: 'text-success', label: 'Success' },
-  warning: { icon: <TriangleAlert />, tint: 'text-warning', label: 'Warning' },
-  error: { icon: <CircleAlert />, tint: 'text-danger', label: 'Error' },
+  info: { icon: <Info />, tint: 'text-accent-fg', label: t('Info') },
+  success: { icon: <CircleCheck />, tint: 'text-success', label: t('Success') },
+  warning: { icon: <TriangleAlert />, tint: 'text-warning', label: t('Warning') },
+  error: { icon: <CircleAlert />, tint: 'text-danger', label: t('Error') },
 };
 
 const POSITION: Record<ToasterPosition, string> = {
@@ -131,7 +132,7 @@ export function Toaster({
 
   return (
     <section
-      aria-label="Notifications"
+      aria-label={t('Notifications')}
       {...{ [TOAST_REGION_ATTR]: '' }}
       data-position={inline ? undefined : placement}
       style={!inline && !fromTop && bottomOffset !== undefined ? { bottom: bottomOffset } : undefined}
@@ -228,7 +229,7 @@ function ToastItem({ toast, leaving, duration, onDismiss }: ToastItemProps) {
       </div>
       <button
         type="button"
-        aria-label="Dismiss notification"
+        aria-label={t('Dismiss notification')}
         onClick={() => dismissRef.current(toast.id)}
         className={cx(
           'absolute top-2.5 right-2.5 flex size-6 items-center justify-center rounded-sm text-text-3 outline-none',

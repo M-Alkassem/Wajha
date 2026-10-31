@@ -9,6 +9,8 @@ import { FAMILY_NAME, fitStrip, foldForSearch, matchesSearch, plural } from './f
 import { useElementSize } from './hooks';
 import { requestPreviewFonts } from './templates';
 
+import { t } from '../../i18n';
+import { tx } from '../../i18n/react';
 /* Preview ------------------------------------------------------------------------ */
 
 const STAGE_PAD = 20;
@@ -86,18 +88,18 @@ const DEVICE_GROUPS: ReadonlyArray<{ store: string; families: FamilyId[] }> = [
 
 /** Tile labels: the store heading already says which platform. */
 const TILE_LABEL: Readonly<Record<FamilyId, string>> = {
-  iphone: 'iPhone',
-  'iphone-landscape': 'iPhone ↔',
-  ipad: 'iPad',
-  'ipad-landscape': 'iPad ↔',
-  mac: 'Mac',
-  watch: 'Watch',
-  'apple-tv': 'Apple TV',
-  vision: 'Vision Pro',
-  'android-phone': 'Phone',
-  'android-landscape': 'Phone ↔',
-  'android-tablet': 'Tablet',
-  'play-feature': 'Feature',
+  iphone: t('iPhone'),
+  'iphone-landscape': t('iPhone ↔'),
+  ipad: t('iPad'),
+  'ipad-landscape': t('iPad ↔'),
+  mac: t('Mac'),
+  watch: t('Watch'),
+  'apple-tv': t('Apple TV'),
+  vision: t('Vision Pro'),
+  'android-phone': t('Phone'),
+  'android-landscape': t('Phone ↔'),
+  'android-tablet': t('Tablet'),
+  'play-feature': t('Feature'),
 };
 
 const ORDER: readonly FamilyId[] = FAMILY_ORDER;
@@ -134,10 +136,10 @@ export function DevicePicker({ value, onChange }: DevicePickerProps) {
     <div role="group" aria-labelledby={labelId} className="flex flex-col gap-2">
       <div className="flex h-4 items-center justify-between">
         <span id={labelId} className="text-xs font-medium text-text-2">
-          Devices
+          {t('Devices')}
         </span>
         <span aria-live="polite" className={cx('text-xs', warn ? 'text-warning' : 'text-text-3')}>
-          {warn ? 'Keep at least one device' : `${value.length} selected`}
+          {warn ? t('Keep at least one device') : t('{length} selected', { length: value.length })}
         </span>
       </div>
       {DEVICE_GROUPS.map((group) => (
@@ -209,12 +211,12 @@ export function LanguagePicker({ value, onChange }: LanguagePickerProps) {
     <div role="group" aria-labelledby={labelId} className="flex flex-col gap-2">
       <div className="flex h-4 items-center justify-between">
         <span id={labelId} className="text-xs font-medium text-text-2">
-          Languages
+          {t('Languages')}
         </span>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button size="sm" variant="ghost" leadingIcon={<Plus />} className="-mr-1.5">
-              Add
+              {t('Add')}
             </Button>
           </PopoverTrigger>
           <PopoverContent width={320} padding="none" align="end" side="top" sideOffset={8} onOpenAutoFocus={(e) => e.preventDefault()}>
@@ -233,25 +235,25 @@ export function LanguagePicker({ value, onChange }: LanguagePickerProps) {
             >
               <LanguageNames code={code} native={info.native} name={info.name} />
               {info.rtl && (
-                <Badge size="sm" variant="accent" title="Right-to-left">
-                  RTL
+                <Badge size="sm" variant="accent" title={t('Right-to-left')}>
+                  {t('RTL')}
                 </Badge>
               )}
               {base ? (
-                <Badge size="sm" title="Texts and screenshots fall back to the base language">
-                  Base
+                <Badge size="sm" title={t('Texts and screenshots fall back to the base language')}>
+                  {t('Base')}
                 </Badge>
               ) : (
                 <IconButton
                   size="sm"
-                  label={`Make ${info.name} the base language`}
-                  tooltip="Make base language"
+                  label={t('Make {name} the base language', { name: info.name })}
+                  tooltip={t('Make base language')}
                   icon={<Star />}
                   onClick={() => onChange([code, ...value.filter((c) => c !== code)])}
                   className="opacity-0 group-focus-within/lang:opacity-100 group-hover/lang:opacity-100 focus-visible:opacity-100"
                 />
               )}
-              {value.length > 1 && <IconButton size="sm" label={`Remove ${info.name}`} tooltip="Remove" icon={<X />} onClick={() => toggle(code)} />}
+              {value.length > 1 && <IconButton size="sm" label={t('Remove {name}', { name: info.name })} tooltip={t('Remove')} icon={<X />} onClick={() => toggle(code)} />}
             </li>
           );
         })}
@@ -325,17 +327,17 @@ function LanguageSearch({ selected, onToggle }: { selected: LangCode[]; onToggle
             setActive(0);
           }}
           onKeyDown={onKeyDown}
-          placeholder="Search languages"
+          placeholder={t('Search languages')}
           leadingIcon={<Search />}
           role="combobox"
           aria-expanded="true"
           aria-controls={listId}
           aria-activedescendant={activeCode ? `${listId}-${activeCode}` : undefined}
           aria-autocomplete="list"
-          aria-label="Search languages"
+          aria-label={t('Search languages')}
         />
       </div>
-      <ul ref={listRef} id={listId} role="listbox" aria-multiselectable="true" aria-label="Languages" className="max-h-[280px] overflow-y-auto p-1">
+      <ul ref={listRef} id={listId} role="listbox" aria-multiselectable="true" aria-label={t('Languages')} className="max-h-[280px] overflow-y-auto p-1">
         {options.map((l, i) => {
           const on = selected.includes(l.code);
           const locked = on && selected.length === 1;
@@ -370,17 +372,17 @@ function LanguageSearch({ selected, onToggle }: { selected: LangCode[]; onToggle
               <LanguageNames code={l.code} native={l.native} name={l.name} secondaryClassName="group-data-[active]/option:text-text-2" />
               {l.rtl && (
                 <Badge size="sm" variant="accent">
-                  RTL
+                  {t('RTL')}
                 </Badge>
               )}
               <span className="w-12 shrink-0 text-right font-mono text-2xs text-text-3 group-data-[active]/option:text-text-2">{l.code}</span>
             </li>
           );
         })}
-        {options.length === 0 && <li className="px-2 py-6 text-center text-xs text-text-3">No language matches “{query.trim()}”</li>}
+        {options.length === 0 && <li className="px-2 py-6 text-center text-xs text-text-3">{tx('No language matches “{v}”', { v: query.trim() })}</li>}
       </ul>
       <div className="flex h-8 items-center border-t border-line px-3 text-2xs text-text-3">
-        {plural(selected.length, 'language')} · the first is the base language
+        {tx('{plural} · the first is the base language', { plural: plural(selected.length, 'language') })}
       </div>
     </div>
   );

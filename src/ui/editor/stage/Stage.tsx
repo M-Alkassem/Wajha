@@ -38,6 +38,7 @@ import {
 } from './stageLayout';
 import { setDropTarget, setGestureVisual, takePointerActivation, useStageUi, type DropTarget } from './stageStore';
 
+import { t } from '../../../i18n';
 /** Safari's pinch events (not in the DOM typings). */
 interface GestureEventLike extends UIEvent {
   scale: number;
@@ -460,12 +461,12 @@ export function Stage() {
       if (box && slideId) {
         const index = Number(box.dataset.slideIndex);
         const r = box.getBoundingClientRect();
-        const t: SlideTarget = { slideId, el: box, width: r.width, height: r.height, family };
-        const device = deviceAt(t, { x: e.clientX - r.left, y: e.clientY - r.top });
+        const target: SlideTarget = { slideId, el: box, width: r.width, height: r.height, family };
+        const device = deviceAt(target, { x: e.clientX - r.left, y: e.clientY - r.top });
         if (device) {
           return {
             target: { slideId, slot: device.element.slot },
-            drop: { slideId, deviceId: device.id, label: many ? `Drop ${count} screenshots from here` : 'Drop to set screenshot', stage: false },
+            drop: { slideId, deviceId: device.id, label: many ? t('Drop {count} screenshots from here', { count }) : t('Drop to set screenshot'), stage: false },
           };
         }
         const first = firstDeviceOf(slideId, family);
@@ -475,7 +476,7 @@ export function Stage() {
           drop: {
             slideId,
             deviceId: first?.id ?? null,
-            label: many ? `Drop ${count} screenshots from here` : first ? 'Drop to set screenshot' : 'Drop to add screenshots',
+            label: many ? t('Drop {count} screenshots from here', { count }) : first ? t('Drop to set screenshot') : t('Drop to add screenshots'),
             stage: false,
           },
         };
@@ -488,7 +489,7 @@ export function Stage() {
         drop: {
           slideId: s.activeSlideId,
           deviceId: first?.id ?? null,
-          label: many ? `Drop ${count} screenshots from slide ${active + 1}` : `Drop to add a screenshot to slide ${active + 1}`,
+          label: many ? t('Drop {count} screenshots from slide {v}', { count, v: active + 1 }) : t('Drop to add a screenshot to slide {v}', { v: active + 1 }),
           stage: true,
         },
       };
@@ -578,7 +579,7 @@ export function Stage() {
           <div
             ref={setViewportRef}
             role="region"
-            aria-label="Slides"
+            aria-label={t('Slides')}
             tabIndex={0}
             data-stage-viewport=""
             className={cx(
@@ -606,11 +607,11 @@ export function Stage() {
                   <div className="sticky left-0 flex h-full items-center justify-center" style={{ width: size?.w }}>
                     <EmptyState
                       icon={<LayoutPanelTop />}
-                      title="No slides yet"
-                      description="Add a slide to start designing your store listing."
+                      title={t('No slides yet')}
+                      description={t('Add a slide to start designing your store listing.')}
                       actions={
                         <Button variant="primary" leadingIcon={<Plus />} onClick={() => useEditor.getState().addSlide()}>
-                          Add slide
+                          {t('Add slide')}
                         </Button>
                       }
                     />

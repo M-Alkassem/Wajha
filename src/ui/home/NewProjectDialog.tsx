@@ -63,6 +63,8 @@ import { useNow } from './hooks';
 import { BlankCard, GalleryCard, TEMPLATE_GRID_CLASS, TemplateCard, TemplateGridSkeleton } from './TemplateCard';
 import { blankPreviewProject, CATEGORY_LABEL, CATEGORY_ORDER, countByCategory, galleryEntryMatches, templateMatches, templatePreviewProject } from './templates';
 
+import { t } from '../../i18n';
+import { tx } from '../../i18n/react';
 type Selection = { kind: 'blank' } | { kind: 'template'; template: Template; source: 'builtin' | 'user' };
 
 const CATEGORY_ICON: Record<TemplateCategory, ReactNode> = {
@@ -185,7 +187,7 @@ function NewProjectContent({ request, busyRef }: { request: NewProjectRequest; b
     } catch (e) {
       busyRef.current = false;
       setPending(false);
-      toast.error('Could not create the project', errorText(e));
+      toast.error(t('Could not create the project'), errorText(e));
     }
   };
 
@@ -203,8 +205,8 @@ function NewProjectContent({ request, busyRef }: { request: NewProjectRequest; b
   return (
     <DialogContent
       size="full"
-      title="New project"
-      description="Pick a starting point, then choose devices and languages. You can change everything later."
+      title={t('New project')}
+      description={t('Pick a starting point, then choose devices and languages. You can change everything later.')}
       flush
       style={{ maxWidth: 1320, maxHeight: 880 }}
       onKeyDown={onKeyDown}
@@ -232,11 +234,11 @@ function NewProjectContent({ request, busyRef }: { request: NewProjectRequest; b
       footer={
         <>
           <Button variant="secondary" disabled={pending} onClick={() => useHomeUi.getState().closeNewProject()}>
-            Cancel
+            {t('Cancel')}
           </Button>
-          <Tooltip content="Create and open the project" shortcut="mod+enter">
+          <Tooltip content={t('Create and open the project')} shortcut="mod+enter">
             <Button variant="primary" loading={pending} onClick={() => void create()}>
-              Create project
+              {t('Create project')}
             </Button>
           </Tooltip>
         </>
@@ -286,10 +288,10 @@ function NewProjectContent({ request, busyRef }: { request: NewProjectRequest; b
             />
           )}
         </section>
-        <aside aria-label="Project setup" className="flex w-[340px] shrink-0 flex-col border-l border-line bg-panel light:bg-surface">
+        <aside aria-label={t('Project setup')} className="flex w-[340px] shrink-0 flex-col border-l border-line bg-panel light:bg-surface">
           <ScrollArea className="min-h-0 flex-1">
             <div className="flex flex-col gap-5 p-5">
-              <PreviewStage project={previewProject} family={family} lang={lang} title={selection.kind === 'template' ? selection.template.name : 'Blank project'} />
+              <PreviewStage project={previewProject} family={family} lang={lang} title={selection.kind === 'template' ? selection.template.name : t('Blank project')} />
               <form
                 className="flex flex-col gap-1.5"
                 onSubmit={(e) => {
@@ -298,7 +300,7 @@ function NewProjectContent({ request, busyRef }: { request: NewProjectRequest; b
                 }}
               >
                 <label htmlFor={`${titleId}-name`} className="text-xs font-medium text-text-2">
-                  Project name
+                  {t('Project name')}
                 </label>
                 <Input
                   id={`${titleId}-name`}
@@ -339,7 +341,7 @@ function SourceRail({
 }) {
   const counts = useMemo(() => countByCategory(BUILTIN_TEMPLATES), []);
   const items: Array<{ key: string; source: TemplateSource; category: Category; label: string; icon?: ReactNode; count?: number; group: string }> = [
-    { key: 'all', source: 'builtin', category: 'all', label: 'All templates', icon: <LayoutGrid />, count: BUILTIN_TEMPLATES.length + 1, group: 'Built-in' },
+    { key: 'all', source: 'builtin', category: 'all', label: t('All templates'), icon: <LayoutGrid />, count: BUILTIN_TEMPLATES.length + 1, group: 'Built-in' },
     ...CATEGORY_ORDER.filter((c) => counts[c] > 0).map((c) => ({
       key: c,
       source: 'builtin' as const,
@@ -349,8 +351,8 @@ function SourceRail({
       count: counts[c],
       group: 'Built-in',
     })),
-    { key: 'community', source: 'community', category: 'all', label: 'Gallery', icon: <Globe />, group: 'Community' },
-    { key: 'mine', source: 'mine', category: 'all', label: 'My templates', icon: <Bookmark />, count: userCount, group: 'Yours' },
+    { key: 'community', source: 'community', category: 'all', label: t('Gallery'), icon: <Globe />, group: 'Community' },
+    { key: 'mine', source: 'mine', category: 'all', label: t('My templates'), icon: <Bookmark />, count: userCount, group: 'Yours' },
   ];
   const isOn = (i: (typeof items)[number]) => i.source === source && (i.source !== 'builtin' || i.category === category);
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -370,7 +372,7 @@ function SourceRail({
 
   let lastGroup = '';
   return (
-    <nav aria-label="Template sources" className="flex w-[200px] shrink-0 flex-col border-r border-line bg-panel light:bg-surface">
+    <nav aria-label={t('Template sources')} className="flex w-[200px] shrink-0 flex-col border-r border-line bg-panel light:bg-surface">
       <ScrollArea className="min-h-0 flex-1">
         <div role="tablist" aria-orientation="vertical" className="flex flex-col px-2.5 pt-3 pb-4">
           {items.map((item, i) => {
@@ -450,12 +452,12 @@ function PaneHeader({
             id={searchId}
             value={query}
             onChange={(e) => onQuery(e.target.value)}
-            placeholder="Search templates"
-            aria-label="Search templates"
+            placeholder={t('Search templates')}
+            aria-label={t('Search templates')}
             leadingIcon={<Search />}
             suffix={
               query ? (
-                <IconButton size="sm" label="Clear search" tooltip={false} icon={<X />} className="-mr-1 size-5" onClick={() => onQuery('')} />
+                <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} className="-mr-1 size-5" onClick={() => onQuery('')} />
               ) : undefined
             }
             containerClassName="w-56 min-w-36 shrink"
@@ -480,11 +482,11 @@ function NoMatches({ query, onClear }: { query: string; onClear(): void }) {
       size="sm"
       className="py-16"
       icon={<SearchX />}
-      title="No templates match"
-      description={`Nothing here matches “${query.trim()}”. Try another word or another source.`}
+      title={t('No templates match')}
+      description={t('Nothing here matches “{v}”. Try another word or another source.', { v: query.trim() })}
       actions={
         <Button size="sm" onClick={onClear}>
-          Clear search
+          {t('Clear search')}
         </Button>
       }
     />
@@ -560,23 +562,23 @@ function CommunityPane({ titleId, searchId, query, onQuery, selection, onSelect 
       <PaneHeader
         titleId={titleId}
         searchId={searchId}
-        title="Community gallery"
+        title={t('Community gallery')}
         count={status === 'ready' ? shown.length : undefined}
         query={query}
         onQuery={onQuery}
         showSearch={entries.length > 0}
       >
-        {!unreachable && <IconButton label="Refresh the gallery" icon={<RefreshCw />} loading={status === 'loading'} onClick={() => void loadGallery(true)} />}
+        {!unreachable && <IconButton label={t('Refresh the gallery')} icon={<RefreshCw />} loading={status === 'loading'} onClick={() => void loadGallery(true)} />}
       </PaneHeader>
       <PaneBody>
         {result?.offline && (
           <div role="status" className="mb-4 flex items-center gap-3 rounded-md border border-warning-soft bg-warning-soft px-3 py-2 text-xs text-text">
             <WifiOff className="size-4 shrink-0 text-warning" />
             <span className="min-w-0 flex-1">
-              You’re offline. Showing the gallery as saved {relativeEdited(result.fetchedAt, now)}.
+              {tx('You’re offline. Showing the gallery as saved {relativeEdited}.', { relativeEdited: relativeEdited(result.fetchedAt, now) })}
             </span>
             <Button size="sm" variant="ghost" onClick={() => void loadGallery(true)}>
-              Try again
+              {t('Try again')}
             </Button>
           </div>
         )}
@@ -586,11 +588,11 @@ function CommunityPane({ titleId, searchId, query, onQuery, selection, onSelect 
           <EmptyState
             className="py-16"
             icon={<WifiOff />}
-            title="Can’t reach the community gallery"
-            description="Check your internet connection and try again. Built-in templates and your own keep working offline."
+            title={t('Can’t reach the community gallery')}
+            description={t('Check your internet connection and try again. Built-in templates and your own keep working offline.')}
             actions={
               <Button leadingIcon={<RefreshCw />} onClick={() => void loadGallery(true)}>
-                Try again
+                {t('Try again')}
               </Button>
             }
           />
@@ -598,11 +600,11 @@ function CommunityPane({ titleId, searchId, query, onQuery, selection, onSelect 
           <EmptyState
             className="py-16"
             icon={<Globe />}
-            title="No community templates yet"
-            description="The gallery is where people share their designs. Yours could be the first."
+            title={t('No community templates yet')}
+            description={t('The gallery is where people share their designs. Yours could be the first.')}
             actions={
               <Button leadingIcon={<Globe />} onClick={() => void getPlatform().openUrl(`${REPO_URL}/tree/main/gallery`).catch(() => undefined)}>
-                Share a template on GitHub
+                {t('Share a template on GitHub')}
               </Button>
             }
           />
@@ -646,13 +648,13 @@ function MinePane({ titleId, searchId, query, onQuery, selection, onSelect, onAc
       <PaneHeader
         titleId={titleId}
         searchId={searchId}
-        title="My templates"
+        title={t('My templates')}
         count={status === 'ready' ? shown.length : undefined}
         query={query}
         onQuery={onQuery}
         showSearch={templates.length > 0}
       >
-        {templates.length > 0 && <IconButton label="Import template file…" icon={<FileUp />} loading={importing} onClick={() => void importFile()} />}
+        {templates.length > 0 && <IconButton label={t('Import template file…')} icon={<FileUp />} loading={importing} onClick={() => void importFile()} />}
       </PaneHeader>
       <PaneBody>
         {status !== 'ready' && status !== 'error' && templates.length === 0 ? (
@@ -661,23 +663,23 @@ function MinePane({ titleId, searchId, query, onQuery, selection, onSelect, onAc
           <EmptyState
             className="py-16"
             icon={<Bookmark />}
-            title="Your templates could not be read"
+            title={t('Your templates could not be read')}
             description={error ?? undefined}
-            actions={<Button onClick={() => void refreshUserTemplates()}>Try again</Button>}
+            actions={<Button onClick={() => void refreshUserTemplates()}>{t('Try again')}</Button>}
           />
         ) : templates.length === 0 ? (
           <EmptyState
             className="py-16"
             icon={<Bookmark />}
-            title="No templates of your own yet"
-            description="Save any project as a template from the editor, install one from the gallery, or import a .wajha-template file someone shared with you."
+            title={t('No templates of your own yet')}
+            description={t('Save any project as a template from the editor, install one from the gallery, or import a .wajha-template file someone shared with you.')}
             actions={
               <>
                 <Button leadingIcon={<FileUp />} loading={importing} onClick={() => void importFile()}>
-                  Import template file…
+                  {t('Import template file…')}
                 </Button>
                 <Button variant="ghost" leadingIcon={<Globe />} onClick={onBrowseGallery}>
-                  Browse the gallery
+                  {t('Browse the gallery')}
                 </Button>
               </>
             }
@@ -708,11 +710,11 @@ function UserTemplateMenu({ template, onDeleted }: { template: Template; onDelet
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <IconButton size="sm" label={`Actions for ${template.name}`} tooltip="More actions" icon={<Ellipsis />} className="aria-expanded:bg-surface-2 aria-expanded:text-text" />
+        <IconButton size="sm" label={t('Actions for {name}', { name: template.name })} tooltip={t('More actions')} icon={<Ellipsis />} className="aria-expanded:bg-surface-2 aria-expanded:text-text" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[200px]">
         <DropdownMenuItem icon={<FileDown />} onSelect={() => void exportTemplateFile(template)}>
-          Export as file…
+          {t('Export as file…')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -722,7 +724,7 @@ function UserTemplateMenu({ template, onDeleted }: { template: Template; onDelet
             void deleteTemplateWithConfirm(template).then((deleted) => deleted && onDeleted());
           }}
         >
-          Delete template…
+          {t('Delete template…')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

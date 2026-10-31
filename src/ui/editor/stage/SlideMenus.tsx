@@ -30,6 +30,7 @@ import { pickScreenshotsForSlot } from '../importShots';
 import { shortcutKeys, type EditorShortcutId } from '../shortcuts';
 import { addSlideAfter, deleteSlideWithConfirm } from '../sidebar/slideActions';
 
+import { t } from '../../../i18n';
 /** Shortcut labels come from the editor's shortcut table, so menus only show keys that are bound. */
 const keysOf = (id: EditorShortcutId): string | undefined => {
   try {
@@ -112,15 +113,15 @@ export function elementEntries(slideId: string, family: FamilyId, el: SlideEleme
   return tidyEntries([
     el.kind === 'device' && {
       key: 'shot',
-      label: deviceHasShot(slideId, family, el) ? 'Replace screenshot…' : 'Add screenshot…',
+      label: deviceHasShot(slideId, family, el) ? t('Replace screenshot…') : t('Add screenshot…'),
       icon: <ImageUp />,
       run: () => void pickScreenshotsForSlot(slideId, el.slot),
     },
     'separator',
-    { key: 'duplicate', label: 'Duplicate', icon: <CopyPlus />, shortcut: keysOf('duplicate'), run: () => store().duplicateElement(slideId, family, id) },
+    { key: 'duplicate', label: t('Duplicate'), icon: <CopyPlus />, shortcut: keysOf('duplicate'), run: () => store().duplicateElement(slideId, family, id) },
     {
       key: 'copy',
-      label: 'Copy',
+      label: t('Copy'),
       icon: <ClipboardCopy />,
       shortcut: keysOf('copy'),
       run: () => {
@@ -130,7 +131,7 @@ export function elementEntries(slideId: string, family: FamilyId, el: SlideEleme
     },
     {
       key: 'cut',
-      label: 'Cut',
+      label: t('Cut'),
       icon: <Scissors />,
       shortcut: keysOf('cut'),
       run: () => {
@@ -140,7 +141,7 @@ export function elementEntries(slideId: string, family: FamilyId, el: SlideEleme
     },
     {
       key: 'paste',
-      label: 'Paste',
+      label: t('Paste'),
       icon: <ClipboardPaste />,
       shortcut: keysOf('paste'),
       disabled: s.clipboard === null,
@@ -150,20 +151,20 @@ export function elementEntries(slideId: string, family: FamilyId, el: SlideEleme
       },
     },
     'separator',
-    { key: 'forward', label: 'Bring forward', icon: <ArrowUp />, disabled: top, run: () => store().bringForward(slideId, family, id) },
-    { key: 'backward', label: 'Send backward', icon: <ArrowDown />, disabled: bottom, run: () => store().sendBackward(slideId, family, id) },
-    { key: 'front', label: 'Bring to front', icon: <ArrowUpToLine />, disabled: top, run: () => store().bringToFront(slideId, family, id) },
-    { key: 'back', label: 'Send to back', icon: <ArrowDownToLine />, disabled: bottom, run: () => store().sendToBack(slideId, family, id) },
+    { key: 'forward', label: t('Bring forward'), icon: <ArrowUp />, disabled: top, run: () => store().bringForward(slideId, family, id) },
+    { key: 'backward', label: t('Send backward'), icon: <ArrowDown />, disabled: bottom, run: () => store().sendBackward(slideId, family, id) },
+    { key: 'front', label: t('Bring to front'), icon: <ArrowUpToLine />, disabled: top, run: () => store().bringToFront(slideId, family, id) },
+    { key: 'back', label: t('Send to back'), icon: <ArrowDownToLine />, disabled: bottom, run: () => store().sendToBack(slideId, family, id) },
     'separator',
-    { key: 'hide', label: 'Hide', icon: <EyeOff />, run: () => store().toggleHidden(slideId, family, id) },
+    { key: 'hide', label: t('Hide'), icon: <EyeOff />, run: () => store().toggleHidden(slideId, family, id) },
     {
       key: 'lock',
-      label: el.locked ? 'Unlock' : 'Lock',
+      label: el.locked ? t('Unlock') : t('Lock'),
       icon: el.locked ? <LockOpen /> : <Lock />,
       run: () => store().toggleLocked(slideId, family, id),
     },
     'separator',
-    { key: 'delete', label: 'Delete', icon: <Trash2 />, shortcut: keysOf('delete'), danger: true, run: () => store().deleteElement(slideId, family, id) },
+    { key: 'delete', label: t('Delete'), icon: <Trash2 />, shortcut: keysOf('delete'), danger: true, run: () => store().deleteElement(slideId, family, id) },
   ]);
 }
 
@@ -176,17 +177,17 @@ export function slideEntries(slideId: string, family: FamilyId): MenuEntry[] {
   const full = count >= MAX_SLIDES;
   const store = () => useEditor.getState();
   return tidyEntries([
-    { key: 'add', label: 'Add slide', icon: <Plus />, disabled: full, run: () => addSlideAfter(slideId) },
-    { key: 'duplicate-slide', label: 'Duplicate slide', icon: <Copy />, disabled: full, run: () => store().duplicateSlide(slideId) },
+    { key: 'add', label: t('Add slide'), icon: <Plus />, disabled: full, run: () => addSlideAfter(slideId) },
+    { key: 'duplicate-slide', label: t('Duplicate slide'), icon: <Copy />, disabled: full, run: () => store().duplicateSlide(slideId) },
     device && {
       key: 'shot',
-      label: deviceHasShot(slideId, family, device) ? 'Replace screenshot…' : 'Add screenshot…',
+      label: deviceHasShot(slideId, family, device) ? t('Replace screenshot…') : t('Add screenshot…'),
       icon: <ImageUp />,
       run: () => void pickScreenshotsForSlot(slideId, device.slot),
     },
     {
       key: 'paste',
-      label: 'Paste',
+      label: t('Paste'),
       icon: <ClipboardPaste />,
       shortcut: keysOf('paste'),
       disabled: s.clipboard === null,
@@ -197,7 +198,7 @@ export function slideEntries(slideId: string, family: FamilyId): MenuEntry[] {
     },
     'separator',
     // Same as the slides list: a slide with texts or screenshots asks first.
-    { key: 'delete-slide', label: 'Delete slide', icon: <Trash2 />, danger: true, disabled: count <= 1, run: () => void deleteSlideWithConfirm(slideId) },
+    { key: 'delete-slide', label: t('Delete slide'), icon: <Trash2 />, danger: true, disabled: count <= 1, run: () => void deleteSlideWithConfirm(slideId) },
   ]);
 }
 
@@ -208,9 +209,9 @@ export function stageEntries(): MenuEntry[] {
   const count = p?.slides.length ?? 0;
   const last = p?.slides[count - 1];
   return tidyEntries([
-    { key: 'add', label: 'Add slide', icon: <Plus />, disabled: !last || count >= MAX_SLIDES, run: () => last && addSlideAfter(last.id) },
-    { key: 'paste', label: 'Paste', icon: <ClipboardPaste />, shortcut: keysOf('paste'), disabled: s.clipboard === null || !s.activeSlideId, run: () => useEditor.getState().paste() },
+    { key: 'add', label: t('Add slide'), icon: <Plus />, disabled: !last || count >= MAX_SLIDES, run: () => last && addSlideAfter(last.id) },
+    { key: 'paste', label: t('Paste'), icon: <ClipboardPaste />, shortcut: keysOf('paste'), disabled: s.clipboard === null || !s.activeSlideId, run: () => useEditor.getState().paste() },
     'separator',
-    { key: 'fit', label: 'Zoom to fit', icon: <Maximize />, shortcut: keysOf('zoomFit'), disabled: s.fit, run: () => useEditor.getState().setFit(true) },
+    { key: 'fit', label: t('Zoom to fit'), icon: <Maximize />, shortcut: keysOf('zoomFit'), disabled: s.fit, run: () => useEditor.getState().setFit(true) },
   ]);
 }

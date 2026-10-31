@@ -9,6 +9,7 @@ import { resolveLayout, resolveShot, resolveText } from '../../../model/resolve'
 import type { AssetInfo, FamilyId, LangCode, Project, ShapeElement, Slide, SlideElement, SlideLayout } from '../../../model/types';
 import { FRAME_LABELS } from '../familyMeta';
 
+import { t } from '../../../i18n';
 /** Markup reduced to one plain line: highlights and escapes removed, line breaks become spaces. */
 export function singleLine(markup: string): string {
   if (typeof markup !== 'string' || markup === '') return '';
@@ -16,12 +17,12 @@ export function singleLine(markup: string): string {
 }
 
 const ROLE_NAMES: Record<string, string> = {
-  headline: 'Headline',
-  subtitle: 'Subtitle',
-  caption: 'Caption',
-  eyebrow: 'Eyebrow',
-  title: 'Title',
-  body: 'Body',
+  headline: t('Headline'),
+  subtitle: t('Subtitle'),
+  caption: t('Caption'),
+  eyebrow: t('Eyebrow'),
+  title: t('Title'),
+  body: t('Body'),
 };
 
 /** "headline" -> "Headline", "subtitle2" -> "Subtitle 2", "promo_badge" -> "Promo badge". */
@@ -38,10 +39,10 @@ export function textRoleLabel(key: string): string {
 }
 
 const SHAPE_NAMES: Record<ShapeElement['shape'], string> = {
-  circle: 'Circle',
-  rect: 'Rounded rect',
-  blob: 'Blob',
-  ring: 'Ring',
+  circle: t('Circle'),
+  rect: t('Rounded rect'),
+  blob: t('Blob'),
+  ring: t('Ring'),
 };
 
 /** Shape name; a soft blurred circle reads as a glow (templates light their slides with them). */

@@ -13,6 +13,7 @@ import { maybeRunSelfTest } from './ui/shell/selfTest';
 import { getPlatform } from './platform';
 import { useApp } from './store';
 
+import { t } from './i18n';
 // The UI kit showcase (visual QA) loads only for "?kit", so it never weighs on the app bundle.
 const Showcase = lazy(() => import('./ui/kit/Showcase'));
 const showKit = typeof location !== 'undefined' && new URLSearchParams(location.search).has('kit');
@@ -66,7 +67,7 @@ function Shell() {
 function LoadingEditor() {
   return (
     <div data-tauri-drag-region className="flex h-full items-center justify-center bg-app">
-      <Spinner size={20} label="Opening project" />
+      <Spinner size={20} label={t('Opening project')} />
     </div>
   );
 }

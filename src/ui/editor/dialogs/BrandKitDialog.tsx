@@ -29,6 +29,7 @@ import { logoSpot } from './logoSpot';
 import { SectionHeading } from './parts';
 import type { EditorDialogProps } from './types';
 
+import { t } from '../../../i18n';
 const message = (err: unknown) => (err instanceof Error && err.message ? err.message : String(err));
 
 // Brand fonts are drawn in their own face in the list; each registers once.
@@ -99,7 +100,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
       setKit(stored);
       void previewFonts(stored.fonts);
     } catch (err) {
-      toast.error('Could not save the brand kit', message(err));
+      toast.error(t('Could not save the brand kit'), message(err));
     }
   }, []);
 
@@ -108,7 +109,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
     try {
       await work();
     } catch (err) {
-      toast.error('Something went wrong', message(err));
+      toast.error(t('Something went wrong'), message(err));
     } finally {
       setBusy(null);
     }
@@ -136,7 +137,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
       const family = now.fonts?.find((f) => f.file === font.file)?.family ?? font.family;
       const { heading, body } = now.theme.fonts;
       store.applyFonts(role === 'heading' ? family : heading, role === 'body' ? family : body);
-      toast.success(`${family} is now the ${role === 'heading' ? 'headline' : 'body text'} font`);
+      toast.success(t('{family} is now the {v} font', { family, v: role === 'heading' ? 'headline' : 'body text' }));
     });
 
   const addLogoToSlides = () =>
@@ -161,7 +162,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
         const id = store.addElement(slide.id, family, 'image', { assetId: asset.id, patch: { ...spot, cornerRadius: 0 } });
         if (id) added++;
       }
-      toast.success(added === 1 ? 'Logo added to the slide' : `Logo added to ${added} slides`, 'Move or resize it on any slide; each slide keeps its own.');
+      toast.success(added === 1 ? t('Logo added to the slide') : t('Logo added to {added} slides', { added }), t('Move or resize it on any slide; each slide keeps its own.'));
     });
 
   return (
@@ -169,25 +170,25 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
       <DialogContent
         size="md"
         icon={<Palette />}
-        title="Brand kit"
-        description="Keep your brand's colours, fonts and logo once, and use them in every project."
-        footer={<Button onClick={() => onOpenChange(false)}>Done</Button>}
+        title={t('Brand kit')}
+        description={t("Keep your brand's colours, fonts and logo once, and use them in every project.")}
+        footer={<Button onClick={() => onOpenChange(false)}>{t('Done')}</Button>}
       >
         {!kit ? (
           <div className="flex h-40 items-center justify-center">
-            <Spinner label="Loading the brand kit" />
+            <Spinner label={t('Loading the brand kit')} />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
             <section aria-labelledby="brand-colors" className="flex flex-col gap-2.5">
-              <SectionHeading id="brand-colors">Colours</SectionHeading>
+              <SectionHeading id="brand-colors">{t('Colours')}</SectionHeading>
               <div className="flex flex-wrap items-center gap-2">
                 {k.colors.map((c) => (
                   <div key={c} className="group/swatch relative">
                     <span aria-label={c} role="img" className="block size-9 rounded-md border border-line shadow-[var(--highlight)]" style={{ background: c }} />
                     <button
                       type="button"
-                      aria-label={`Remove ${c}`}
+                      aria-label={t('Remove {c}', { c })}
                       onClick={() => void save({ ...k, colors: k.colors.filter((x) => x !== c) })}
                       className="absolute -top-1.5 -right-1.5 hidden size-4 items-center justify-center rounded-full bg-surface-3 text-text-2 shadow-sm group-focus-within/swatch:flex group-hover/swatch:flex hover:text-text"
                     >
@@ -197,25 +198,25 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
                 ))}
                 {k.colors.length < MAX_BRAND_COLORS && (
                   <div className="flex items-center gap-1.5">
-                    <ColorField value={draftColor} onChange={setDraftColor} onCommit={addColor} alpha={false} palette={palette} showInput={false} label="Add a colour" />
-                    <span className="text-xs text-text-3">Add</span>
+                    <ColorField value={draftColor} onChange={setDraftColor} onCommit={addColor} alpha={false} palette={palette} showInput={false} label={t('Add a colour')} />
+                    <span className="text-xs text-text-3">{t('Add')}</span>
                   </div>
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" leadingIcon={<Plus />} disabled={!palette.length} onClick={() => void save({ ...k, colors: [...k.colors, ...palette.filter((c) => !k.colors.includes(c))] })}>
-                  Add this project's colours
+                  {t("Add this project's colours")}
                 </Button>
                 <Button
                   size="sm"
                   variant="primary"
                   disabled={!k.colors.length || !project}
                   onClick={() => {
-                    if (useEditor.getState().setPalette(k.colors)) toast.success('Theme colours updated', 'Pick them in any colour field of this project.');
-                    else toast.info('Theme colours already match', 'This project already uses the brand colours.');
+                    if (useEditor.getState().setPalette(k.colors)) toast.success(t('Theme colours updated'), t('Pick them in any colour field of this project.'));
+                    else toast.info(t('Theme colours already match'), t('This project already uses the brand colours.'));
                   }}
                 >
-                  Use as theme colours
+                  {t('Use as theme colours')}
                 </Button>
               </div>
             </section>
@@ -239,15 +240,15 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
                         })
                       }
                     >
-                      Add font file…
+                      {t('Add font file…')}
                     </Button>
                   )
                 }
               >
-                Fonts
+                {t('Fonts')}
               </SectionHeading>
               {k.fonts.length === 0 ? (
-                <p className="text-xs text-text-3">Add the .ttf, .otf, .woff or .woff2 files of your brand's typefaces.</p>
+                <p className="text-xs text-text-3">{t("Add the .ttf, .otf, .woff or .woff2 files of your brand's typefaces.")}</p>
               ) : (
                 <ul className="flex flex-col divide-y divide-line rounded-md border border-line">
                   {k.fonts.map((font) => (
@@ -260,12 +261,12 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
                         <div className="truncate text-2xs text-text-3">{font.name}</div>
                       </div>
                       <Button size="sm" disabled={!project || busy !== null} onClick={() => void applyBrandFont(font, 'heading')}>
-                        Headlines
+                        {t('Headlines')}
                       </Button>
                       <Button size="sm" disabled={!project || busy !== null} onClick={() => void applyBrandFont(font, 'body')}>
-                        Body text
+                        {t('Body text')}
                       </Button>
-                      <IconButton label={`Remove ${font.family}`} icon={<Trash2 />} size="sm" onClick={() => void save({ ...k, fonts: k.fonts.filter((f) => f.file !== font.file) })} />
+                      <IconButton label={t('Remove {family}', { family: font.family })} icon={<Trash2 />} size="sm" onClick={() => void save({ ...k, fonts: k.fonts.filter((f) => f.file !== font.file) })} />
                     </li>
                   ))}
                 </ul>
@@ -273,10 +274,10 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
             </section>
 
             <section aria-labelledby="brand-logo" className="flex flex-col gap-2.5">
-              <SectionHeading id="brand-logo">Logo</SectionHeading>
+              <SectionHeading id="brand-logo">{t('Logo')}</SectionHeading>
               <div className="flex items-center gap-3">
                 <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-line kit-checker">
-                  {logoUrl ? <img src={logoUrl} alt={`Logo: ${k.logo?.name ?? ''}`} className="max-h-full max-w-full object-contain" /> : <ImagePlus aria-hidden className="size-5 text-text-3" />}
+                  {logoUrl ? <img src={logoUrl} alt={t('Logo: {v}', { v: k.logo?.name ?? '' })} className="max-h-full max-w-full object-contain" /> : <ImagePlus aria-hidden className="size-5 text-text-3" />}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -291,15 +292,15 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
                       })
                     }
                   >
-                    {k.logo ? 'Replace logo…' : 'Choose logo…'}
+                    {k.logo ? t('Replace logo…') : t('Choose logo…')}
                   </Button>
                   {k.logo && (
                     <>
                       <Button size="sm" variant="primary" disabled={!project || busy !== null} onClick={() => void addLogoToSlides()}>
-                        Add to every slide
+                        {t('Add to every slide')}
                       </Button>
                       <Button size="sm" variant="ghost" disabled={busy !== null} onClick={() => void save({ ...k, logo: null })}>
-                        Remove
+                        {t('Remove')}
                       </Button>
                     </>
                   )}

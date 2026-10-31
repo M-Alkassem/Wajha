@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Button, Dialog, DialogContent } from '../kit';
 import { useApp } from '../../store';
 
+import { t } from '../../i18n';
 /**
  * The in-app confirm dialog behind useApp().confirm / confirmDialog(). It
  * opens on the safe choice: Cancel when the action is destructive (so
@@ -28,10 +29,10 @@ export function ConfirmHost() {
           footer={
             <>
               <Button ref={cancelRef} variant="secondary" onClick={() => resolve(false)}>
-                {request.cancelLabel ?? 'Cancel'}
+                {request.cancelLabel ?? t('Cancel')}
               </Button>
               <Button ref={confirmRef} variant={request.danger ? 'danger' : 'primary'} onClick={() => resolve(true)}>
-                {request.confirmLabel ?? 'Confirm'}
+                {request.confirmLabel ?? t('Confirm')}
               </Button>
             </>
           }

@@ -6,6 +6,7 @@
  */
 import { matchShortcut, parseShortcut, platformIsMac, type ShortcutEventLike } from '../kit';
 
+import { t } from '../../i18n';
 export type EditorShortcutId =
   | 'undo'
   | 'redo'
@@ -47,33 +48,33 @@ export const FAMILY_SHORTCUT_COUNT = 6;
 const mac = platformIsMac();
 
 export const EDITOR_SHORTCUTS: readonly EditorShortcut[] = [
-  { id: 'export', label: 'Export screenshots', keys: ['mod+e'], group: 'General' },
-  { id: 'shortcuts', label: 'Keyboard shortcuts', keys: ['?'], group: 'General' },
-  { id: 'toggleSidebar', label: 'Show or hide the sidebar', keys: ['mod+\\'], group: 'General' },
-  { id: 'toggleInspector', label: 'Show or hide the inspector', keys: ['mod+alt+\\'], group: 'General' },
+  { id: 'export', label: t('Export screenshots'), keys: ['mod+e'], group: 'General' },
+  { id: 'shortcuts', label: t('Keyboard shortcuts'), keys: ['?'], group: 'General' },
+  { id: 'toggleSidebar', label: t('Show or hide the sidebar'), keys: ['mod+\\'], group: 'General' },
+  { id: 'toggleInspector', label: t('Show or hide the inspector'), keys: ['mod+alt+\\'], group: 'General' },
 
-  { id: 'undo', label: 'Undo', keys: ['mod+z'], group: 'Edit' },
+  { id: 'undo', label: t('Undo'), keys: ['mod+z'], group: 'Edit' },
   // Ctrl+Y is the Windows and Linux habit; macOS keeps to Shift+Command+Z.
-  { id: 'redo', label: 'Redo', keys: mac ? ['mod+shift+z'] : ['mod+shift+z', 'mod+y'], group: 'Edit' },
-  { id: 'copy', label: 'Copy', keys: ['mod+c'], group: 'Edit' },
-  { id: 'cut', label: 'Cut', keys: ['mod+x'], group: 'Edit' },
-  { id: 'paste', label: 'Paste', keys: ['mod+v'], group: 'Edit' },
-  { id: 'duplicate', label: 'Duplicate layer (or slide)', keys: ['mod+d'], group: 'Edit' },
-  { id: 'delete', label: 'Delete layer', keys: ['backspace', 'delete'], group: 'Edit' },
+  { id: 'redo', label: t('Redo'), keys: mac ? ['mod+shift+z'] : ['mod+shift+z', 'mod+y'], group: 'Edit' },
+  { id: 'copy', label: t('Copy'), keys: ['mod+c'], group: 'Edit' },
+  { id: 'cut', label: t('Cut'), keys: ['mod+x'], group: 'Edit' },
+  { id: 'paste', label: t('Paste'), keys: ['mod+v'], group: 'Edit' },
+  { id: 'duplicate', label: t('Duplicate layer (or slide)'), keys: ['mod+d'], group: 'Edit' },
+  { id: 'delete', label: t('Delete layer'), keys: ['backspace', 'delete'], group: 'Edit' },
 
-  { id: 'nudge', label: 'Nudge 1 px', keys: ['arrowup', 'arrowdown', 'arrowleft', 'arrowright'], group: 'Arrange' },
-  { id: 'nudgeFar', label: 'Nudge 10 px', keys: ['shift+arrowup', 'shift+arrowdown', 'shift+arrowleft', 'shift+arrowright'], group: 'Arrange' },
-  { id: 'deselect', label: 'Leave the text field, or deselect', keys: ['escape'], group: 'Arrange' },
+  { id: 'nudge', label: t('Nudge 1 px'), keys: ['arrowup', 'arrowdown', 'arrowleft', 'arrowright'], group: 'Arrange' },
+  { id: 'nudgeFar', label: t('Nudge 10 px'), keys: ['shift+arrowup', 'shift+arrowdown', 'shift+arrowleft', 'shift+arrowright'], group: 'Arrange' },
+  { id: 'deselect', label: t('Leave the text field, or deselect'), keys: ['escape'], group: 'Arrange' },
 
-  { id: 'prevSlide', label: 'Previous slide', keys: ['alt+arrowup'], group: 'Slides' },
-  { id: 'nextSlide', label: 'Next slide', keys: ['alt+arrowdown'], group: 'Slides' },
+  { id: 'prevSlide', label: t('Previous slide'), keys: ['alt+arrowup'], group: 'Slides' },
+  { id: 'nextSlide', label: t('Next slide'), keys: ['alt+arrowdown'], group: 'Slides' },
 
-  { id: 'zoomIn', label: 'Zoom in', keys: ['mod+plus', 'mod+='], group: 'View' },
-  { id: 'zoomOut', label: 'Zoom out', keys: ['mod+minus'], group: 'View' },
-  { id: 'zoomFit', label: 'Zoom to fit', keys: ['mod+0'], group: 'View' },
+  { id: 'zoomIn', label: t('Zoom in'), keys: ['mod+plus', 'mod+='], group: 'View' },
+  { id: 'zoomOut', label: t('Zoom out'), keys: ['mod+minus'], group: 'View' },
+  { id: 'zoomFit', label: t('Zoom to fit'), keys: ['mod+0'], group: 'View' },
   {
     id: 'family',
-    label: 'Switch device family',
+    label: t('Switch device family'),
     keys: Array.from({ length: FAMILY_SHORTCUT_COUNT }, (_, i) => `mod+${i + 1}`),
     group: 'View',
   },

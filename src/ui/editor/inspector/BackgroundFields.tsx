@@ -11,13 +11,14 @@ import { FillField } from './FillField';
 import { fromPct, toPct } from './format';
 import { useLive } from './live';
 
+import { t } from '../../../i18n';
 const KINDS: { value: PatternKind; label: string }[] = [
-  { value: 'dots', label: 'Dots' },
-  { value: 'grid', label: 'Grid' },
-  { value: 'diagonal', label: 'Diagonal lines' },
-  { value: 'noise', label: 'Noise' },
-  { value: 'waves', label: 'Waves' },
-  { value: 'rings', label: 'Rings' },
+  { value: 'dots', label: t('Dots') },
+  { value: 'grid', label: t('Grid') },
+  { value: 'diagonal', label: t('Diagonal lines') },
+  { value: 'noise', label: t('Noise') },
+  { value: 'waves', label: t('Waves') },
+  { value: 'rings', label: t('Rings') },
 ];
 
 /** Spacing that looks right for each kind on a phone canvas, fraction of u. */
@@ -81,16 +82,16 @@ const PatternFields = memo(function PatternFields({ scope, pattern, fill, update
 
   return (
     <>
-      <Row label="Pattern">
-        <Select value={pattern?.kind ?? 'none'} onValueChange={choose} options={[{ value: 'none', label: 'None' }, ...KINDS]} />
+      <Row label={t('Pattern')}>
+        <Select value={pattern?.kind ?? 'none'} onValueChange={choose} options={[{ value: 'none', label: t('None') }, ...KINDS]} />
       </Row>
       {pattern && (
         <>
-          <Row label="Colour">
-            <ColorField label="Pattern colour" value={pattern.color} alpha={false} palette={palette} {...color} />
+          <Row label={t('Colour')}>
+            <ColorField label={t('Pattern colour')} value={pattern.color} alpha={false} palette={palette} {...color} />
           </Row>
-          <SliderRow label="Opacity" value={toPct(pattern.opacity)} apply={applyOpacity} min={0} max={100} step={1} precision={0} unit="%" />
-          <SliderRow label="Scale" value={toPct(pattern.scale)} apply={applyScale} min={0.5} max={25} inputMin={0.2} inputMax={200} step={0.1} precision={1} unit="%" />
+          <SliderRow label={t('Opacity')} value={toPct(pattern.opacity)} apply={applyOpacity} min={0} max={100} step={1} precision={0} unit="%" />
+          <SliderRow label={t('Scale')} value={toPct(pattern.scale)} apply={applyScale} min={0.5} max={25} inputMin={0.2} inputMax={200} step={0.1} precision={1} unit="%" />
         </>
       )}
     </>

@@ -6,6 +6,7 @@
 import type { FamilyId, StoreId } from '../../../model/types';
 import { FAMILIES } from '../../../model/catalog';
 
+import { t } from '../../../i18n';
 /** Bitmaps are never denser than this many device pixels per CSS pixel. */
 export const MAX_DPR = 2;
 /** Per-canvas pixel budget: zoomed-in slides render a little softer instead of allocating huge bitmaps. */
@@ -44,7 +45,7 @@ export function cornerRadius(index: number, count: number, r: number, panorama: 
   return `${first ? r : 0}px ${last ? r : 0}px ${last ? r : 0}px ${first ? r : 0}px`;
 }
 
-const STORE_NAME: Record<StoreId, string> = { 'app-store': 'the App Store', 'google-play': 'Google Play' };
+const STORE_NAME: Record<StoreId, string> = { 'app-store': t('the App Store'), 'google-play': t('Google Play') };
 
 /** The family's store limit as a phrase, e.g. "the App Store allows 10". */
 export function storeAllowance(family: FamilyId): string {

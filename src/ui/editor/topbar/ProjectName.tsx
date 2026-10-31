@@ -3,6 +3,7 @@ import { LIMITS } from '../../../model/rules';
 import { useEditor } from '../../../store';
 import { Tooltip, cx } from '../../kit';
 
+import { t } from '../../../i18n';
 const TEXT = 'text-ui font-semibold tracking-[-0.005em]';
 
 /**
@@ -60,7 +61,7 @@ export function ProjectName() {
           size={1}
           dir="auto"
           maxLength={LIMITS.name}
-          aria-label="Project name"
+          aria-label={t('Project name')}
           spellCheck={false}
           autoComplete="off"
           onChange={(e) => setDraft(e.target.value)}
@@ -102,14 +103,14 @@ export function ProjectName() {
         type="button"
         dir="auto"
         onClick={start}
-        aria-label={`Project name: ${name}. Click to rename`}
+        aria-label={t('Project name: {name}. Click to rename', { name })}
         className={cx(
           'block h-7 max-w-[320px] min-w-0 shrink truncate rounded-sm px-2 text-start text-text outline-none',
           'transition-colors duration-(--dur-fast) hover:bg-surface-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-1 focus-visible:outline-focus',
           TEXT,
         )}
       >
-        {name || 'Untitled'}
+        {name || t('Untitled')}
       </button>
     </Tooltip>
   );

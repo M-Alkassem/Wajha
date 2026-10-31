@@ -25,6 +25,7 @@ import { MOVE_DOWN_KEYS, MOVE_UP_KEYS, moveDelta, prefersReducedMotion, restrict
 import { missingDevices, slideTitle, thumbSize } from './labels';
 import { addSlideAfter, deleteSlideWithConfirm, moveSlideBy } from './slideActions';
 
+import { t } from '../../../i18n';
 const slideNumber = (id: string | number) => {
   const p = useEditor.getState().project;
   const i = p ? p.slides.findIndex((s) => s.id === id) : -1;
@@ -116,7 +117,7 @@ export function SlidesPanel() {
           onDragCancel={() => setListDragging(false)}
         >
           <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-            <div role="listbox" aria-label="Slides" aria-orientation="vertical" className="flex flex-col gap-0.5 px-1.5 py-2">
+            <div role="listbox" aria-label={t('Slides')} aria-orientation="vertical" className="flex flex-col gap-0.5 px-1.5 py-2">
               {slides.map((slide, index) => (
                 <SlideItem
                   key={slide.id}
@@ -149,7 +150,7 @@ export function SlidesPanel() {
           onClick={() => useEditor.getState().addSlide()}
           className="border border-dashed border-line-strong hover:border-solid"
         >
-          {full ? `Slide limit reached (${MAX_SLIDES})` : 'Add slide'}
+          {full ? t('Slide limit reached ({MAX_SLIDES})', { MAX_SLIDES }) : t('Add slide')}
         </Button>
       </div>
     </div>
@@ -271,7 +272,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
     >
       <IconButton
         size="sm"
-        label="Duplicate slide"
+        label={t('Duplicate slide')}
         icon={<Copy />}
         tabIndex={-1}
         disabled={count >= MAX_SLIDES}
@@ -282,7 +283,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
       />
       <IconButton
         size="sm"
-        label="Delete slide"
+        label={t('Delete slide')}
         icon={<Trash2 />}
         tabIndex={-1}
         disabled={!canDelete}
@@ -309,7 +310,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
 
   // The wide (stacked) row has room for an icon only; the tooltip says the rest.
   const missingMark = missing > 0 && (
-    <Tooltip content={missing > 1 ? `${missing} screenshots missing: mock screens stand in` : 'No screenshot yet: a mock screen stands in'}>
+    <Tooltip content={missing > 1 ? t('{missing} screenshots missing: mock screens stand in', { missing }) : t('No screenshot yet: a mock screen stands in')}>
       <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-[4px] text-warning">
         <ImageOff className="size-3.5" />
       </span>
@@ -321,7 +322,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
       {index === limit && index > 0 && (
         <div aria-hidden className="flex items-center gap-2 px-2 pt-2.5 pb-2 text-2xs font-medium text-text-3">
           <span className="h-px flex-1 bg-line" />
-          <span className="shrink-0">{limit === 1 ? 'Only the first slide is exported' : `Only the first ${limit} are exported`}</span>
+          <span className="shrink-0">{limit === 1 ? t('Only the first slide is exported') : t('Only the first {limit} are exported', { limit })}</span>
           <span className="h-px flex-1 bg-line" />
         </div>
       )}
@@ -356,10 +357,10 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
                 {preview}
                 <div className="flex min-h-6 items-center gap-1">
                   <span dir={rtl ? 'rtl' : 'auto'} lang={lang} className={cx('min-w-0 flex-1 truncate text-xs font-medium', title ? 'text-text' : 'text-text-3')}>
-                    {title || 'No headline'}
+                    {title || t('No headline')}
                   </span>
                   {missingMark}
-                  {beyond && <span className="shrink-0 text-2xs text-text-3">Not exported</span>}
+                  {beyond && <span className="shrink-0 text-2xs text-text-3">{t('Not exported')}</span>}
                 </div>
               </div>
             ) : (
@@ -371,7 +372,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
                     lang={lang}
                     className={cx('line-clamp-4 text-xs leading-4 font-medium break-words', title ? 'text-text' : 'text-text-3')}
                   >
-                    {title || 'No headline'}
+                    {title || t('No headline')}
                   </p>
                   {subtitle && (
                     <p dir={rtl ? 'rtl' : 'auto'} lang={lang} className="mt-1 line-clamp-3 text-2xs leading-[14px] break-words text-text-3">
@@ -383,10 +384,10 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
                       {missing > 0 && (
                         <span className="inline-flex items-center gap-1">
                           <ImageOff className="size-3 shrink-0 text-warning" />
-                          <span className="truncate">{missing < devices ? `${missing} of ${devices} missing` : missing > 1 ? 'No screenshots' : 'No screenshot'}</span>
+                          <span className="truncate">{missing < devices ? t('{missing} of {devices} missing', { missing, devices }) : missing > 1 ? t('No screenshots') : t('No screenshot')}</span>
                         </span>
                       )}
-                      {beyond && <span className="truncate">Not exported</span>}
+                      {beyond && <span className="truncate">{t('Not exported')}</span>}
                     </div>
                   )}
                   <div className="mt-auto flex justify-end pt-2">{actions}</div>
@@ -397,21 +398,21 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
         </ContextMenuTrigger>
         <ContextMenuContent className="min-w-[220px]">
           <ContextMenuItem icon={<Plus />} disabled={count >= MAX_SLIDES} onSelect={() => addSlideAfter(slide.id)}>
-            New slide after
+            {t('New slide after')}
           </ContextMenuItem>
           <ContextMenuItem icon={<Copy />} disabled={count >= MAX_SLIDES} onSelect={() => useEditor.getState().duplicateSlide(slide.id)}>
-            Duplicate
+            {t('Duplicate')}
           </ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuItem icon={<ArrowUp />} disabled={index === 0} shortcut={MOVE_UP_KEYS} onSelect={() => onMove(slide.id, -1)}>
-            Move up
+            {t('Move up')}
           </ContextMenuItem>
           <ContextMenuItem icon={<ArrowDown />} disabled={index === count - 1} shortcut={MOVE_DOWN_KEYS} onSelect={() => onMove(slide.id, 1)}>
-            Move down
+            {t('Move down')}
           </ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuItem icon={<Trash2 />} danger disabled={!canDelete} shortcut="backspace" onSelect={() => void deleteSlideWithConfirm(slide.id)}>
-            Delete slide
+            {t('Delete slide')}
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>

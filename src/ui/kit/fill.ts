@@ -7,6 +7,7 @@
 import type { Fill, GradientStop, MeshPoint } from '../../model/types';
 import { colorsEqual, mixHex, normalizeHex, relativeLuminance, splitAlpha, withAlpha } from './color';
 
+import { t } from '../../i18n';
 export type FillType = Fill['type'];
 export type SolidFill = Extract<Fill, { type: 'solid' }>;
 export type LinearFill = Extract<Fill, { type: 'linear' }>;
@@ -18,11 +19,11 @@ export type GradientFill = LinearFill | RadialFill;
 export const FILL_TYPES: readonly FillType[] = ['solid', 'linear', 'radial', 'mesh', 'image'];
 
 export const FILL_TYPE_LABEL: Record<FillType, string> = {
-  solid: 'Solid',
-  linear: 'Linear',
-  radial: 'Radial',
-  mesh: 'Mesh',
-  image: 'Image',
+  solid: t('Solid'),
+  linear: t('Linear'),
+  radial: t('Radial'),
+  mesh: t('Mesh'),
+  image: t('Image'),
 };
 
 export const MIN_STOPS = 2;

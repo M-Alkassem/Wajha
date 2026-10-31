@@ -43,6 +43,7 @@ import {
   type ImageFill,
 } from './fill';
 
+import { t } from '../../i18n';
 export interface FillEditorProps {
   value: Fill;
   /** Live updates (drags call it on every move). */
@@ -229,9 +230,9 @@ export function FillEditor({
 
   const handles: PreviewHandle[] =
     fill.type === 'radial'
-      ? [{ x: fill.cx, y: fill.cy, label: 'Gradient centre', selected: true }]
+      ? [{ x: fill.cx, y: fill.cy, label: t('Gradient centre'), selected: true }]
       : fill.type === 'mesh'
-        ? fill.points.map((p, i) => ({ x: p.x, y: p.y, color: p.color, label: `Point ${i + 1}`, selected: i === pointSel }))
+        ? fill.points.map((p, i) => ({ x: p.x, y: p.y, color: p.color, label: t('Point {v}', { v: i + 1 }), selected: i === pointSel }))
         : [];
 
   const onHandleMove = (index: number, x: number, y: number) => {
@@ -254,7 +255,7 @@ export function FillEditor({
     >
       {types.length > 1 && (
         <SegmentedControl<FillType>
-          aria-label="Fill type"
+          aria-label={t('Fill type')}
           size="sm"
           fullWidth
           value={fill.type}
@@ -276,7 +277,7 @@ export function FillEditor({
 
       {fill.type === 'solid' && (
         <ColorField
-          label="Fill colour"
+          label={t('Fill colour')}
           value={fill.color}
           palette={palette}
           onChange={(color) => update('solid', (f) => ({ ...f, color }))}
@@ -301,7 +302,7 @@ export function FillEditor({
             <div className="flex items-center gap-1.5">
               <ColorField
                 className="min-w-0 flex-1"
-                label={`Stop ${sel + 1} colour`}
+                label={t('Stop {v} colour', { v: sel + 1 })}
                 value={selectedStop.color}
                 palette={palette}
                 onChange={(color) => {
@@ -311,7 +312,7 @@ export function FillEditor({
                 onCommit={commit}
               />
               <NumberField
-                aria-label={`Stop ${sel + 1} position`}
+                aria-label={t('Stop {v} position', { v: sel + 1 })}
                 className="w-[68px] shrink-0"
                 value={pct(selectedStop.offset)}
                 min={0}
@@ -334,7 +335,7 @@ export function FillEditor({
                 }}
               />
               <IconButton
-                label="Remove stop"
+                label={t('Remove stop')}
                 size="md"
                 icon={<Trash2 />}
                 disabled={stops.length <= MIN_STOPS}
@@ -359,7 +360,7 @@ export function FillEditor({
             onCommit={commit}
           />
           <NumberField
-            aria-label="Angle"
+            aria-label={t('Angle')}
             className="min-w-0 flex-1"
             value={normalizeAngle(fill.angle)}
             min={0}
@@ -371,7 +372,7 @@ export function FillEditor({
             onCommit={commit}
           />
           <IconButton
-            label="Rotate 90°"
+            label={t('Rotate 90°')}
             icon={<RotateCw />}
             onClick={() => {
               update('linear', (f) => ({ ...f, angle: normalizeAngle(f.angle + 90) }));
@@ -379,7 +380,7 @@ export function FillEditor({
             }}
           />
           <IconButton
-            label="Reverse gradient"
+            label={t('Reverse gradient')}
             icon={<ArrowLeftRight />}
             onClick={() => {
               const f = latest.current;
@@ -395,9 +396,9 @@ export function FillEditor({
       {fill.type === 'radial' && (
         <div className="grid grid-cols-3 gap-1.5">
           <NumberField
-            label="X"
+            label={t('X')}
             labelTitle="Centre X"
-            aria-label="Centre X"
+            aria-label={t('Centre X')}
             value={pct(fill.cx)}
             min={0}
             max={100}
@@ -409,9 +410,9 @@ export function FillEditor({
             {...scrub}
           />
           <NumberField
-            label="Y"
+            label={t('Y')}
             labelTitle="Centre Y"
-            aria-label="Centre Y"
+            aria-label={t('Centre Y')}
             value={pct(fill.cy)}
             min={0}
             max={100}
@@ -423,9 +424,9 @@ export function FillEditor({
             {...scrub}
           />
           <NumberField
-            label="R"
+            label={t('R')}
             labelTitle="Radius"
-            aria-label="Radius"
+            aria-label={t('Radius')}
             value={pct(fill.radius)}
             min={1}
             max={200}
@@ -442,10 +443,10 @@ export function FillEditor({
       {fill.type === 'mesh' && (
         <>
           <div className="flex items-center gap-1.5">
-            <span className="w-14 shrink-0 text-xs text-text-2">Base</span>
+            <span className="w-14 shrink-0 text-xs text-text-2">{t('Base')}</span>
             <ColorField
               className="min-w-0 flex-1"
-              label="Base colour"
+              label={t('Base colour')}
               value={fill.base}
               alpha={false}
               palette={palette}
@@ -453,7 +454,7 @@ export function FillEditor({
               onCommit={commit}
             />
           </div>
-          <div className="flex flex-col gap-1" role="list" aria-label="Mesh points">
+          <div className="flex flex-col gap-1" role="list" aria-label={t('Mesh points')}>
             {fill.points.map((p, i) => (
               <div
                 key={i}
@@ -468,7 +469,7 @@ export function FillEditor({
                 <ColorField
                   showInput={false}
                   size="sm"
-                  label={`Point ${i + 1} colour`}
+                  label={t('Point {v} colour', { v: i + 1 })}
                   value={p.color}
                   palette={palette}
                   onChange={(color) => update('mesh', (f) => ({ ...f, points: updateMeshPoint(f.points, i, { color }) }))}
@@ -476,8 +477,8 @@ export function FillEditor({
                 />
                 <NumberField
                   size="sm"
-                  label="X"
-                  aria-label={`Point ${i + 1} X`}
+                  label={t('X')}
+                  aria-label={t('Point {v} X', { v: i + 1 })}
                   className="min-w-0 flex-1"
                   value={pct(p.x)}
                   min={0}
@@ -490,8 +491,8 @@ export function FillEditor({
                 />
                 <NumberField
                   size="sm"
-                  label="Y"
-                  aria-label={`Point ${i + 1} Y`}
+                  label={t('Y')}
+                  aria-label={t('Point {v} Y', { v: i + 1 })}
                   className="min-w-0 flex-1"
                   value={pct(p.y)}
                   min={0}
@@ -504,8 +505,8 @@ export function FillEditor({
                 />
                 <NumberField
                   size="sm"
-                  label="R"
-                  aria-label={`Point ${i + 1} radius`}
+                  label={t('R')}
+                  aria-label={t('Point {v} radius', { v: i + 1 })}
                   className="min-w-0 flex-1"
                   value={pct(p.radius)}
                   min={2}
@@ -517,7 +518,7 @@ export function FillEditor({
                   {...scrub}
                 />
                 <IconButton
-                  label={`Remove point ${i + 1}`}
+                  label={t('Remove point {v}', { v: i + 1 })}
                   size="sm"
                   icon={<Trash2 />}
                   onClick={() => {
@@ -543,7 +544,7 @@ export function FillEditor({
               commit();
             }}
           >
-            Add point
+            {t('Add point')}
           </Button>
         </>
       )}
@@ -588,19 +589,19 @@ function ImageControls({
     <div className="flex flex-col gap-2.5">
       {canPick && (
         <Button size="sm" leadingIcon={<ImagePlus />} loading={picking} onClick={onReplace} className="self-start">
-          Replace image…
+          {t('Replace image…')}
         </Button>
       )}
-      <Row label="Fit">
+      <Row label={t('Fit')}>
         <SegmentedControl<ImageFill['fit']>
-          aria-label="Image fit"
+          aria-label={t('Image fit')}
           size="sm"
           fullWidth
           value={fill.fit}
           options={[
-            { value: 'cover', label: 'Cover' },
-            { value: 'contain', label: 'Contain' },
-            { value: 'tile', label: 'Tile' },
+            { value: 'cover', label: t('Cover') },
+            { value: 'contain', label: t('Contain') },
+            { value: 'tile', label: t('Tile') },
           ]}
           onValueChange={(fit) => {
             onUpdate((f) => ({ ...f, fit }));
@@ -608,9 +609,9 @@ function ImageControls({
           }}
         />
       </Row>
-      <Row label="Opacity">
+      <Row label={t('Opacity')}>
         <Slider
-          aria-label="Image opacity"
+          aria-label={t('Image opacity')}
           value={Math.round(fill.opacity * 100)}
           min={0}
           max={100}
@@ -620,9 +621,9 @@ function ImageControls({
           onCommit={onCommit}
         />
       </Row>
-      <Row label="Blur">
+      <Row label={t('Blur')}>
         <Slider
-          aria-label="Image blur"
+          aria-label={t('Image blur')}
           value={Math.round(fill.blur * 1000) / 10}
           min={0}
           max={10}
@@ -633,10 +634,10 @@ function ImageControls({
           onCommit={onCommit}
         />
       </Row>
-      <Row label="Tint">
+      <Row label={t('Tint')}>
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <Switch
-            aria-label="Tint"
+            aria-label={t('Tint')}
             size="sm"
             checked={fill.tint !== null}
             onCheckedChange={(on) => {
@@ -646,7 +647,7 @@ function ImageControls({
           />
           <ColorField
             className="min-w-0 flex-1"
-            label="Tint colour"
+            label={t('Tint colour')}
             value={fill.tint ?? '#0E0B1C66'}
             disabled={fill.tint === null}
             palette={palette}
@@ -761,7 +762,7 @@ function FillPreview({ fill, aspect, imageUrl, handles, onHandleSelect, onHandle
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-surface-2 text-text-3">
               <ImageOff className="size-5" />
-              <span className="text-2xs">{picking ? 'Choosing…' : 'No preview'}</span>
+              <span className="text-2xs">{picking ? t('Choosing…') : t('No preview')}</span>
             </div>
           )}
           {fill.tint && <div className="absolute inset-0" style={{ background: fill.tint }} />}
@@ -950,7 +951,7 @@ function GradientBar({ stops, selected, onSelect, onStopsChange, onCommit }: Gra
           const d = drag.current;
           if (d && d.target === barRef.current) finish(d);
         }}
-        title="Click to add a stop"
+        title={t('Click to add a stop')}
         className="kit-checker relative top-1.5 h-4 cursor-copy rounded-[5px]"
       >
         <div
@@ -967,7 +968,7 @@ function GradientBar({ stops, selected, onSelect, onStopsChange, onCommit }: Gra
               key={i}
               type="button"
               role="slider"
-              aria-label={`Stop ${i + 1}`}
+              aria-label={t('Stop {v}', { v: i + 1 })}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={Math.round(s.offset * 100)}
@@ -1046,7 +1047,7 @@ function AngleDial({ value, onChange, onCommit }: { value: number; onChange: (an
       ref={ref}
       role="slider"
       tabIndex={0}
-      aria-label="Gradient angle"
+      aria-label={t('Gradient angle')}
       aria-valuemin={0}
       aria-valuemax={359}
       aria-valuenow={Math.round(angle)}

@@ -19,6 +19,7 @@ import { confirmDialog, toast } from '../../store';
 import { archiveFileName, shorten } from './format';
 import { errorText } from './library';
 
+import { t } from '../../i18n';
 /* My templates -------------------------------------------------------- */
 
 export interface UserTemplatesState {
@@ -67,38 +68,38 @@ function setTemplateBusy(id: string, busy: boolean): void {
 const isCancel = (e: unknown) => typeof e === 'object' && e !== null && (e as { code?: unknown }).code === 'cancelled';
 
 /** Asks, then deletes a user template. Resolves true when it was deleted. */
-export async function deleteTemplateWithConfirm(t: Template): Promise<boolean> {
+export async function deleteTemplateWithConfirm(template: Template): Promise<boolean> {
   const ok = await confirmDialog({
-    title: `Delete the template “${shorten(t.name)}”?`,
-    message: 'Projects made from it keep their design. The template itself cannot be restored.',
-    confirmLabel: 'Delete template',
+    title: t('Delete the template “{shorten}”?', { shorten: shorten(template.name) }),
+    message: t('Projects made from it keep their design. The template itself cannot be restored.'),
+    confirmLabel: t('Delete template'),
     danger: true,
   });
   if (!ok) return false;
-  setTemplateBusy(t.id, true);
+  setTemplateBusy(template.id, true);
   try {
-    await deleteUserTemplate(t.id);
-    useUserTemplates.setState((s) => ({ templates: s.templates.filter((x) => x.id !== t.id) }));
+    await deleteUserTemplate(template.id);
+    useUserTemplates.setState((s) => ({ templates: s.templates.filter((x) => x.id !== template.id) }));
     return true;
   } catch (e) {
-    toast.error('Could not delete the template', errorText(e));
+    toast.error(t('Could not delete the template'), errorText(e));
     return false;
   } finally {
-    setTemplateBusy(t.id, false);
+    setTemplateBusy(template.id, false);
     void refreshUserTemplates();
   }
 }
 
-export async function exportTemplateFile(t: Template): Promise<void> {
-  setTemplateBusy(t.id, true);
+export async function exportTemplateFile(template: Template): Promise<void> {
+  setTemplateBusy(template.id, true);
   try {
-    const bytes = await exportTemplateArchive(t.id);
-    const saved = await getPlatform().saveFile(archiveFileName(t.name, 'wajha-template'), bytes);
-    if (saved) toast.success('Template exported', saved);
+    const bytes = await exportTemplateArchive(template.id);
+    const saved = await getPlatform().saveFile(archiveFileName(template.name, 'wajha-template'), bytes);
+    if (saved) toast.success(t('Template exported'), saved);
   } catch (e) {
-    if (!isCancel(e)) toast.error('Could not export the template', errorText(e));
+    if (!isCancel(e)) toast.error(t('Could not export the template'), errorText(e));
   } finally {
-    setTemplateBusy(t.id, false);
+    setTemplateBusy(template.id, false);
   }
 }
 
@@ -108,10 +109,10 @@ export async function importTemplateBytes(data: Uint8Array, fileName: string): P
   try {
     const template = await importTemplateArchive(data);
     await refreshUserTemplates();
-    toast.success('Template imported', `“${shorten(template.name)}” is in My templates.`);
+    toast.success(t('Template imported'), t('“{shorten}” is in My templates.', { shorten: shorten(template.name) }));
     return template;
   } catch (e) {
-    toast.error(`Could not import “${shorten(fileName, 48)}”`, errorText(e));
+    toast.error(t('Could not import “{shorten}”', { shorten: shorten(fileName, 48) }), errorText(e));
     return null;
   } finally {
     useUserTemplates.setState({ importing: false });
@@ -125,7 +126,7 @@ export async function importTemplateFile(): Promise<Template | null> {
   try {
     file = await getPlatform().openFile('template');
   } catch (e) {
-    if (!isCancel(e)) toast.error('Could not open the file', errorText(e));
+    if (!isCancel(e)) toast.error(t('Could not open the file'), errorText(e));
     return null;
   }
   return file ? importTemplateBytes(file.data, file.name) : null;
@@ -171,7 +172,7 @@ export async function installFromGallery(entry: GalleryEntry): Promise<Template 
     if (useGallery.getState().result?.offline) void loadGallery(true);
     return template;
   } catch (e) {
-    toast.error(`Could not install “${shorten(entry.name, 48)}”`, errorText(e));
+    toast.error(t('Could not install “{shorten}”', { shorten: shorten(entry.name, 48) }), errorText(e));
     return null;
   } finally {
     useGallery.setState((s) => {

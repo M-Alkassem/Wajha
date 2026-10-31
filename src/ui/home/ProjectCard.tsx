@@ -36,6 +36,7 @@ import {
 } from './library';
 import { ProjectThumb } from './ProjectThumb';
 
+import { t } from '../../i18n';
 export interface ProjectCardProps {
   meta: ProjectMeta;
   index: number;
@@ -111,11 +112,11 @@ export const ProjectCard = memo(function ProjectCard({ meta, index, tabbable, hi
   };
 
   const actions: MenuAction[] = [
-    { key: 'open', label: 'Open', icon: <SquareArrowOutUpRight />, shortcut: 'enter', run: () => void openProject(id) },
-    { key: 'rename', label: 'Rename', icon: <Pencil />, shortcut: 'f2', run: () => renameWhenMenuCloses(id) },
-    { key: 'duplicate', label: 'Duplicate', icon: <Copy />, shortcut: 'mod+d', run: () => void duplicateProjectById(id) },
-    { key: 'export', label: 'Export as file…', icon: <FileDown />, run: () => void exportProjectFile(id) },
-    { key: 'delete', label: 'Delete…', icon: <Trash2 />, shortcut: platformIsMac() ? 'backspace' : 'delete', danger: true, run: () => void deleteProjectWithConfirm(id) },
+    { key: 'open', label: t('Open'), icon: <SquareArrowOutUpRight />, shortcut: 'enter', run: () => void openProject(id) },
+    { key: 'rename', label: t('Rename'), icon: <Pencil />, shortcut: 'f2', run: () => renameWhenMenuCloses(id) },
+    { key: 'duplicate', label: t('Duplicate'), icon: <Copy />, shortcut: 'mod+d', run: () => void duplicateProjectById(id) },
+    { key: 'export', label: t('Export as file…'), icon: <FileDown />, run: () => void exportProjectFile(id) },
+    { key: 'delete', label: t('Delete…'), icon: <Trash2 />, shortcut: platformIsMac() ? 'backspace' : 'delete', danger: true, run: () => void deleteProjectWithConfirm(id) },
   ];
   const disabled = !!busy;
 
@@ -139,7 +140,7 @@ export const ProjectCard = memo(function ProjectCard({ meta, index, tabbable, hi
               ref={setButton}
               type="button"
               tabIndex={tabbable ? 0 : -1}
-              aria-label={`Open ${meta.name}`}
+              aria-label={t('Open {name}', { name: meta.name })}
               aria-describedby={descId}
               onClick={() => void openProject(id)}
               onFocus={() => onFocusIndex(index)}
@@ -174,8 +175,8 @@ export const ProjectCard = memo(function ProjectCard({ meta, index, tabbable, hi
                   <DropdownMenuTrigger asChild disabled={disabled || renaming}>
                     <IconButton
                       size="sm"
-                      label={`Actions for ${meta.name}`}
-                      tooltip="More actions"
+                      label={t('Actions for {name}', { name: meta.name })}
+                      tooltip={t('More actions')}
                       icon={<Ellipsis />}
                       tabIndex={tabbable ? 0 : -1}
                       className={cx(
@@ -287,7 +288,7 @@ function RenameField({ initial, onCommit, onCancel }: { initial: string; onCommi
       dir="auto"
       value={value}
       maxLength={200}
-      aria-label="Project name"
+      aria-label={t('Project name')}
       spellCheck={false}
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={(e) => {

@@ -10,6 +10,7 @@
 import { AppWindow, Image, Laptop, RectangleHorizontal, Tablet, TabletSmartphone, Tv, Watch, createLucideIcon, type LucideIcon } from 'lucide-react';
 import type { DeviceFrameId, FamilyId } from '../../model/types';
 
+import { t } from '../../i18n';
 /** Phone with a Dynamic Island. */
 export const IPhoneIcon: LucideIcon = createLucideIcon('wajha-iphone', [
   ['rect', { width: '14', height: '20', x: '5', y: '2', rx: '3', key: 'body' }],
@@ -75,14 +76,14 @@ export const FRAME_ICONS: Record<DeviceFrameId, LucideIcon> = {
 
 /** Human names of device frames, as the layers list shows them. */
 export const FRAME_LABELS: Record<DeviceFrameId, string> = {
-  iphone: 'iPhone',
-  ipad: 'iPad',
-  'android-phone': 'Android phone',
-  'android-tablet': 'Android tablet',
-  macbook: 'MacBook',
-  watch: 'Apple Watch',
-  tv: 'TV',
-  vision: 'Vision Pro window',
-  browser: 'Browser window',
-  none: 'Screenshot',
+  iphone: t('iPhone'),
+  ipad: t('iPad'),
+  'android-phone': t('Android phone'),
+  'android-tablet': t('Android tablet'),
+  macbook: t('MacBook'),
+  watch: t('Apple Watch'),
+  tv: t('TV'),
+  vision: t('Vision Pro window'),
+  browser: t('Browser window'),
+  none: t('Screenshot'),
 };

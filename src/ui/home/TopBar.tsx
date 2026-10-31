@@ -5,6 +5,7 @@ import { Button, IconButton, Input, Kbd, Tooltip } from '../kit';
 import { useHomeUi } from './homeUi';
 import { openProjectFile, useLibrary } from './library';
 
+import { t } from '../../i18n';
 export interface HomeTopBarProps {
   /** The project search is pointless on an empty library. */
   showSearch: boolean;
@@ -60,12 +61,12 @@ export const HomeTopBar = forwardRef<HTMLInputElement, HomeTopBarProps>(function
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
-            placeholder="Search projects"
-            aria-label="Search projects"
+            placeholder={t('Search projects')}
+            aria-label={t('Search projects')}
             leadingIcon={<Search />}
             suffix={
               query ? (
-                <IconButton size="sm" label="Clear search" tooltip={false} icon={<X />} className="-mr-1 size-5" onClick={() => setQuery('')} />
+                <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} className="-mr-1 size-5" onClick={() => setQuery('')} />
               ) : (
                 <Kbd keys="mod+f" className="opacity-80" />
               )
@@ -75,18 +76,18 @@ export const HomeTopBar = forwardRef<HTMLInputElement, HomeTopBarProps>(function
         )}
       </div>
       <div data-tauri-drag-region className="flex h-full min-w-0 items-center justify-end gap-1">
-        <Tooltip content="Open a .wajha project" shortcut="mod+o">
+        <Tooltip content={t('Open a .wajha project')} shortcut="mod+o">
           <Button variant="ghost" leadingIcon={<FolderOpen />} loading={importing} onClick={() => void openProjectFile()}>
-            Open file…
+            {t('Open file…')}
           </Button>
         </Tooltip>
-        <IconButton label="Settings" shortcut="mod+," icon={<Settings />} onClick={() => openSettings(true)} />
+        <IconButton label={t('Settings')} shortcut="mod+," icon={<Settings />} onClick={() => openSettings(true)} />
         {showNewProject && (
           <>
             <span data-tauri-drag-region className="mx-1.5 h-4 w-px bg-line" />
-            <Tooltip content="Start a new project" shortcut="mod+n">
+            <Tooltip content={t('Start a new project')} shortcut="mod+n">
               <Button variant="primary" leadingIcon={<Plus />} onClick={() => openNew()}>
-                New project
+                {t('New project')}
               </Button>
             </Tooltip>
           </>

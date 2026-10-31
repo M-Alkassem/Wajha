@@ -7,6 +7,7 @@ import { useHomeUi } from './homeUi';
 import { useLibrary } from './library';
 import { CARD_CLASS, ProjectCard } from './ProjectCard';
 
+import { t } from '../../i18n';
 /** Shared by the grid, its skeleton and the featured templates: cards at least 232 px wide. */
 export const GRID_CLASS = 'grid grid-cols-[repeat(auto-fill,minmax(232px,1fr))] gap-5';
 
@@ -79,7 +80,7 @@ export function ProjectGrid({ projects, showNewTile }: ProjectGridProps) {
   const tileIndex = showNewTile ? 1 : 0;
 
   return (
-    <div ref={gridRef} role="list" aria-label="Projects" className={GRID_CLASS}>
+    <div ref={gridRef} role="list" aria-label={t('Projects')} className={GRID_CLASS}>
       {showNewTile && (
         <NewProjectTile
           tabbable={activeIndex === 0}
@@ -142,8 +143,8 @@ function NewProjectTile({
           <Plus className="size-[18px]" />
         </span>
         <span className="flex flex-col items-center gap-0.5">
-          <span className="text-ui font-medium text-text">New project</span>
-          <span className="text-xs text-text-3">From a template or blank</span>
+          <span className="text-ui font-medium text-text">{t('New project')}</span>
+          <span className="text-xs text-text-3">{t('From a template or blank')}</span>
         </span>
       </button>
     </div>

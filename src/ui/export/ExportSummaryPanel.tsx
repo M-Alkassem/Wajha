@@ -14,6 +14,7 @@ import { FamilyIcon, SectionHeading } from '../editor/dialogs/parts';
 import { estimateBytes, familySummaries, firstSkippedSlide, formatBytes, groupWarnings, missingShotRows, type FamilySummary, type MissingShotRow } from './exportModel';
 import type { TextOverflowRow, TextOverflowState } from './textOverflow';
 
+import { t } from '../../i18n';
 export interface ExportSummaryPanelProps {
   project: Project;
   plan: ExportPlan;
@@ -26,7 +27,7 @@ export interface ExportSummaryPanelProps {
   onJump(target: JumpTarget): void;
 }
 
-const STRUCTURE_LABEL: Record<ExportStructure, string> = { stores: 'Stores', fastlane: 'fastlane', flat: 'Flat' };
+const STRUCTURE_LABEL: Record<ExportStructure, string> = { stores: t('Stores'), fastlane: 'fastlane', flat: t('Flat') };
 
 export const ExportSummaryPanel = memo(function ExportSummaryPanel({ project, plan, sizes, format, quality, structure, overflow, onJump }: ExportSummaryPanelProps) {
   const files = plan.jobs.length;
@@ -38,15 +39,15 @@ export const ExportSummaryPanel = memo(function ExportSummaryPanel({ project, pl
 
   return (
     <div className="flex flex-col gap-6 px-5 pt-4 pb-6">
-      <section className="flex flex-col gap-3" aria-label="Summary">
-        <SectionHeading>Summary</SectionHeading>
+      <section className="flex flex-col gap-3" aria-label={t('Summary')}>
+        <SectionHeading>{t('Summary')}</SectionHeading>
         <div>
           <div className="flex items-baseline gap-1.5">
             <span className="font-display text-[34px] leading-10 font-semibold tracking-[-0.02em] text-text tabular-nums">{files.toLocaleString('en-US')}</span>
             <span className="text-ui text-text-2">{files === 1 ? 'file' : 'files'}</span>
           </div>
           <p className="text-xs text-text-3">
-            {files > 0 ? `About ${formatBytes(estimate)}` : 'Nothing selected'} · {format === 'png' ? 'PNG' : `JPEG ${Math.round(quality * 100)}%`} · {STRUCTURE_LABEL[structure]}
+            {files > 0 ? t('About {formatBytes}', { formatBytes: formatBytes(estimate) }) : t('Nothing selected')} · {format === 'png' ? t('PNG') : t('JPEG {v}%', { v: Math.round(quality * 100) })} · {STRUCTURE_LABEL[structure]}
           </p>
         </div>
         <ul className="flex flex-col gap-2.5">
@@ -57,14 +58,14 @@ export const ExportSummaryPanel = memo(function ExportSummaryPanel({ project, pl
       </section>
 
       {files > 0 && (
-        <section className="flex flex-col gap-3" aria-label="Checks">
-          <SectionHeading>Before you export</SectionHeading>
+        <section className="flex flex-col gap-3" aria-label={t('Checks')}>
+          <SectionHeading>{t('Before you export')}</SectionHeading>
           {checks === 0 && !overflow.pending ? (
             <div className="flex items-start gap-2.5 rounded-lg border border-success-soft bg-success-soft px-3 py-2.5">
               <CircleCheck aria-hidden className="mt-px size-4 shrink-0 text-success" />
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-medium text-text">Ready to export</span>
-                <span className="text-xs leading-4 text-text-2">Every device has a screenshot, every text fits and every language has a store locale.</span>
+                <span className="text-xs font-medium text-text">{t('Ready to export')}</span>
+                <span className="text-xs leading-4 text-text-2">{t('Every device has a screenshot, every text fits and every language has a store locale.')}</span>
               </div>
             </div>
           ) : (
@@ -73,7 +74,7 @@ export const ExportSummaryPanel = memo(function ExportSummaryPanel({ project, pl
               {overflow.rows.length > 0 && <TextOverflow rows={overflow.rows} onJump={onJump} />}
               {groups.slides.length > 0 && <SlideLimits warnings={groups.slides} project={project} onJump={onJump} />}
               {groups.locales.length > 0 && (
-                <CheckCard icon={<Info />} tone="info" title="Store languages">
+                <CheckCard icon={<Info />} tone="info" title={t('Store languages')}>
                   <ul className="flex flex-col gap-1.5">
                     {groups.locales.map((w, i) => (
                       <li key={i} className="text-xs leading-4 text-text-2">
@@ -87,7 +88,7 @@ export const ExportSummaryPanel = memo(function ExportSummaryPanel({ project, pl
                 // Only a big project takes long enough for this to fade in.
                 <p className="flex animate-[kit-fade-in_var(--dur-slow)_var(--ease-out)_400ms_both] items-center gap-2 px-0.5 text-xs text-text-3">
                   <Spinner size={12} label={null} />
-                  Checking that every text fits…
+                  {t('Checking that every text fits…')}
                 </p>
               )}
             </div>
@@ -139,7 +140,7 @@ function MissingShots({ rows, project, onJump }: { rows: MissingShotRow[]; proje
   const total = rows.reduce((n, r) => n + r.slides.length, 0);
   const base = project.languages[0];
   return (
-    <CheckCard icon={<ImageOff />} tone="warning" title="Missing screenshots" description={`${plural(total, 'slide')} will show a placeholder screen. Click a number to go there.`}>
+    <CheckCard icon={<ImageOff />} tone="warning" title={t('Missing screenshots')} description={t('{plural} will show a placeholder screen. Click a number to go there.', { plural: plural(total, 'slide') })}>
       <ul className="flex flex-col gap-2.5">
         {rows.map((row) => (
           <SlideChips
@@ -161,8 +162,8 @@ function TextOverflow({ rows, onJump }: { rows: readonly TextOverflowRow[]; onJu
     <CheckCard
       icon={<Type />}
       tone="warning"
-      title="Text doesn't fit"
-      description={`Text on ${plural(slides, 'slide')} needs more lines than allowed, even at its smallest size. Click a number to go there.`}
+      title={t("Text doesn't fit")}
+      description={t('Text on {plural} needs more lines than allowed, even at its smallest size. Click a number to go there.', { plural: plural(slides, 'slide') })}
     >
       <ul className="flex flex-col gap-2.5">
         {rows.map((row) => (
@@ -216,7 +217,7 @@ function SlideChips({
             key={slideIndex}
             type="button"
             onClick={() => onJump(target)}
-            aria-label={`Go to ${what ? `${what} on ` : ''}slide ${slideIndex + 1}, ${FAMILIES[target.family ?? families[0]].label}, ${langLabel}`}
+            aria-label={t('Go to {v}slide {v2}, {label}, {langLabel}', { v: what ? `${what} on ` : '', v2: slideIndex + 1, label: FAMILIES[target.family ?? families[0]].label, langLabel })}
             className={cx(
               'inline-flex h-6 min-w-6 items-center justify-center rounded-[5px] border border-line bg-surface-2 px-1.5 text-2xs font-medium text-text-2 tabular-nums outline-none',
               'transition-colors duration-(--dur-fast) hover:border-accent-line hover:bg-accent-soft hover:text-accent-fg',
@@ -233,7 +234,7 @@ function SlideChips({
 
 function SlideLimits({ warnings, project, onJump }: { warnings: ExportWarning[]; project: Project; onJump(t: JumpTarget): void }) {
   return (
-    <CheckCard icon={<Layers />} tone="warning" title="Not everything is exported">
+    <CheckCard icon={<Layers />} tone="warning" title={t('Not everything is exported')}>
       <ul className="flex flex-col gap-1">
         {warnings.map((w, i) => {
           const family: FamilyId | undefined = w.family;

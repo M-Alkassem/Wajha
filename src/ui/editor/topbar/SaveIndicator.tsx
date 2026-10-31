@@ -4,6 +4,7 @@ import { Spinner, Tooltip, cx } from '../../kit';
 import { useSaveStatus } from '../../shell/saveStatus';
 import { retrySave } from './actions';
 
+import { t } from '../../../i18n';
 /** "Saving…" appears only for saves slower than this, so quick saves never flicker. */
 const SAVING_DELAY_MS = 300;
 /** How long "Saved" stays before it fades. */
@@ -48,7 +49,7 @@ export function SaveIndicator() {
             type="button"
             onClick={() => void retry()}
             disabled={retrying}
-            aria-label="Changes not saved. Try again"
+            aria-label={t('Changes not saved. Try again')}
             className={cx(
               'inline-flex h-6 items-center gap-1 rounded-sm px-1.5 text-2xs font-medium text-danger outline-none',
               'transition-colors duration-(--dur-fast) hover:bg-danger-soft focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-focus',
@@ -56,11 +57,11 @@ export function SaveIndicator() {
             )}
           >
             {retrying ? <Spinner size={12} label={null} /> : <CircleAlert className="size-3.5" />}
-            <span>Not saved</span>
+            <span>{t('Not saved')}</span>
           </button>
         </Tooltip>
         <span role="alert" className="sr-only">
-          Your changes could not be saved.
+          {t('Your changes could not be saved.')}
         </span>
       </div>
     );
@@ -79,12 +80,12 @@ export function SaveIndicator() {
         {saving ? (
           <>
             <Spinner size={11} label={null} />
-            <span>Saving…</span>
+            <span>{t('Saving…')}</span>
           </>
         ) : (
           <>
             <Check className="size-3 text-success" strokeWidth={2.5} />
-            <span>Saved</span>
+            <span>{t('Saved')}</span>
           </>
         )}
       </span>

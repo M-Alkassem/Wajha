@@ -13,6 +13,7 @@ import { SlidePreview } from '../../shared/SlidePreview';
 import { languageName, nativeName } from './labels';
 import { cellText, type TranslationRow, type TranslationStats } from './translationsModel';
 
+import { t } from '../../../i18n';
 const SLIDE_COL = 84;
 const TEXT_COL = 136;
 const LANG_COL_MIN = 260;
@@ -51,7 +52,7 @@ export function TranslationsGrid({ project, previewProject, rows, stats }: Trans
   return (
     <div
       role="table"
-      aria-label="Translations"
+      aria-label={t('Translations')}
       aria-rowcount={rows.length + 1}
       onKeyDown={onKeyDown}
       className="grid"
@@ -66,14 +67,14 @@ export function TranslationsGrid({ project, previewProject, rows, stats }: Trans
           className="sticky top-0 left-0 z-30 flex items-end border-r border-b border-line bg-popover px-3 pb-2.5 text-2xs font-medium text-text-3"
           style={{ height: HEADER_H }}
         >
-          Slide
+          {t('Slide')}
         </div>
         <div
           role="columnheader"
           className="sticky top-0 z-30 flex items-end border-r border-b border-line bg-popover px-3 pb-2.5 text-2xs font-medium text-text-3"
           style={{ height: HEADER_H, left: SLIDE_COL }}
         >
-          Text
+          {t('Text')}
         </div>
         {langs.map((lang, i) => (
           <LanguageHeader key={lang} lang={lang} base={i === 0} filled={stats.filledByLang[lang] ?? 0} total={stats.rows} last={i === langs.length - 1} />
@@ -100,10 +101,10 @@ export function TranslationsGrid({ project, previewProject, rows, stats }: Trans
                 textKey={row.key}
                 lang={lang}
                 value={cellText(project, row, lang)}
-                placeholder={c === 0 ? 'Type the text' : baseText || 'Type the translation'}
+                placeholder={c === 0 ? t('Type the text') : baseText || t('Type the translation')}
                 row={r}
                 col={c}
-                label={`Slide ${row.slideIndex + 1}, ${row.label}, ${languageName(lang)}`}
+                label={t('Slide {v}, {label}, {languageName}', { v: row.slideIndex + 1, label: row.label, languageName: languageName(lang) })}
                 lastInGroup={last}
                 lastCol={c === langs.length - 1}
               />
@@ -134,16 +135,16 @@ const LanguageHeader = memo(function LanguageHeader({ lang, base, filled, total,
         )}
         {base && (
           <Badge size="sm" variant="accent">
-            Base
+            {t('Base')}
           </Badge>
         )}
         {isRtl(lang) && (
           <Badge size="sm" variant="neutral">
-            RTL
+            {t('RTL')}
           </Badge>
         )}
       </div>
-      <div className="flex items-center gap-2" title={`${filled} of ${total} ${base ? 'texts written' : 'translated'}`}>
+      <div className="flex items-center gap-2" title={t('{filled} of {total} {v}', { filled, total, v: base ? 'texts written' : 'translated' })}>
         <div className="h-1 flex-1 overflow-hidden rounded-full bg-surface-3">
           <div
             className={cx('h-full rounded-full transition-[width] duration-(--dur-slow) ease-out', complete ? 'bg-success' : 'bg-accent')}

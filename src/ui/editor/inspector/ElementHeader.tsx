@@ -12,7 +12,8 @@ import { defaultElementName } from './format';
 import { ElementIcon } from './icons';
 import type { Target } from './state';
 
-const KIND_LABEL: Record<SlideElement['kind'], string> = { text: 'Text', device: 'Device', shape: 'Shape', image: 'Image' };
+import { t } from '../../../i18n';
+const KIND_LABEL: Record<SlideElement['kind'], string> = { text: t('Text'), device: t('Device'), shape: t('Shape'), image: t('Image') };
 
 export interface ElementHeaderProps {
   el: SlideElement;
@@ -47,44 +48,44 @@ export const ElementHeader = memo(function ElementHeader({ el, target, index, co
         onCommit={(name) => store().updateElement(slideId, family, elementId, { name })}
       />
       {el.locked && (
-        <IconButton size="sm" label="Locked on the canvas. Unlock" icon={<Lock />} className="text-text-3" onClick={() => store().toggleLocked(slideId, family, elementId)} />
+        <IconButton size="sm" label={t('Locked on the canvas. Unlock')} icon={<Lock />} className="text-text-3" onClick={() => store().toggleLocked(slideId, family, elementId)} />
       )}
       {el.hidden && (
-        <IconButton size="sm" label="Hidden. Show" icon={<EyeOff />} className="text-text-3" onClick={() => store().toggleHidden(slideId, family, elementId)} />
+        <IconButton size="sm" label={t('Hidden. Show')} icon={<EyeOff />} className="text-text-3" onClick={() => store().toggleHidden(slideId, family, elementId)} />
       )}
-      <IconButton size="sm" label="Duplicate" icon={<Copy />} onClick={() => store().duplicateElement(slideId, family, elementId)} />
-      <IconButton size="sm" label="Delete" icon={<Trash2 />} onClick={() => store().deleteElement(slideId, family, elementId)} />
+      <IconButton size="sm" label={t('Duplicate')} icon={<Copy />} onClick={() => store().duplicateElement(slideId, family, elementId)} />
+      <IconButton size="sm" label={t('Delete')} icon={<Trash2 />} onClick={() => store().deleteElement(slideId, family, elementId)} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <IconButton size="sm" label="More actions" icon={<Ellipsis />} />
+          <IconButton size="sm" label={t('More actions')} icon={<Ellipsis />} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[200px]">
-          <DropdownMenuLabel>Arrange</DropdownMenuLabel>
+          <DropdownMenuLabel>{t('Arrange')}</DropdownMenuLabel>
           <DropdownMenuItem icon={<BringToFront />} disabled={atTop} onSelect={() => store().bringToFront(slideId, family, elementId)}>
-            Bring to front
+            {t('Bring to front')}
           </DropdownMenuItem>
           <DropdownMenuItem icon={<ArrowUp />} disabled={atTop} onSelect={() => store().bringForward(slideId, family, elementId)}>
-            Bring forward
+            {t('Bring forward')}
           </DropdownMenuItem>
           <DropdownMenuItem icon={<ArrowDown />} disabled={atBottom} onSelect={() => store().sendBackward(slideId, family, elementId)}>
-            Send backward
+            {t('Send backward')}
           </DropdownMenuItem>
           <DropdownMenuItem icon={<SendToBack />} disabled={atBottom} onSelect={() => store().sendToBack(slideId, family, elementId)}>
-            Send to back
+            {t('Send to back')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem icon={el.locked ? <LockOpen /> : <Lock />} onSelect={() => store().toggleLocked(slideId, family, elementId)}>
-            {el.locked ? 'Unlock' : 'Lock on canvas'}
+            {el.locked ? t('Unlock') : t('Lock on canvas')}
           </DropdownMenuItem>
           <DropdownMenuItem icon={el.hidden ? <Eye /> : <EyeOff />} onSelect={() => store().toggleHidden(slideId, family, elementId)}>
-            {el.hidden ? 'Show' : 'Hide'}
+            {el.hidden ? t('Show') : t('Hide')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem icon={<Copy />} onSelect={() => store().duplicateElement(slideId, family, elementId)}>
-            Duplicate
+            {t('Duplicate')}
           </DropdownMenuItem>
           <DropdownMenuItem danger icon={<Trash2 />} onSelect={() => store().deleteElement(slideId, family, elementId)}>
-            Delete
+            {t('Delete')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -144,7 +145,7 @@ function EditableName({ value, placeholder, kind, onCommit }: { value: string; p
       spellCheck={false}
       autoComplete="off"
       maxLength={200}
-      aria-label={`${kind} name`}
+      aria-label={t('{kind} name', { kind })}
       title={shown || placeholder}
       value={shown}
       placeholder={placeholder}
