@@ -110,6 +110,12 @@ Defined in `src/model/types.ts`, repeated here because everything depends on it:
 
 - `catalog.ts`: `FAMILIES`, `FAMILY_ORDER`, `ALL_SIZES`, `sizeById`,
   `LANGUAGES`, `languageInfo`, `isRtl`, `BUNDLED_FONTS`, `FONT_FALLBACK_STACK`.
+  Families: iPhone, iPad and Android phone in portrait and landscape
+  (`landscape: true`, sizes derived from the portrait ones), Android tablet,
+  Mac, Apple Watch, Apple TV, Vision Pro and the Play feature graphic. On a
+  landscape family phones and tablets lie on their side; `deviceScreenAspect`
+  (engine) is the one rule for a device's screen shape: the frame's own, turned
+  for landscape families or a screenshot taken the other way round.
 - `defaults.ts`: element/theme/project factories. New elements get sensible
   sizes for the family canvas (a device ~ 0.78u wide on tall canvases,
   headline ~ 0.072u bold, subtitle ~ 0.04u regular).

@@ -37,10 +37,16 @@ export const TOPBAR_METRICS = {
 /** Labelled family tab widths (icon, gap, short label, padding). */
 const TAB_LABELED: Record<FamilyId, number> = {
   iphone: 80,
+  'iphone-landscape': 92,
   ipad: 66,
+  'ipad-landscape': 80,
   'android-phone': 86,
+  'android-landscape': 98,
   'android-tablet': 76,
   mac: 64,
+  watch: 72,
+  'apple-tv': 56,
+  vision: 74,
   'play-feature': 84,
 };
 

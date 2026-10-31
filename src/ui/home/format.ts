@@ -155,10 +155,16 @@ export function archiveKind(fileName: string): 'project' | 'template' | null {
 /** Names used for device families on the home screen (shorter than the catalog's for the feature graphic). */
 export const FAMILY_NAME: Readonly<Record<FamilyId, string>> = {
   iphone: 'iPhone',
+  'iphone-landscape': 'iPhone landscape',
   ipad: 'iPad',
+  'ipad-landscape': 'iPad landscape',
   'android-phone': 'Android phone',
+  'android-landscape': 'Android landscape',
   'android-tablet': 'Android tablet',
   mac: 'Mac',
+  watch: 'Apple Watch',
+  'apple-tv': 'Apple TV',
+  vision: 'Vision Pro',
   'play-feature': 'Feature graphic',
 };
 

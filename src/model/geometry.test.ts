@@ -24,7 +24,7 @@ describe('canvas metrics', () => {
   });
 
   it('classifies the catalog families', () => {
-    expect(FAMILY_ORDER.filter((f) => familyMetrics(f).wide)).toEqual(['mac', 'play-feature']);
+    expect(FAMILY_ORDER.filter((f) => familyMetrics(f).wide)).toEqual(['iphone-landscape', 'ipad-landscape', 'mac', 'apple-tv', 'vision', 'android-landscape', 'play-feature']);
   });
 });
 
@@ -50,7 +50,8 @@ describe('device estimates', () => {
 
 describe('familyForCanvas', () => {
   it('finds a family by its exact design size', () => {
-    for (const f of FAMILY_ORDER) expect(familyForCanvas(FAMILIES[f].design)).toBe(f);
+    // Apple TV and Vision Pro share 3840 × 2160; either answer has the same shape.
+    for (const f of FAMILY_ORDER) expect(FAMILIES[familyForCanvas(FAMILIES[f].design)].design).toEqual(FAMILIES[f].design);
   });
 
   it('falls back to the closest aspect', () => {

@@ -72,7 +72,7 @@ test('first run: create a project from a template with iPhone, Android phone and
   await expect(page.getByRole('button', { name: /^Project name: Road Trip Planner/ })).toBeVisible();
   const family = page.getByRole('radiogroup', { name: 'Device family' });
   await expect(family.getByRole('radio')).toHaveCount(2);
-  await expect(family.getByRole('radio', { name: 'iPhone' })).toHaveAttribute('aria-checked', 'true');
+  await expect(family.getByRole('radio', { name: 'iPhone', exact: true })).toHaveAttribute('aria-checked', 'true');
   await expect(family.getByRole('radio', { name: 'Android phone' })).toBeVisible();
 
   const project = await openProject(page);

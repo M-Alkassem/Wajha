@@ -7,7 +7,7 @@ import { frameLayout } from './geometry';
 import { islandRect } from './iphone';
 import { punchHole } from './android';
 
-const FRAMES: DeviceFrameId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'macbook', 'browser', 'none'];
+const FRAMES: DeviceFrameId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'macbook', 'watch', 'tv', 'vision', 'browser', 'none'];
 const FINISHES: FrameFinish[] = ['metal', 'matte', 'clay'];
 const ASPECT: Record<DeviceFrameId, number> = {
   iphone: 2868 / 1320,
@@ -15,6 +15,9 @@ const ASPECT: Record<DeviceFrameId, number> = {
   'android-phone': 2400 / 1080,
   'android-tablet': 2560 / 1600,
   macbook: 0.625,
+  watch: 514 / 422,
+  tv: 0.5625,
+  vision: 0.5625,
   browser: 0.625,
   none: 2,
 };
@@ -114,9 +117,10 @@ describe('drawDevice pixels', () => {
   });
 
   it('keeps the corners outside the body transparent', () => {
-    for (const frame of FRAMES) {
+    // A television's corners are nearly square, like the real thing.
+    for (const frame of FRAMES.filter((f) => f !== 'tv')) {
       const { ctx, g, left, top } = render(options(element(frame), 400));
-      expect(pixel(ctx, left + 0.5, top + 0.5)[3]).toBe(0);
+      expect(pixel(ctx, left + 0.5, top + 0.5)[3], frame).toBe(0);
       expect(pixel(ctx, left + g.width - 1.5, top + 0.5)[3]).toBe(0);
       expect(pixel(ctx, left + 0.5, top + g.height - 1.5)[3]).toBe(0);
       expect(pixel(ctx, left + g.width - 1.5, top + g.height - 1.5)[3]).toBe(0);

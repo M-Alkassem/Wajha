@@ -166,7 +166,8 @@ describe('setup controls', () => {
   it('toggles device families as pressed buttons grouped by store', () => {
     const out = html(h(DevicePicker, { value: ['iphone', 'android-phone'], onChange: noop }));
     expect(out.match(/aria-pressed="true"/g)).toHaveLength(2);
-    expect(out.match(/aria-pressed="false"/g)).toHaveLength(4);
+    expect(out.match(/aria-pressed="false"/g)).toHaveLength(10);
+    for (const name of ['iPhone landscape', 'Apple Watch', 'Apple TV', 'Vision Pro', 'Android landscape']) expect(out).toContain(`aria-label="${name}"`);
     expect(out).toContain('App Store');
     expect(out).toContain('Google Play');
     expect(out).toContain('2 selected');

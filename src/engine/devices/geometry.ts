@@ -21,6 +21,9 @@ export const DEFAULT_ASPECT: Record<DeviceFrameId, number> = {
   'android-phone': 2400 / 1080,
   'android-tablet': 2560 / 1600,
   macbook: 1800 / 2880,
+  watch: 514 / 422,
+  tv: 2160 / 3840,
+  vision: 2160 / 3840,
   browser: 1800 / 2880,
   none: 2868 / 1320,
 };
@@ -28,7 +31,7 @@ export const DEFAULT_ASPECT: Record<DeviceFrameId, number> = {
 /** Corner radius of frame "none" when no element radius is known, fraction of width. */
 export const NONE_DEFAULT_RADIUS = 0.1;
 
-const FRAMES: readonly DeviceFrameId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'macbook', 'browser', 'none'];
+const FRAMES: readonly DeviceFrameId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'macbook', 'watch', 'tv', 'vision', 'browser', 'none'];
 
 /** Unknown ids (old or hand-edited files) degrade to the bare screenshot. */
 export function knownFrame(frame: string): DeviceFrameId {
@@ -51,7 +54,10 @@ const clampRadius = (r: number, w: number, h: number) => Math.max(0, Math.min(r,
 /* Slabs: phones and tablets                                           */
 /* ------------------------------------------------------------------ */
 
-export type SlabFrame = 'iphone' | 'ipad' | 'android-phone' | 'android-tablet';
+export type SlabFrame = 'iphone' | 'ipad' | 'android-phone' | 'android-tablet' | 'watch' | 'tv';
+
+/** Slabs that can lie on their side (a screen aspect under 1 turns them). */
+export const TURNABLE: ReadonlySet<SlabFrame> = new Set(['iphone', 'ipad', 'android-phone', 'android-tablet']);
 
 export interface SlabSpec {
   /** Outer corner radius, fraction of width. */
@@ -80,6 +86,10 @@ export const SLAB_SPECS: Record<SlabFrame, SlabSpec> = {
   'android-phone': { radius: 0.12, smoothing: 0.12, band: 0.0095, inset: 0.0095 + 0.024, screenSmoothing: 0.12 },
   // Pixel Tablet.
   'android-tablet': { radius: 0.056, smoothing: 0.12, band: 0.0075, inset: 0.05, screenRadius: 0.024, screenSmoothing: 0.12 },
+  // Apple Watch: a soft, deep case with a wide black border around a rounded display.
+  watch: { radius: 0.26, smoothing: 0.6, band: 0.03, inset: 0.03 + 0.07, screenRadius: 0.17, screenSmoothing: 0.6 },
+  // A thin-bezel television.
+  tv: { radius: 0.008, smoothing: 0.2, band: 0.003, inset: 0.012, screenRadius: 0.002, screenSmoothing: 0.2 },
 };
 
 export interface SlabLayout {
@@ -93,9 +103,27 @@ export interface SlabLayout {
   inset: number;
   screen: ScreenRect;
   screenSmoothing: number;
+  /**
+   * Set on a device lying on its side: the upright layout it is painted
+   * from, turned a quarter to the left (its top edge on the left). Its
+   * insets and radii follow the short side, as on the real device.
+   */
+  upright?: SlabLayout;
 }
 
 function slabLayout(frame: SlabFrame, w: number, aspect: number): SlabLayout {
+  if (aspect < 1 && TURNABLE.has(frame)) {
+    // The upright device whose height is this width.
+    const k = SLAB_SPECS[frame].inset;
+    const up = uprightSlab(frame, w / ((1 - 2 * k) / aspect + 2 * k), 1 / aspect);
+    const s = up.screen;
+    // `w` itself rather than up.h, which equals it give or take float error.
+    return { ...up, w, h: up.w, screen: { x: s.y, y: up.w - s.x - s.w, w: s.h, h: s.w, radius: s.radius }, upright: up };
+  }
+  return uprightSlab(frame, w, aspect);
+}
+
+function uprightSlab(frame: SlabFrame, w: number, aspect: number): SlabLayout {
   const spec = SLAB_SPECS[frame];
   const inset = spec.inset * w;
   const sw = w - 2 * inset;
@@ -214,6 +242,39 @@ function browserLayout(w: number, aspect: number): BrowserLayout {
   return { kind: 'browser', w, h, radius, toolbar, screen: { x: 0, y: toolbar, w, h: sh, radius: clampRadius(radius, w, sh) } };
 }
 
+/** Apple Vision Pro: a floating glass window with its grab bar below. */
+export interface VisionLayout {
+  kind: 'vision';
+  w: number;
+  h: number;
+  /** The glass window; the grab bar sits under it. */
+  window: Box & { radius: number };
+  bar: Box;
+  screen: ScreenRect;
+}
+
+export const VISION_SPEC = { glass: 0.012, radius: 0.04, barGap: 0.022, barW: 0.12, barH: 0.011 };
+
+function visionLayout(w: number, aspect: number): VisionLayout {
+  const S = VISION_SPEC;
+  const glass = w * S.glass;
+  const sw = w - 2 * glass;
+  const sh = sw * aspect;
+  const winH = sh + 2 * glass;
+  const radius = clampRadius(w * S.radius, w, winH);
+  const barW = w * S.barW;
+  const barH = w * S.barH;
+  const barY = winH + w * S.barGap;
+  return {
+    kind: 'vision',
+    w,
+    h: barY + barH,
+    window: { x: 0, y: 0, w, h: winH, radius },
+    bar: { x: (w - barW) / 2, y: barY, w: barW, h: barH },
+    screen: { x: glass, y: glass, w: sw, h: sh, radius: clampRadius(radius - glass, sw, sh) },
+  };
+}
+
 export interface BareLayout {
   kind: 'none';
   w: number;
@@ -229,7 +290,7 @@ function bareLayout(w: number, aspect: number, cornerRadius: number): BareLayout
 
 /* ------------------------------------------------------------------ */
 
-export type FrameLayout = SlabLayout | MacLayout | BrowserLayout | BareLayout;
+export type FrameLayout = SlabLayout | MacLayout | VisionLayout | BrowserLayout | BareLayout;
 
 /**
  * Full layout of a frame. `cornerRadius` (fraction of width) only affects
@@ -244,7 +305,11 @@ export function frameLayout(frame: DeviceFrameId, widthPx: number, screenAspect:
     case 'ipad':
     case 'android-phone':
     case 'android-tablet':
+    case 'watch':
+    case 'tv':
       return slabLayout(f, w, a);
+    case 'vision':
+      return visionLayout(w, a);
     case 'macbook':
       return macLayout(w, a);
     case 'browser':

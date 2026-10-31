@@ -5,7 +5,7 @@
  * folder or produce a name some file system refuses.
  */
 import { languageInfo, sizeById } from '../model/catalog';
-import type { ExportStructure, StoreId } from '../model/types';
+import type { ExportStructure, FamilyId, StoreId } from '../model/types';
 import type { ExportJob } from './types';
 
 /** Longest segment we emit, in UTF-16 code units: at most 240 UTF-8 bytes, under every file system's 255 limit. */
@@ -119,12 +119,27 @@ const DELIVER_SETS: Record<string, string> = {
   '2560x1600': 'APP_DESKTOP',
   '1440x900': 'APP_DESKTOP',
   '1280x800': 'APP_DESKTOP',
+  '422x514': 'APP_WATCH_ULTRA',
+  '410x502': 'APP_WATCH_ULTRA',
+  '416x496': 'APP_WATCH_SERIES_10',
+  '396x484': 'APP_WATCH_SERIES_7',
+  '368x448': 'APP_WATCH_SERIES_4',
+  '312x390': 'APP_WATCH_SERIES_3',
+  '3840x2160': 'APP_APPLE_TV',
+  '1920x1080': 'APP_APPLE_TV',
 };
 
-/** The App Store Connect screenshot set fastlane deliver files an App Store size under; a unique key for unknown resolutions. */
-export function deliverScreenshotSet(size: { width: number; height: number }): string {
+/**
+ * The App Store Connect screenshot set fastlane deliver files an App Store
+ * size under; a unique key for unknown resolutions. deliver takes phones and
+ * tablets in either orientation, so a landscape size shares its portrait
+ * size's set. Apple TV 4K and Vision Pro share a resolution, so the family
+ * tells them apart.
+ */
+export function deliverScreenshotSet(size: { width: number; height: number; family?: FamilyId }): string {
+  if (size.family === 'vision') return 'APP_APPLE_VISION_PRO';
   const key = `${size.width}x${size.height}`;
-  return DELIVER_SETS[key] ?? `SIZE_${key}`;
+  return DELIVER_SETS[key] ?? DELIVER_SETS[`${size.height}x${size.width}`] ?? `SIZE_${key}`;
 }
 
 /** The store's locale code for a project language, or null when that store has none. */

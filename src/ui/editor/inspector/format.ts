@@ -97,6 +97,9 @@ export const FRAME_LABEL: Record<DeviceFrameId, string> = {
   'android-phone': 'Android phone',
   'android-tablet': 'Android tablet',
   macbook: 'MacBook',
+  watch: 'Watch',
+  tv: 'TV',
+  vision: 'Vision Pro',
   browser: 'Browser',
   none: 'Screenshot',
 };

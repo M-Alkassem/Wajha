@@ -231,6 +231,9 @@ const FRAMES: { id: DeviceFrameId; label: string }[] = [
   { id: 'android-phone', label: 'Android' },
   { id: 'android-tablet', label: 'Tablet' },
   { id: 'macbook', label: 'MacBook' },
+  { id: 'watch', label: 'Watch' },
+  { id: 'tv', label: 'TV' },
+  { id: 'vision', label: 'Vision Pro' },
   { id: 'browser', label: 'Browser' },
   { id: 'none', label: 'None' },
 ];

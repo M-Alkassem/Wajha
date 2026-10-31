@@ -30,12 +30,15 @@ size both stores ask for, in every language, in one click.
 
 - **20 designed templates** in seven styles, from minimal to bold panoramas,
   plus a community gallery and your own saved templates.
-- **Real device frames** for iPhone, iPad, Android phones and tablets and
-  MacBook, drawn as vectors (metal, matte or clay finish) so they stay sharp at
-  any size. Until you add screenshots, templates show generated app screens.
-- **Exact store sizes.** iPhone 6.9″ and 6.3″, iPad 13″, Android phone and
-  tablets, Mac and the Google Play feature graphic. PNGs are exported without
-  an alpha channel, which Google Play requires.
+- **Real device frames** for iPhone, iPad, Android phones and tablets,
+  MacBook, Apple Watch, Apple TV and Vision Pro, drawn as vectors (metal, matte
+  or clay finish) so they stay sharp at any size. Phones and tablets work in
+  portrait and landscape. Until you add screenshots, templates show generated
+  app screens.
+- **Exact store sizes.** Every iPhone and iPad size in portrait and landscape,
+  Mac, Apple Watch, Apple TV, Vision Pro, Android phones (portrait and
+  landscape) and tablets, and the Google Play feature graphic. PNGs are
+  exported without an alpha channel, which Google Play requires.
 - **51 languages with right-to-left support.** Arabic, Hebrew, Persian and
   Urdu are shaped and aligned correctly. Translate side by side in a grid, or
   round-trip a CSV with your translators.

@@ -136,6 +136,20 @@ export function paintLens(ctx: Ctx2D, cx: number, cy: number, r: number): void {
 
 /** Body, band, bezel, screen and hardware of a phone or tablet, at the current origin (device top-left). */
 export function paintSlab(ctx: Ctx2D, L: SlabLayout, paint: FramePaint, px: number, content: ScreenContent, hw: SlabHardware): void {
+  if (L.upright) {
+    // Lying on its side: the upright device turned a quarter to the left,
+    // its screen content painted the right way up.
+    ctx.save();
+    ctx.translate(0, L.h);
+    ctx.rotate(-Math.PI / 2);
+    paintUpright(ctx, L.upright, paint, px, content, hw, true);
+    ctx.restore();
+    return;
+  }
+  paintUpright(ctx, L, paint, px, content, hw, false);
+}
+
+function paintUpright(ctx: Ctx2D, L: SlabLayout, paint: FramePaint, px: number, content: ScreenContent, hw: SlabHardware, turned: boolean): void {
   const body = (inset: number) => insetSmoothRect(ctx, L.w, L.h, L.radius, L.smoothing, inset);
   hw.buttons?.(ctx, L, paint);
   paintBand(ctx, body, L.band, paint, px, { x: 0, y: 0, w: L.w, h: L.h });
@@ -161,8 +175,26 @@ export function paintSlab(ctx: Ctx2D, L: SlabLayout, paint: FramePaint, px: numb
   hw.bezel?.(ctx, L, px);
 
   const screenPath = (c: Ctx2D) => smoothRectPath(c, s.x, s.y, s.w, s.h, s.radius, L.screenSmoothing);
-  paintScreen(ctx, s, screenPath, content);
+  if (turned) paintTurnedScreen(ctx, s, screenPath, content, L.w);
+  else paintScreen(ctx, s, screenPath, content);
   if (paint.bezelMatchesBody) paintInnerShadow(ctx, s, screenPath, L.w * 0.014 * px, L.w * 0.003 * px, 0.2);
   hw.overlays?.(ctx, L, px);
 }
 
+/**
+ * The screen of a device painted turned (see paintSlab): clipped to its
+ * shape in the device's own coordinates, then filled with the turn undone,
+ * so a landscape screenshot or mock reads the right way up. `uprightW` is
+ * the upright device's width, the turned device's height.
+ */
+function paintTurnedScreen(ctx: Ctx2D, s: Rect, clip: (ctx: Ctx2D) => void, content: ScreenContent, uprightW: number): void {
+  ctx.save();
+  ctx.beginPath();
+  clip(ctx);
+  ctx.clip();
+  ctx.rotate(Math.PI / 2);
+  ctx.translate(0, -uprightW);
+  const r = { x: s.y, y: uprightW - s.x - s.w, w: s.h, h: s.w };
+  paintScreen(ctx, r, (c) => c.rect(r.x, r.y, r.w, r.h), content);
+  ctx.restore();
+}

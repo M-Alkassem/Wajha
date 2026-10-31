@@ -206,6 +206,12 @@ function clusterTexts(src: SlideElement[], idx: number[], F: CanvasMetrics): Tex
 const indicesOf = (src: SlideElement[], kind: SlideElement['kind']) =>
   src.reduce<number[]>((acc, e, i) => (e.kind === kind ? (acc.push(i), acc) : acc), []);
 
+/** True when a device's outline keeps roughly its proportions through the adaptation (its frame may change). */
+function keepsShape(s: DeviceElement, o: DeviceElement, c: Ctx): boolean {
+  const ratio = deviceHeightFactor(o.frame, c.dstAspect) / deviceHeightFactor(s.frame, c.srcAspect);
+  return ratio > 0.6 && ratio < 1.6;
+}
+
 /* Relative arrangement --------------------------------------------- */
 
 function relative(src: SlideElement[], out: SlideElement[], c: Ctx): void {
@@ -215,7 +221,9 @@ function relative(src: SlideElement[], out: SlideElement[], c: Ctx): void {
   const copyMoves: CopyMove[] = [];
   // Wide canvases measure u by their height, so a copy column keeps its share
   // of the canvas width (and its type scales with it) between Mac and banner.
-  const scale = F.wide && T.wide ? clamp(T.wu / F.wu, 0.5, 2) : 1;
+  // It grows by a fifth at most: on a very wide, short canvas (an iPhone on its
+  // side) taller copy would run into whatever rises from the bottom edge.
+  const scale = F.wide && T.wide ? clamp(T.wu / F.wu, 0.5, 1.2) : 1;
   // Text-only slides switching between portrait and wide: re-center the copy.
   const recenter = F.wide !== T.wide;
 
@@ -276,10 +284,13 @@ function relative(src: SlideElement[], out: SlideElement[], c: Ctx): void {
 
   const deviceIdx = indicesOf(src, 'device');
   for (const i of deviceIdx) fitDevice(src[i] as DeviceElement, out[i] as DeviceElement, c, shifts);
-  // Portrait <-> portrait: decorations around the devices follow them as they re-fit. (Between
-  // wide canvases a laptop may turn into a phone: its decorations keep their place instead.)
+  // Decorations around the devices follow them as they re-fit, between portrait canvases and
+  // between wide ones whose devices keep their shape (a laptop that becomes a TV, a Vision Pro
+  // window or a phone on its side). A laptop that becomes an upright phone keeps its
+  // decorations in place instead: they would not fit around it.
   const withDevices = new Set<number>();
-  if (deviceIdx.length && !F.wide && !T.wide) {
+  const follow = !F.wide && !T.wide ? true : F.wide && T.wide && deviceIdx.every((i) => keepsShape(src[i] as DeviceElement, out[i] as DeviceElement, c));
+  if (deviceIdx.length && follow) {
     const { box: from } = sourceDevices(src, deviceIdx, c);
     const decor = groupDecor(src, from, c);
     for (const i of decor) withDevices.add(i);

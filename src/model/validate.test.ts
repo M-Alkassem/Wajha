@@ -253,7 +253,7 @@ describe('validateProject: hostile input', () => {
 
   it('repairs families, languages and slides', () => {
     const json = projectJson();
-    json.families = ['watch', 'ipad', 'ipad', 'iphone'];
+    json.families = ['toaster', 'ipad', 'ipad', 'iphone'];
     json.languages = ['EN', 'ar-SA', 'ar-SA', 'x y'];
     const out = validateProject(json);
     expect(out.families).toEqual(['ipad', 'iphone']);
@@ -286,8 +286,8 @@ describe('validateProject: hostile input', () => {
     setAt(json, `${EL}.0.style.color`, '#ABC');
     setAt(json, 'slides.0.texts.bad lang', { headline: 'x' });
     setAt(json, 'slides.0.texts.de-DE', { 'bad key': 'x', ok: 'y', gone: null });
-    setAt(json, 'slides.0.shots.watch', { main: { 'en-US': assetId(1) } });
-    setAt(json, 'slides.0.layouts.watch', at(json, 'slides.0.layouts.iphone'));
+    setAt(json, 'slides.0.shots.toaster', { main: { 'en-US': assetId(1) } });
+    setAt(json, 'slides.0.layouts.toaster', at(json, 'slides.0.layouts.iphone'));
     setAt(json, 'export', { sizes: ['ios-6.9', 'ios-6.9', 'retired-size'], languages: ['ar-SA', 'fr-FR'], format: 'jpeg', jpegQuality: 0.8, structure: 'fastlane' });
     const out = validateProject(json);
     expect((out.slides[0].layouts.iphone!.elements[0] as DeviceElement).style.color).toBe('#aabbcc');

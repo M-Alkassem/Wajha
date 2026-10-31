@@ -72,9 +72,11 @@ describe('adaptLayout invariants (every family pair)', () => {
     expect(box.right).toBeLessThanOrEqual(1 + 1e-6);
   });
 
-  it.each(pairs.filter(([, to]) => to !== 'mac'))('%s -> %s keeps a bleeding device bleeding off the bottom', (from, to) => {
+  // Wide canvases (Mac, TV, Vision Pro, landscape phones and tablets) centre their device beside the copy.
+  const wide = (f: FamilyId) => FAMILIES[f].aspectClass === 'wide';
+  it.each(pairs.filter(([, to]) => !wide(to)))('%s -> %s keeps a bleeding device bleeding off the bottom', (from, to) => {
     const src = defaultLayout(from, theme);
-    if (from === 'mac') return; // the Mac default is a centered laptop, it does not bleed
+    if (wide(from)) return; // a wide default is a centred device, it does not bleed
     expect(deviceBox(devices(src)[0], from).bottom).toBeGreaterThan(1);
     const box = deviceBox(devices(adapt(src, from, to))[0], to);
     expect(box.bottom).toBeGreaterThan(1);

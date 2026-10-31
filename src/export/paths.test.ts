@@ -173,6 +173,12 @@ describe('deliverScreenshotSet', () => {
     expect(set('ipad-13')).toBe(set('ipad-12.9'));
     expect(set('ipad-11')).toBe('APP_IPAD_PRO_3GEN_11');
     expect(new Set(FAMILIES.mac.sizes.map((s) => deliverScreenshotSet(s)))).toEqual(new Set(['APP_DESKTOP']));
+    // Landscape shares the portrait set; Apple TV and Vision Pro differ despite one resolution.
+    expect(set('ios-6.9-land')).toBe('APP_IPHONE_67');
+    expect(set('ipad-13-land')).toBe(set('ipad-13'));
+    expect(set('tv-4k')).toBe('APP_APPLE_TV');
+    expect(set('vision-pro')).toBe('APP_APPLE_VISION_PRO');
+    expect(set('watch-ultra-3')).toBe('APP_WATCH_ULTRA');
     // The default iPhone sizes fill two different sets.
     expect(set('ios-6.9')).not.toBe(set('ios-6.3'));
   });

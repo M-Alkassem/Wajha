@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { Check, Plus, Search, Star, X } from 'lucide-react';
-import { FAMILIES, LANGUAGES, languageInfo } from '../../model/catalog';
+import { FAMILIES, FAMILY_ORDER, LANGUAGES, languageInfo } from '../../model/catalog';
 import type { FamilyId, LangCode, Project } from '../../model/types';
 import { SlidePreview } from '../shared/SlidePreview';
 import { Badge, Button, cx, IconButton, Input, Popover, PopoverContent, PopoverTrigger, Tooltip } from '../kit';
@@ -80,21 +80,27 @@ export function PreviewStage({ project, family, lang, title }: PreviewStageProps
 /* Devices ------------------------------------------------------------------------ */
 
 const DEVICE_GROUPS: ReadonlyArray<{ store: string; families: FamilyId[] }> = [
-  { store: 'App Store', families: ['iphone', 'ipad', 'mac'] },
-  { store: 'Google Play', families: ['android-phone', 'android-tablet', 'play-feature'] },
+  { store: 'App Store', families: ['iphone', 'iphone-landscape', 'ipad', 'ipad-landscape', 'mac', 'watch', 'apple-tv', 'vision'] },
+  { store: 'Google Play', families: ['android-phone', 'android-landscape', 'android-tablet', 'play-feature'] },
 ];
 
 /** Tile labels: the store heading already says which platform. */
 const TILE_LABEL: Readonly<Record<FamilyId, string>> = {
   iphone: 'iPhone',
+  'iphone-landscape': 'iPhone ↔',
   ipad: 'iPad',
+  'ipad-landscape': 'iPad ↔',
   mac: 'Mac',
+  watch: 'Watch',
+  'apple-tv': 'Apple TV',
+  vision: 'Vision Pro',
   'android-phone': 'Phone',
+  'android-landscape': 'Phone ↔',
   'android-tablet': 'Tablet',
-  'play-feature': 'Feature graphic',
+  'play-feature': 'Feature',
 };
 
-const ORDER: readonly FamilyId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'mac', 'play-feature'];
+const ORDER: readonly FamilyId[] = FAMILY_ORDER;
 
 export interface DevicePickerProps {
   value: FamilyId[];
@@ -137,7 +143,7 @@ export function DevicePicker({ value, onChange }: DevicePickerProps) {
       {DEVICE_GROUPS.map((group) => (
         <div key={group.store} className="flex flex-col gap-1.5">
           <span className="text-2xs font-medium tracking-[0.04em] text-text-3 uppercase">{group.store}</span>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="grid grid-cols-4 gap-1.5">
             {group.families.map((f) => {
               const on = value.includes(f);
               const d = FAMILIES[f].design;

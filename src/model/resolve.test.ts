@@ -96,7 +96,7 @@ describe('resolveLayout', () => {
 
   it('returns an empty layout for an unknown family', () => {
     const p = project();
-    expect(resolveLayout(p, p.slides[0], 'watch' as never).elements).toEqual([]);
+    expect(resolveLayout(p, p.slides[0], 'toaster' as never).elements).toEqual([]);
   });
 
   it('resolves a 20-slide x 6-family project fast', () => {

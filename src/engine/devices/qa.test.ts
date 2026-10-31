@@ -12,18 +12,21 @@ import { drawDevice } from './index';
 
 const QA = !!process.env.WAJHA_QA;
 
-const FRAMES: DeviceFrameId[] = ['iphone', 'android-phone', 'ipad', 'android-tablet', 'macbook', 'browser', 'none'];
+const FRAMES: DeviceFrameId[] = ['iphone', 'android-phone', 'ipad', 'android-tablet', 'macbook', 'watch', 'tv', 'vision', 'browser', 'none'];
 const ASPECT: Record<DeviceFrameId, number> = {
   iphone: 2868 / 1320,
   'android-phone': 2400 / 1080,
   ipad: 2752 / 2064,
   'android-tablet': 2560 / 1600,
   macbook: 1800 / 2880,
+  watch: 514 / 422,
+  tv: 2160 / 3840,
+  vision: 2160 / 3840,
   browser: 1800 / 2880,
   none: 2868 / 1320,
 };
 /** Device width relative to a phone so every frame fills a similar cell. */
-const REL_WIDTH: Record<DeviceFrameId, number> = { iphone: 0.6, 'android-phone': 0.6, ipad: 0.8, 'android-tablet': 0.76, macbook: 0.96, browser: 0.94, none: 0.56 };
+const REL_WIDTH: Record<DeviceFrameId, number> = { iphone: 0.6, 'android-phone': 0.6, ipad: 0.8, 'android-tablet': 0.76, macbook: 0.96, watch: 0.62, tv: 0.96, vision: 0.94, browser: 0.94, none: 0.56 };
 
 const PALETTES: string[][] = [
   ['#6c5ce7', '#ff7a59', '#00b894'],

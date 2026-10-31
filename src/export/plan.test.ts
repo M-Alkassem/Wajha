@@ -88,7 +88,7 @@ describe('planExport: sizes and languages', () => {
   });
 
   it('ignores unknown family ids from damaged data', () => {
-    const p = project({ families: ['iphone', 'watch' as FamilyId], slides: slides(1) });
+    const p = project({ families: ['iphone', 'toaster' as FamilyId], slides: slides(1) });
     expect(planExport(p, settings()).jobs.every((j) => j.family === 'iphone')).toBe(true);
   });
 

@@ -46,6 +46,11 @@ export const BEZEL_ALLOWANCE: Readonly<Record<DeviceFrameId, number>> = {
   'android-tablet': 0.08,
   // Lid bezel plus the aluminium base.
   macbook: 0.07,
+  // Case and black border around the display.
+  watch: 0.2,
+  tv: 0.03,
+  // Glass rim plus the grab bar under the window.
+  vision: 0.06,
   // Title bar and URL bar.
   browser: 0.09,
   none: 0,

@@ -190,28 +190,40 @@ const FRAME_FAMILY: Record<DeviceFrameId, FamilyId | null> = {
   'android-phone': 'android-phone',
   'android-tablet': 'android-tablet',
   macbook: 'mac',
+  watch: 'watch',
+  tv: 'apple-tv',
+  vision: 'vision',
   browser: 'mac',
   none: null,
 };
 
+/** Frames that can lie on their side: phones and tablets. */
+const TURNABLE_FRAMES: ReadonlySet<DeviceFrameId> = new Set(['iphone', 'ipad', 'android-phone', 'android-tablet']);
+
 /** How far a screenshot's aspect may differ from its frame's before it is cropped to the frame instead. */
 const SHOT_ASPECT_TOLERANCE = 0.2;
+
+const near = (a: number, b: number) => Math.abs(a / b - 1) <= SHOT_ASPECT_TOLERANCE;
 
 /**
  * Screen aspect (height / width) of a device element. A frame keeps its own
  * screen shape: a MacBook stays a laptop on an iPhone slide, a phone stays a
- * phone on a Mac slide. A screenshot close to that shape (a phone shot of a
- * slightly different model) sets the exact aspect; any other is cover-fitted
- * into the frame's screen. Frame "none" shows the screenshot as it is, or
- * the slide family's screen without one.
+ * phone on a Mac slide. Phones and tablets lie on their side on landscape
+ * slides, and turn to fit a screenshot taken the other way round. A
+ * screenshot close to the frame's shape (a phone shot of a slightly
+ * different model) sets the exact aspect; any other is cover-fitted into the
+ * frame's screen. Frame "none" shows the screenshot as it is, or the slide
+ * family's screen without one.
  */
 export function deviceScreenAspect(frame: DeviceFrameId, family: FamilyId, assetAspect: number | null): number {
   const shot = assetAspect !== null && Number.isFinite(assetAspect) && assetAspect > 0 ? assetAspect : null;
-  const own = FRAME_FAMILY[frame];
+  const own = FRAME_FAMILY[frame] ?? null;
   const familyAspect = num(FAMILIES[own ?? family]?.screenAspect, 0);
-  const natural = familyAspect > 0 ? familyAspect : DEFAULT_SCREEN_ASPECT;
+  let natural = familyAspect > 0 ? familyAspect : DEFAULT_SCREEN_ASPECT;
+  const turnable = TURNABLE_FRAMES.has(frame);
+  if (turnable && FAMILIES[family]?.landscape === true) natural = 1 / natural;
   let aspect = natural;
-  if (shot !== null && (own === null || Math.abs(shot / natural - 1) <= SHOT_ASPECT_TOLERANCE)) aspect = shot;
+  if (shot !== null && (own === null || near(shot, natural) || (turnable && near(shot, 1 / natural)))) aspect = shot;
   return clamp(aspect, 0.05, 20);
 }
 

@@ -133,7 +133,7 @@ describe('projectFromTemplate', () => {
   it('copies template assets and repairs bad options', () => {
     const t: Template = { ...sampleTemplate(1), assets: { [assetId(9)]: assetInfo(9) } };
     t.slides[0].layouts.tall.elements.push({ id: 'img', kind: 'image', x: 0.5, y: 0.5, rotation: 0, opacity: 1, assetId: assetId(9), width: 0.3, cornerRadius: 0, shadow: null });
-    const q = projectFromTemplate(t, { name: '   ', families: ['watch' as never], languages: ['not a code'] });
+    const q = projectFromTemplate(t, { name: '   ', families: ['toaster' as never], languages: ['not a code'] });
     expect(q.assets).toEqual(t.assets);
     expect(q.assets).not.toBe(t.assets);
     expect(q.families).toEqual(['iphone']);

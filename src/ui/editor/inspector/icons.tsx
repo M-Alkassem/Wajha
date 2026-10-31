@@ -3,7 +3,8 @@
  * things lucide has no glyph for: blob and ring shapes, filled shape kinds.
  */
 import type { SVGProps } from 'react';
-import { AppWindowMac, Circle, Image as ImageIcon, Laptop, RectangleVertical, Smartphone, Square, Tablet, Type } from 'lucide-react';
+import { AppWindowMac, Circle, Image as ImageIcon, Laptop, RectangleVertical, Smartphone, Square, Tablet, Tv, Type, Watch } from 'lucide-react';
+import { VisionIcon } from '../familyMeta';
 import type { SlideElement } from '../../../model/types';
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -68,6 +69,9 @@ export function ElementIcon({ el }: { el: SlideElement }) {
     case 'device':
       if (el.frame === 'ipad' || el.frame === 'android-tablet') return <Tablet />;
       if (el.frame === 'macbook') return <Laptop />;
+      if (el.frame === 'watch') return <Watch />;
+      if (el.frame === 'tv') return <Tv />;
+      if (el.frame === 'vision') return <VisionIcon />;
       if (el.frame === 'browser') return <AppWindowMac />;
       if (el.frame === 'none') return <RectangleVertical />;
       return <Smartphone />;

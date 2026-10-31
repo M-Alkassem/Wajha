@@ -87,7 +87,7 @@ export class ValidationError extends Error {
 /* Allowed values ----------------------------------------------------- */
 
 export const ELEMENT_KINDS: readonly ElementKind[] = ['device', 'text', 'shape', 'image'];
-export const DEVICE_FRAMES: readonly DeviceFrameId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'macbook', 'browser', 'none'];
+export const DEVICE_FRAMES: readonly DeviceFrameId[] = ['iphone', 'ipad', 'android-phone', 'android-tablet', 'macbook', 'watch', 'tv', 'vision', 'browser', 'none'];
 export const FRAME_FINISHES: readonly FrameFinish[] = ['metal', 'matte', 'clay'];
 export const SHAPE_KINDS: readonly ShapeKind[] = ['circle', 'rect', 'blob', 'ring'];
 export const PATTERN_KINDS: readonly PatternKind[] = ['dots', 'grid', 'diagonal', 'noise', 'waves', 'rings'];

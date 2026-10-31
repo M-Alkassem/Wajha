@@ -62,7 +62,8 @@ describe('identifier rules', () => {
   it('knows catalog families and nothing from the prototype', () => {
     expect(isFamilyId('iphone')).toBe(true);
     expect(isFamilyId('play-feature')).toBe(true);
-    expect(isFamilyId('watch')).toBe(false);
+    expect(isFamilyId('watch')).toBe(true);
+    expect(isFamilyId('toaster')).toBe(false);
     expect(isFamilyId('toString')).toBe(false);
     expect(isFamilyId('__proto__')).toBe(false);
   });

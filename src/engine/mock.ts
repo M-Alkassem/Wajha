@@ -61,7 +61,7 @@ export const MOCK_ARCHETYPES: readonly MockArchetypeId[] = APPS.map((a) => a.id)
 export function mockLayoutMode(width: number, height: number, family?: FamilyId): MockLayout {
   if (family === 'mac' || width > height) return 'desktop';
   if (family === 'ipad' || family === 'android-tablet') return 'tablet';
-  if (family === 'iphone' || family === 'android-phone' || family === 'play-feature') return 'phone';
+  if (family === 'iphone' || family === 'android-phone' || family === 'play-feature' || family === 'watch') return 'phone';
   return height / width < 1.6 ? 'tablet' : 'phone';
 }
 

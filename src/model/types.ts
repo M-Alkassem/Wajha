@@ -23,10 +23,16 @@ export type Color = string;
 
 export type FamilyId =
   | 'iphone'
+  | 'iphone-landscape'
   | 'ipad'
+  | 'ipad-landscape'
   | 'android-phone'
+  | 'android-landscape'
   | 'android-tablet'
   | 'mac'
+  | 'watch'
+  | 'apple-tv'
+  | 'vision'
   | 'play-feature';
 
 export type StoreId = 'app-store' | 'google-play';
@@ -40,6 +46,9 @@ export type DeviceFrameId =
   | 'android-phone'
   | 'android-tablet'
   | 'macbook'
+  | 'watch'
+  | 'tv'
+  | 'vision'
   | 'browser'
   | 'none';
 
@@ -77,6 +86,8 @@ export interface FamilyInfo {
   screenAspect: number;
   /** Store limit of screenshots per locale. */
   maxSlides: number;
+  /** Phones and tablets lie on their side on these canvases. */
+  landscape?: boolean;
   sizes: ExportSize[];
 }
 

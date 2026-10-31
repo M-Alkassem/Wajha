@@ -5,15 +5,15 @@
  *   finish.ts     metal / matte / clay colour recipes
  *   shadow.ts     body-shaped drop shadows without ctx.filter
  *   screen.ts     screenshot cover-fit, mock and empty placeholders
- *   slab.ts       shared phone/tablet painter (+ iphone, ipad, android)
- *   macbook.ts, browser.ts
+ *   slab.ts       shared phone/tablet/watch/TV painter (+ iphone, ipad, android, watch)
+ *   macbook.ts, vision.ts, browser.ts
  */
 import type { FamilyId } from '../../model/types';
 import type { Ctx2D, DeviceGeometryFn, DrawDeviceFn } from '../types';
 import { androidPhoneHardware, androidTabletHardware } from './android';
 import { paintBrowser } from './browser';
 import { framePaint } from './finish';
-import type { FrameLayout } from './geometry';
+import type { FrameLayout, SlabFrame } from './geometry';
 import { frameLayout, knownFrame, toGeometry } from './geometry';
 import { iphoneHardware } from './iphone';
 import { ipadHardware } from './ipad';
@@ -24,6 +24,8 @@ import { paintScreen } from './screen';
 import { currentScale, drawShadow } from './shadow';
 import type { SlabHardware } from './slab';
 import { paintSlab } from './slab';
+import { paintVision, visionBodyPath } from './vision';
+import { tvHardware, watchHardware } from './watch';
 
 export { frameLayout } from './geometry';
 export type { FrameLayout } from './geometry';
@@ -31,11 +33,13 @@ export type { FrameLayout } from './geometry';
 /** Corner smoothing used for frame "none", so bare screenshots get iOS-like corners. */
 const BARE_SMOOTHING = 0.45;
 
-const HARDWARE: Record<'iphone' | 'ipad' | 'android-phone' | 'android-tablet', SlabHardware> = {
+const HARDWARE: Record<SlabFrame, SlabHardware> = {
   iphone: iphoneHardware,
   ipad: ipadHardware,
   'android-phone': androidPhoneHardware,
   'android-tablet': androidTabletHardware,
+  watch: watchHardware,
+  tv: tvHardware,
 };
 
 const MOCK_FAMILY: Partial<Record<string, FamilyId>> = {
@@ -44,6 +48,9 @@ const MOCK_FAMILY: Partial<Record<string, FamilyId>> = {
   'android-phone': 'android-phone',
   'android-tablet': 'android-tablet',
   macbook: 'mac',
+  watch: 'watch',
+  tv: 'apple-tv',
+  vision: 'vision',
 };
 
 /** Outline of the device body (what casts the shadow), top-left at the origin. */
@@ -54,6 +61,9 @@ function bodyPath(ctx: Ctx2D, L: FrameLayout): void {
       return;
     case 'macbook':
       macBodyPath(ctx, L);
+      return;
+    case 'vision':
+      visionBodyPath(ctx, L);
       return;
     case 'browser':
       roundRectPath(ctx, 0, 0, L.w, L.h, L.radius);
@@ -115,6 +125,9 @@ export const drawDevice: DrawDeviceFn = (ctx, opts) => {
       break;
     case 'macbook':
       paintMacbook(ctx, L, paint, px, content);
+      break;
+    case 'vision':
+      paintVision(ctx, L, px, content);
       break;
     case 'browser':
       paintBrowser(ctx, L, paint, px, content);

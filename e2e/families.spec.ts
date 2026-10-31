@@ -30,7 +30,7 @@ test('turn iPad on, see the adapted slides, turn it off again', async ({ page })
 
   await page.getByRole('button', { name: 'Device families' }).click();
   const dialog = page.getByRole('dialog', { name: 'Devices & stores' });
-  const ipadSwitch = dialog.getByRole('switch', { name: 'iPad' });
+  const ipadSwitch = dialog.getByRole('switch', { name: 'iPad', exact: true });
   await expect(ipadSwitch).toHaveAttribute('aria-checked', 'false');
   await ipadSwitch.click();
   await expect(ipadSwitch).toHaveAttribute('aria-checked', 'true');
@@ -41,7 +41,7 @@ test('turn iPad on, see the adapted slides, turn it off again', async ({ page })
   await expect(dialog).toBeHidden();
 
   expect((await openProject(page)).families).toEqual(['iphone', 'android-phone', 'ipad']);
-  const ipadTab = switcher.getByRole('radio', { name: 'iPad' });
+  const ipadTab = switcher.getByRole('radio', { name: 'iPad', exact: true });
   await ipadTab.click();
   await expect(ipadTab).toHaveAttribute('aria-checked', 'true');
   await expect(page.getByRole('contentinfo')).toContainText('iPad');
@@ -65,17 +65,17 @@ test('turn iPad on, see the adapted slides, turn it off again', async ({ page })
   expect(ipadShot).toMatch(/^[0-9a-f]{64}\.png$/);
 
   await page.getByRole('button', { name: 'Device families' }).click();
-  await dialog.getByRole('switch', { name: 'iPad' }).click();
+  await dialog.getByRole('switch', { name: 'iPad', exact: true }).click();
   const confirm = page.getByRole('dialog', { name: 'Turn off iPad?' });
   await expect(confirm).toContainText('iPad has 1 screenshot.');
   await confirm.getByRole('button', { name: 'Turn off' }).click();
   await expect(confirm).toBeHidden();
-  await expect(dialog.getByRole('switch', { name: 'iPad' })).toHaveAttribute('aria-checked', 'false');
+  await expect(dialog.getByRole('switch', { name: 'iPad', exact: true })).toHaveAttribute('aria-checked', 'false');
   await dialog.getByRole('button', { name: 'Done' }).click();
 
   await expect(switcher.getByRole('radio')).toHaveCount(2);
-  await expect(switcher.getByRole('radio', { name: 'iPad' })).toHaveCount(0);
-  await expect(switcher.getByRole('radio', { name: 'iPhone' })).toHaveAttribute('aria-checked', 'true');
+  await expect(switcher.getByRole('radio', { name: 'iPad', exact: true })).toHaveCount(0);
+  await expect(switcher.getByRole('radio', { name: 'iPhone', exact: true })).toHaveAttribute('aria-checked', 'true');
   const after = await openProject(page);
   expect(after.families).toEqual(['iphone', 'android-phone']);
   expect(after.slides[0].shots.ipad?.main?.['en-US'], 'the iPad screenshot stays in the project').toBe(ipadShot);

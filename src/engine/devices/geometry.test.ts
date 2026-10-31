@@ -194,3 +194,27 @@ describe('frame proportions', () => {
     expect(Number.isFinite(r(NaN))).toBe(true);
   });
 });
+
+describe('devices on their side', () => {
+  it('turns a phone whose screen is wider than tall, keeping its bezel and screen inside the body', () => {
+    const g = deviceGeometry('iphone', 1000, 1320 / 2868);
+    expect(g.width).toBeCloseTo(1000);
+    expect(g.height).toBeLessThan(g.width);
+    expect(g.screen.w / g.screen.h).toBeCloseTo(2868 / 1320, 2);
+    expect(g.screen.x).toBeGreaterThan(0);
+    expect(g.screen.y).toBeGreaterThan(0);
+    expect(g.screen.x + g.screen.w).toBeLessThan(g.width);
+    expect(g.screen.y + g.screen.h).toBeLessThan(g.height);
+    // The border is as thick as on the upright phone of the same short side.
+    const up = deviceGeometry('iphone', g.height, 2868 / 1320);
+    expect(g.screen.y).toBeCloseTo(up.screen.x);
+  });
+
+  it('never turns a laptop, a television or a watch', () => {
+    for (const frame of ['macbook', 'tv', 'watch'] as const) {
+      const g = deviceGeometry(frame, 1000, frame === 'watch' ? 1.2 : 0.56);
+      expect(g.screen.w, frame).toBeLessThan(g.width);
+    }
+    expect(deviceGeometry('tv', 1000, 0.5625).height).toBeLessThan(1000 * 0.62);
+  });
+});

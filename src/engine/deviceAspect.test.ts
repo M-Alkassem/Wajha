@@ -22,6 +22,16 @@ describe('deviceScreenAspect', () => {
     expect(deviceScreenAspect('none', 'ipad', null)).toBeCloseTo(FAMILIES.ipad.screenAspect);
   });
 
+  it('lays phones and tablets on their side on landscape slides, and turns them for a landscape screenshot', () => {
+    expect(deviceScreenAspect('iphone', 'iphone-landscape', null)).toBeCloseTo(1 / FAMILIES.iphone.screenAspect);
+    expect(deviceScreenAspect('ipad', 'ipad-landscape', null)).toBeCloseTo(1 / FAMILIES.ipad.screenAspect);
+    // A landscape screenshot turns a phone on a portrait slide...
+    expect(deviceScreenAspect('iphone', 'iphone', 1320 / 2868)).toBeCloseTo(1320 / 2868);
+    // ...but never a laptop or a watch, which have one way up.
+    expect(deviceScreenAspect('macbook', 'mac', 2.17)).toBeCloseTo(FAMILIES.mac.screenAspect);
+    expect(deviceScreenAspect('watch', 'watch', 0.8)).toBeCloseTo(FAMILIES.watch.screenAspect);
+  });
+
   it('takes a screenshot of nearly the same shape, and ignores one of another shape', () => {
     expect(deviceScreenAspect('iphone', 'iphone', 2.2)).toBe(2.2);
     expect(deviceScreenAspect('iphone', 'iphone', 0.625)).toBeCloseTo(FAMILIES.iphone.screenAspect);
@@ -44,7 +54,10 @@ describe('every frame on every slide family', () => {
         const { boxes } = renderSlide(ctx, renderInput({ env: nodeEnv, width: w, height: h, family, elements: [el] }));
         const box = boxes[0];
         expect(box.w, `${frame} on ${family}`).toBeGreaterThan(0);
-        if (PORTRAIT.has(frame)) expect(box.h / box.w, `${frame} on ${family} stays upright`).toBeGreaterThan(1.1);
+        // Phones and tablets lie on their side on landscape slides.
+        const lying = FAMILIES[family].landscape === true;
+        if (PORTRAIT.has(frame) && !lying) expect(box.h / box.w, `${frame} on ${family} stays upright`).toBeGreaterThan(1.1);
+        if (PORTRAIT.has(frame) && lying) expect(box.h / box.w, `${frame} on ${family} lies on its side`).toBeLessThan(0.9);
         if (LANDSCAPE.has(frame)) expect(box.h / box.w, `${frame} on ${family} stays wide`).toBeLessThan(0.9);
       }
     });

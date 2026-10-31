@@ -503,7 +503,7 @@ describe('elements', () => {
     expect(s().updateElement(slide().id, 'iphone', d.id, { x: d.x })).toBe(false);
     expect(s().updateElement(slide().id, 'iphone', 'missing', { x: 0.1 })).toBe(false);
     expect(s().updateElement('missing', 'iphone', d.id, { x: 0.1 })).toBe(false);
-    expect(s().updateElement(slide().id, 'watch' as FamilyId, d.id, { x: 0.1 })).toBe(false);
+    expect(s().updateElement(slide().id, 'toaster' as FamilyId, d.id, { x: 0.1 })).toBe(false);
     expect(s().canUndo).toBe(false);
     // No-op edits never materialise a derived layout either.
     s().updateElement(slide().id, 'ipad', devices(layoutOf(0, 'ipad'))[0].id, { x: devices(layoutOf(0, 'ipad'))[0].x });
@@ -847,7 +847,7 @@ describe('languages and families', () => {
   it('enables families lazily and disables them safely', () => {
     expect(s().enableFamily('mac')).toBe(true);
     expect(s().enableFamily('mac')).toBe(false);
-    expect(s().enableFamily('watch' as FamilyId)).toBe(false);
+    expect(s().enableFamily('toaster' as FamilyId)).toBe(false);
     expect(slide().layouts.mac).toBeUndefined();
     expect(devices(layoutOf(0, 'mac'))[0].frame).toBe('macbook');
     s().setExportSettings({ sizes: ['mac-2880', 'ios-6.9'] });
