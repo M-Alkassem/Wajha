@@ -15,11 +15,11 @@ import { Button, ColorField, SegmentedControl, Tooltip, cx } from '../../kit';
 import { hasFiles, importScreenshots, pickScreenshotsForSlot } from '../importShots';
 import { AssetThumb, MissingThumb } from './AssetThumb';
 import { InspectorSection, Row, SliderRow, StatusDot } from './controls';
-import { FRAME_LABEL, formatBytes, frameAspect, fromPct, languageLabel, toPct } from './format';
+import { FRAME_LABEL, formatBytes, frameAspect, fromPct, languageLabel, toPct, widthForFrame } from './format';
 import { LayoutSection } from './LayoutSection';
 import { useLive } from './live';
 import { ShadowSection } from './ShadowSection';
-import { patchTarget, slideById, usePalette, type Target } from './state';
+import { patchTarget, patchTargetWith, slideById, usePalette, type Target } from './state';
 
 export interface DevicePanelProps {
   el: DeviceElement;
@@ -33,7 +33,11 @@ export const DevicePanel = memo(function DevicePanel({ el, target, index, count 
   const defaultShadow = useDefaultDeviceShadow(target);
   const applyWidth = useCallback((v: number) => patchTarget(target, { width: fromPct(v) }), [target]);
   const applyCorners = useCallback((v: number) => patchTarget(target, { cornerRadius: fromPct(v) }), [target]);
-  const setFrame = useCallback((frame: DeviceFrameId) => patchTarget(target, { frame }), [target]);
+  // A new frame takes the old one's place: same spot, fitted inside its outline.
+  const setFrame = useCallback(
+    (frame: DeviceFrameId) => patchTargetWith<DeviceElement>(target, 'device', (d) => ({ frame, width: widthForFrame(d.width, d.frame, frame, target.family) })),
+    [target],
+  );
   return (
     <>
       <InspectorSection id="device.shot" title="Screenshot">

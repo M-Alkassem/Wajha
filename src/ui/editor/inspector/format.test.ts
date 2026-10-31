@@ -12,6 +12,7 @@ import {
   fontLabel,
   formatBytes,
   frameAspect,
+  widthForFrame,
   fromPct,
   humanizeKey,
   normalizeRotation,
@@ -185,5 +186,28 @@ describe('colours', () => {
     expect(palette).not.toContain(next);
     expect(suggestPaletteColor([])).toMatch(/^#[0-9a-f]{6}$/);
     expect(suggestPaletteColor(['#ffffff', '#000000'])).toMatch(/^#[0-9a-f]{6}$/);
+  });
+});
+
+describe('widthForFrame', () => {
+  it('keeps the width when the frame stays the same', () => {
+    expect(widthForFrame(0.6, 'iphone', 'iphone', 'iphone')).toBe(0.6);
+  });
+
+  it('fits a phone that replaces a laptop inside the laptop, so it does not outgrow the slide', () => {
+    const w = widthForFrame(0.67, 'macbook', 'iphone', 'mac');
+    expect(w).toBeLessThan(0.67 / 2.5);
+    expect(w).toBeGreaterThan(0.1);
+  });
+
+  it('keeps a laptop that replaces a phone about as wide as the phone was', () => {
+    const w = widthForFrame(0.78, 'iphone', 'macbook', 'iphone');
+    expect(w).toBeLessThanOrEqual(0.78);
+    expect(w).toBeGreaterThan(0.6);
+  });
+
+  it('stays inside the model limits', () => {
+    expect(widthForFrame(4, 'iphone', 'macbook', 'iphone')).toBeLessThanOrEqual(4);
+    expect(widthForFrame(0.02, 'macbook', 'iphone', 'mac')).toBeGreaterThanOrEqual(0.02);
   });
 });

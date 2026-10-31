@@ -6,9 +6,8 @@
  * marks under their covers, so a mark never paints over the picture.
  */
 import type { FamilyId, LangCode, Slide, SlideLayout } from '../../../model/types';
-import { FAMILIES } from '../../../model/catalog';
 import { resolveText } from '../../../model/resolve';
-import { deviceGeometry, plainText } from '../../../engine';
+import { deviceGeometry, deviceScreenAspect, plainText } from '../../../engine';
 import { DEG, boxBounds, boxesOverlap, toWorld, type Box } from './geometry';
 import type { StageBox } from './stageStore';
 
@@ -19,16 +18,17 @@ export interface MarkBox extends Box {
 }
 
 /**
- * The device's screen in slide CSS px. The screen aspect is read back from
- * the painted box, so it also fits screenshots whose shape differs from the
- * family's. Other elements get their whole box.
+ * The device's screen in slide CSS px. It starts from the frame's own screen
+ * shape (deviceScreenAspect) and reads the aspect back from the painted box,
+ * so it also fits a screenshot that sets a slightly different one. Other
+ * elements get their whole box.
  */
 export function screenBox(box: StageBox, family: FamilyId): MarkBox {
   const whole: MarkBox = { cx: box.cx, cy: box.cy, w: box.w, h: box.h, rotation: box.rotation, radius: 0 };
   if (box.element.kind !== 'device') return whole;
   const frame = box.element.frame;
   try {
-    let g = deviceGeometry(frame, box.w, FAMILIES[family]?.screenAspect ?? 0);
+    let g = deviceGeometry(frame, box.w, deviceScreenAspect(frame, family, null));
     // The outer height is the screen height plus width-bound bezels: solve for the painted aspect.
     const k = g.width > 0 ? box.w / g.width : 0;
     if (k > 0 && g.screen.w > 0 && Math.abs(g.height * k - box.h) > 0.5) {

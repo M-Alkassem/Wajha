@@ -8,7 +8,7 @@
  * sanitised, and an element that still fails to draw is skipped so the rest
  * of the slide renders.
  */
-import type { DeviceElement, ImageElement, ShapeElement, TextElement } from '../model/types';
+import type { DeviceElement, DeviceFrameId, FamilyId, ImageElement, ShapeElement, TextElement } from '../model/types';
 import { FAMILIES } from '../model/catalog';
 import { resolveShot, resolveText } from '../model/resolve';
 import type { Ctx2D, DeviceGeometry, ElementBox, ImageLike, RenderInput, RenderResult, RenderSlideFn } from './types';
@@ -131,9 +131,8 @@ function deviceElement(ctx: Ctx2D, el: DeviceElement, index: number, scene: Scen
   const widthPx = Math.max(0, num(el.width, 0) * u);
   const shot = attempt(() => resolveShot(input.slide, input.family, el.slot, input.lang, input.baseLang), null);
   const assetId = typeof shot === 'string' && shot ? shot : null;
-  const familyAspect = num(FAMILIES[input.family]?.screenAspect, 0);
   const known = assetId ? sources.getAssetAspect(assetId) : null;
-  const screenAspect = clamp(known ?? (familyAspect > 0 ? familyAspect : DEFAULT_SCREEN_ASPECT), 0.05, 20);
+  const screenAspect = deviceScreenAspect(el.frame, input.family, known);
   const image = assetId ? sources.getImage(assetId) : null;
   let placeholder: 'mock' | 'empty' = input.placeholder === 'empty' ? 'empty' : 'mock';
   if (!assetId) result.missingShots.push(elementId(el));
@@ -182,6 +181,38 @@ function imageElement(ctx: Ctx2D, el: ImageElement, scene: Scene, cx: number, cy
   const h = w * aspect;
   attempt(() => place(ctx, cx, cy, rotation, opacity, () => drawImageElement(ctx, el, scene.u, scene.pxScale, scene.sources)), undefined);
   return { id: elementId(el), cx, cy, w, h, rotation };
+}
+
+/** The family whose screen each frame shows; frame "none" has no shape of its own. */
+const FRAME_FAMILY: Record<DeviceFrameId, FamilyId | null> = {
+  iphone: 'iphone',
+  ipad: 'ipad',
+  'android-phone': 'android-phone',
+  'android-tablet': 'android-tablet',
+  macbook: 'mac',
+  browser: 'mac',
+  none: null,
+};
+
+/** How far a screenshot's aspect may differ from its frame's before it is cropped to the frame instead. */
+const SHOT_ASPECT_TOLERANCE = 0.2;
+
+/**
+ * Screen aspect (height / width) of a device element. A frame keeps its own
+ * screen shape: a MacBook stays a laptop on an iPhone slide, a phone stays a
+ * phone on a Mac slide. A screenshot close to that shape (a phone shot of a
+ * slightly different model) sets the exact aspect; any other is cover-fitted
+ * into the frame's screen. Frame "none" shows the screenshot as it is, or
+ * the slide family's screen without one.
+ */
+export function deviceScreenAspect(frame: DeviceFrameId, family: FamilyId, assetAspect: number | null): number {
+  const shot = assetAspect !== null && Number.isFinite(assetAspect) && assetAspect > 0 ? assetAspect : null;
+  const own = FRAME_FAMILY[frame];
+  const familyAspect = num(FAMILIES[own ?? family]?.screenAspect, 0);
+  const natural = familyAspect > 0 ? familyAspect : DEFAULT_SCREEN_ASPECT;
+  let aspect = natural;
+  if (shot !== null && (own === null || Math.abs(shot / natural - 1) <= SHOT_ASPECT_TOLERANCE)) aspect = shot;
+  return clamp(aspect, 0.05, 20);
 }
 
 /** Seed of the generated mock screen shown by the device at `elementIndex` of slide `slideIndex`. */

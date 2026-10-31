@@ -4,8 +4,10 @@
  * show (percent, degrees), element names, font weights, screenshot status
  * and colour suggestions. No React, no store.
  */
-import { BUNDLED_FONTS, FAMILIES, languageInfo, type FontInfo } from '../../../model/catalog';
+import { BUNDLED_FONTS, languageInfo, type FontInfo } from '../../../model/catalog';
 import type { DeviceFrameId, Fill, FamilyId, LangCode, Project, ShapeKind, Slide, SlideElement } from '../../../model/types';
+import { RANGES } from '../../../model/rules';
+import { deviceGeometry, deviceScreenAspect } from '../../../engine';
 
 /* Units ------------------------------------------------------------------ */
 
@@ -251,22 +253,23 @@ export function shotStatus(slide: Slide, family: FamilyId, slot: string, lang: L
 
 /** Default screen aspect (height / width) shown for a frame without a screenshot. */
 export function frameAspect(frame: DeviceFrameId, family: FamilyId): number {
-  switch (frame) {
-    case 'iphone':
-      return FAMILIES.iphone.screenAspect;
-    case 'ipad':
-      return FAMILIES.ipad.screenAspect;
-    case 'android-phone':
-      return FAMILIES['android-phone'].screenAspect;
-    case 'android-tablet':
-      return FAMILIES['android-tablet'].screenAspect;
-    case 'macbook':
-      return FAMILIES.mac.screenAspect;
-    case 'browser':
-      return 0.625;
-    case 'none':
-      return FAMILIES[family]?.screenAspect ?? FAMILIES.iphone.screenAspect;
-  }
+  return deviceScreenAspect(frame, family, null);
+}
+
+/**
+ * The width (fraction of the slide's short side) that keeps a device in the
+ * same space when its frame changes: the new frame fits inside the old
+ * frame's outline, so a laptop that becomes a phone does not grow off the
+ * slide, and a phone that becomes a laptop stays as wide as the phone was.
+ */
+export function widthForFrame(width: number, from: DeviceFrameId, to: DeviceFrameId, family: FamilyId): number {
+  if (from === to || !(width > 0)) return width;
+  const before = deviceGeometry(from, 1000, frameAspect(from, family));
+  const after = deviceGeometry(to, 1000, frameAspect(to, family));
+  if (!(after.width > 0 && after.height > 0 && before.width > 0 && before.height > 0)) return width;
+  const fit = Math.min(before.width / after.width, before.height / after.height);
+  const { min, max } = RANGES.deviceWidth;
+  return Math.round(Math.min(max, Math.max(min, width * fit)) * 1e3) / 1e3;
 }
 
 /* Colours ---------------------------------------------------------------- */

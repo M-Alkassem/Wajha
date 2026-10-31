@@ -356,12 +356,27 @@ describe('renderSlide: devices', () => {
     expect(pixel(ctx, 180, 390)[0]).toBeLessThan(100);
   });
 
-  it('uses the family screen aspect for unknown families', () => {
-    render([deviceEl()], { family: 'android-phone' });
-    expect((drawDeviceMock.mock.calls[0][1] as DrawDeviceOptions).screenAspect).toBeCloseTo(FAMILIES['android-phone'].screenAspect);
-    drawDeviceMock.mockClear();
-    render([deviceEl()], { family: 'toaster' as never });
-    expect((drawDeviceMock.mock.calls[0][1] as DrawDeviceOptions).screenAspect).toBeCloseTo(2868 / 1320);
+  it("gives a frame its own screen shape and frame none the slide family's", () => {
+    const aspect = () => (drawDeviceMock.mock.calls.at(-1)![1] as DrawDeviceOptions).screenAspect;
+    render([deviceEl({ frame: 'macbook' })], { family: 'iphone' });
+    expect(aspect()).toBeCloseTo(FAMILIES.mac.screenAspect);
+    render([deviceEl({ frame: 'iphone' })], { family: 'mac' });
+    expect(aspect()).toBeCloseTo(FAMILIES.iphone.screenAspect);
+    render([deviceEl({ frame: 'none' })], { family: 'android-phone' });
+    expect(aspect()).toBeCloseTo(FAMILIES['android-phone'].screenAspect);
+    render([deviceEl({ frame: 'none' })], { family: 'toaster' as never });
+    expect(aspect()).toBeCloseTo(2868 / 1320);
+  });
+
+  it('crops a screenshot of another shape into the frame instead of reshaping the frame', () => {
+    const s = slide({ shots: { iphone: { main: { 'en-US': shotId } } } });
+    const aspect = () => (drawDeviceMock.mock.calls.at(-1)![1] as DrawDeviceOptions).screenAspect;
+    // A phone screenshot in a MacBook keeps the laptop's screen.
+    render([deviceEl({ frame: 'macbook' })], { slide: s, aspects: { [shotId]: 2.2 } });
+    expect(aspect()).toBeCloseTo(FAMILIES.mac.screenAspect);
+    // Without a frame the screenshot shows as it is.
+    render([deviceEl({ frame: 'none' })], { slide: s, aspects: { [shotId]: 0.6 } });
+    expect(aspect()).toBe(0.6);
   });
 });
 

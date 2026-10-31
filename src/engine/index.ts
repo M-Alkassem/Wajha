@@ -12,7 +12,7 @@
  *   cache.ts       bounded caches shared by the painters
  */
 export type * from './types';
-export { mockSeed, renderSlide } from './render';
+export { deviceScreenAspect, mockSeed, renderSlide } from './render';
 export { layoutText } from './text';
 export { deviceGeometry, drawDevice } from './devices';
 export { drawMockScreen } from './mock';
