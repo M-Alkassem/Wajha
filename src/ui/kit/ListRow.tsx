@@ -151,7 +151,7 @@ export const ListRow = forwardRef<HTMLDivElement, ListRowProps>(function ListRow
         }
       }}
       className={cx(
-        'group/row relative flex min-w-0 cursor-default items-center gap-1.5 rounded-sm pr-1 outline-none select-none',
+        'group/row relative flex min-w-0 cursor-default items-center gap-1.5 rounded-sm pe-1 outline-none select-none',
         'text-xs text-text transition-colors duration-(--dur-fast) hover:bg-surface-2',
         'focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 focus-visible:outline-focus',
         size === 'sm' ? 'h-7' : 'h-8',
@@ -164,7 +164,7 @@ export const ListRow = forwardRef<HTMLDivElement, ListRowProps>(function ListRow
       {...rest}
     >
       {dragHandle && (
-        <span className="-ml-1 flex w-3 shrink-0 cursor-grab items-center justify-center text-text-3 opacity-0 transition-opacity duration-(--dur-fast) group-hover/row:opacity-100 active:cursor-grabbing [&_svg]:size-3">
+        <span className="-ms-1 flex w-3 shrink-0 cursor-grab items-center justify-center text-text-3 opacity-0 transition-opacity duration-(--dur-fast) group-hover/row:opacity-100 active:cursor-grabbing [&_svg]:size-3">
           {dragHandle}
         </span>
       )}

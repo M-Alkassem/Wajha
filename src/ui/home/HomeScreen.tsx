@@ -118,7 +118,7 @@ function Library() {
   const setQuery = useHomeUi((s) => s.setQuery);
   const searching = query.trim() !== '';
   const shown = useMemo(() => (searching ? projects.filter((p) => matchesSearch(query, p.name)) : projects), [projects, query, searching]);
-  const where = getPlatform().kind === 'desktop' ? 'Saved on this computer' : 'Saved in this browser';
+  const where = getPlatform().kind === 'desktop' ? t('Saved on this computer') : t('Saved in this browser');
   const none = shown.length === 0;
   // Isolated, so a right-to-left query keeps its quotes around it.
   const quoted = <>“<bdi>{shorten(query, 40)}</bdi>”</>;

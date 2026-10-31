@@ -32,7 +32,7 @@ export const ElementHeader = memo(function ElementHeader({ el, target, index, co
   const atBottom = index <= 0;
 
   return (
-    <header className="flex h-9 shrink-0 items-center gap-1 border-b border-line pr-1.5 pl-3">
+    <header className="flex h-9 shrink-0 items-center gap-1 border-b border-line pe-1.5 ps-3">
       <span
         aria-hidden
         className="flex size-6 shrink-0 items-center justify-center rounded-sm bg-accent-soft text-accent-fg [&_svg]:size-3.5"

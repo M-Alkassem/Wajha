@@ -110,7 +110,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
             <DialogPrimitive.Title className="text-[15px] leading-5 font-semibold tracking-[-0.01em] text-text">{title}</DialogPrimitive.Title>
             {description && <DialogPrimitive.Description className="text-xs leading-[18px] text-text-2">{description}</DialogPrimitive.Description>}
           </div>
-          {headerAction && <div className={cx('-mt-1 ml-auto flex shrink-0 items-center gap-1', hideClose ? '-mr-2' : 'mr-6')}>{headerAction}</div>}
+          {headerAction && <div className={cx('-mt-1 ms-auto flex shrink-0 items-center gap-1', hideClose ? '-mr-2' : 'me-6')}>{headerAction}</div>}
           {!hideClose && <span aria-hidden className="w-5 shrink-0" />}
         </div>
         {hasBody && <div className={cx('min-h-0 flex-1 overflow-y-auto', !flush && 'px-5 pt-1 pb-5', bodyClassName)}>{children}</div>}
@@ -118,7 +118,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
         {/* Last in DOM order so opening focuses the first field or button, not "Close" (and its tooltip). */}
         {!hideClose && (
           <DialogPrimitive.Close asChild>
-            <IconButton label={t('Close')} shortcut="escape" size="md" icon={<X />} className="absolute top-3.5 right-3" />
+            <IconButton label={t('Close')} shortcut="escape" size="md" icon={<X />} className="absolute top-3.5 end-3" />
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>
@@ -166,7 +166,7 @@ export function DialogFooter({ children, start, className }: DialogFooterProps) 
   return (
     <div className={cx('flex shrink-0 items-center gap-2 border-t border-line bg-panel px-5 py-3 light:bg-surface', className)}>
       {start && <div className="flex min-w-0 flex-1 items-center gap-2 text-xs text-text-2">{start}</div>}
-      <div className="ml-auto flex shrink-0 items-center gap-2">{children}</div>
+      <div className="ms-auto flex shrink-0 items-center gap-2">{children}</div>
     </div>
   );
 }

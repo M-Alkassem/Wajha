@@ -59,6 +59,7 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
           <span
             aria-hidden
             className={cx(
+              // Positioned by its measured left offset (useActiveIndicator), so anchored to the left in either direction.
               'pointer-events-none absolute left-0',
               variant === 'underline'
                 ? '-bottom-px h-0.5 rounded-full bg-text'

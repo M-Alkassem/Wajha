@@ -11,7 +11,7 @@ import { FamilyIcon, RadioCards, SectionHeading, type RadioCardOption } from '..
 import { languageName, localeFor, nativeName, storeName, storesOf } from '../editor/dialogs/labels';
 import type { TreeLine } from './exportModel';
 
-import { t } from '../../i18n';
+import { t, tn } from '../../i18n';
 import { tx } from '../../i18n/react';
 /** Why the iPhone has two default sizes (Apple's current rules). */
 const IPHONE_SIZES_NOTE =
@@ -95,7 +95,7 @@ export function ExportSettingsPanel(props: ExportSettingsPanelProps) {
                 onCommit={(v) => props.onQualityChange(v / 100, true)}
                 className="max-w-60"
               />
-              <span className="w-9 shrink-0 text-right text-xs text-text-2 tabular-nums">{Math.round(quality * 100)}%</span>
+              <span className="w-9 shrink-0 text-end text-xs text-text-2 tabular-nums">{Math.round(quality * 100)}%</span>
             </div>
           )}
         </div>
@@ -132,7 +132,7 @@ const FamilySizes = memo(function FamilySizes({
         {family === 'iphone' && (
           <IconButton size="sm" label={t('Why two iPhone sizes?')} tooltip={IPHONE_SIZES_NOTE} icon={<Info />} className="-my-1 text-text-3" />
         )}
-        <span className={cx('ml-auto text-2xs tabular-nums', count === 0 ? 'text-warning' : 'text-text-3')}>
+        <span className={cx('ms-auto text-2xs tabular-nums', count === 0 ? 'text-warning' : 'text-text-3')}>
           {count === 0 ? t('Not exported') : t('{count} of {length}', { count, length: info.sizes.length })}
         </span>
       </div>
@@ -159,7 +159,7 @@ const SizeRow = memo(function SizeRow({ size, checked, onChange }: { size: Expor
           {t('Required')}
         </Badge>
       )}
-      <span className="ml-auto shrink-0 font-mono text-2xs text-text-3 tabular-nums">
+      <span className="ms-auto shrink-0 font-mono text-2xs text-text-3 tabular-nums">
         {size.width} × {size.height}
       </span>
     </label>
@@ -185,7 +185,7 @@ const LanguageTable = memo(function LanguageTable({
         <span className="w-4 shrink-0" />
         <span className="flex-1">{t('Language')}</span>
         {stores.map((s) => (
-          <span key={s} className="w-24 shrink-0 text-right">
+          <span key={s} className="w-24 shrink-0 text-end">
             {storeName(s)}
           </span>
         ))}
@@ -234,13 +234,13 @@ const LanguageRow = memo(function LanguageRow({
       {stores.map((store) => {
         const locale = localeFor(code, store);
         return locale ? (
-          <span key={store} className="w-24 shrink-0 text-right font-mono text-2xs text-text-2">
+          <span key={store} className="w-24 shrink-0 text-end font-mono text-2xs text-text-2">
             <span className="sr-only">{storeName(store)}: </span>
             {locale}
           </span>
         ) : (
           <Tooltip key={store} content={t('{storeName} has no {name} localization, so {name2} is skipped for {storeName2} sizes.', { storeName: storeName(store), name, name2: name, storeName2: storeName(store) })}>
-            <span className="w-24 shrink-0 text-right text-2xs font-medium text-warning">
+            <span className="w-24 shrink-0 text-end text-2xs font-medium text-warning">
               <span className="sr-only">{storeName(store)}: </span>
               {t('Not offered')}
             </span>
@@ -275,8 +275,8 @@ function TreeRow({ line }: { line: TreeLine }) {
   if (line.kind === 'more-files' || line.kind === 'more-folders') {
     const text =
       line.kind === 'more-files'
-        ? `${line.count} more ${line.count === 1 ? 'file' : 'files'}`
-        : `${line.count} more ${line.count === 1 ? 'folder' : 'folders'} · ${line.files} ${line.files === 1 ? 'file' : 'files'}`;
+        ? tn(line.count ?? 0, '1 more file', '{count} more files')
+        : `${tn(line.count ?? 0, '1 more folder', '{count} more folders')} · ${tn(line.files ?? 0, '{count} file', '{count} files')}`;
     return (
       <li style={pad} className="flex items-center gap-1.5 font-sans text-text-3">
         <span aria-hidden className="w-3.5 text-center">+</span>
@@ -291,8 +291,8 @@ function TreeRow({ line }: { line: TreeLine }) {
       <Icon aria-hidden className={cx('size-3.5 shrink-0', folder ? 'text-accent-fg' : 'text-text-3')} />
       <span className={cx('truncate', folder ? 'text-text' : 'text-text-2')}>{line.name}</span>
       {folder && line.count !== undefined && (
-        <span className="ml-auto shrink-0 pl-3 font-sans text-text-3 tabular-nums">
-          {line.count} {line.count === 1 ? 'file' : 'files'}
+        <span className="ms-auto shrink-0 ps-3 font-sans text-text-3 tabular-nums">
+          {tn(line.count, '{count} file', '{count} files')}
         </span>
       )}
     </li>

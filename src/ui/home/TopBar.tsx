@@ -45,7 +45,7 @@ export const HomeTopBar = forwardRef<HTMLInputElement, HomeTopBarProps>(function
   return (
     <header
       data-tauri-drag-region
-      className="relative z-10 grid h-[52px] shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,340px)_minmax(0,1fr)] items-center gap-4 border-b border-line bg-panel pr-3 pl-[calc(var(--traffic-lights-w)+16px)]"
+      className="relative z-10 grid h-[52px] shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,340px)_minmax(0,1fr)] items-center gap-4 border-b border-line bg-panel pe-3 ps-[calc(var(--traffic-lights-w)+16px)]"
     >
       <div data-tauri-drag-region className="flex h-full min-w-0 items-center">
         {/* Clicks fall through the wordmark to the drag region underneath. */}
@@ -66,7 +66,7 @@ export const HomeTopBar = forwardRef<HTMLInputElement, HomeTopBarProps>(function
             leadingIcon={<Search />}
             suffix={
               query ? (
-                <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} className="-mr-1 size-5" onClick={() => setQuery('')} />
+                <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} className="-me-1 size-5" onClick={() => setQuery('')} />
               ) : (
                 <Kbd keys="mod+f" className="opacity-80" />
               )

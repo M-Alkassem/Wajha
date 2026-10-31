@@ -71,9 +71,9 @@ const SWATCH_SIZES: Record<ControlSize, string> = {
 };
 
 const SHELL_SIZES: Record<ControlSize, string> = {
-  sm: 'h-6 gap-1 rounded-sm pl-[3px] pr-1.5 text-xs',
-  md: 'h-7 gap-1.5 rounded-sm pl-1 pr-2 text-xs',
-  lg: 'h-9 gap-2 rounded-md pl-1.5 pr-3 text-ui',
+  sm: 'h-6 gap-1 rounded-sm ps-[3px] pe-1.5 text-xs',
+  md: 'h-7 gap-1.5 rounded-sm ps-1 pe-2 text-xs',
+  lg: 'h-9 gap-2 rounded-md ps-1.5 pe-3 text-ui',
 };
 
 /** Colour preview over the transparency checkerboard. */
@@ -249,7 +249,7 @@ export const ColorField = forwardRef<HTMLButtonElement, ColorFieldProps>(functio
                 onChange={(pct) => emit(withAlpha(latest.current, pct / 100))}
                 onCommit={() => commit()}
                 className="w-[42px] shrink-0"
-                inputClassName="text-right"
+                inputClassName="text-end"
               />
             </>
           )}

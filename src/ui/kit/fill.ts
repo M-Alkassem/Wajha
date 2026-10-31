@@ -7,7 +7,7 @@
 import type { Fill, GradientStop, MeshPoint } from '../../model/types';
 import { colorsEqual, mixHex, normalizeHex, relativeLuminance, splitAlpha, withAlpha } from './color';
 
-import { t } from '../../i18n';
+import { t, tn } from '../../i18n';
 export type FillType = Fill['type'];
 export type SolidFill = Extract<Fill, { type: 'solid' }>;
 export type LinearFill = Extract<Fill, { type: 'linear' }>;
@@ -192,7 +192,7 @@ export function describeFill(fill: Fill): string {
     case 'radial':
       return `Radial gradient, ${fill.stops.length} stops`;
     case 'mesh':
-      return `Mesh gradient, ${fill.points.length} ${fill.points.length === 1 ? 'point' : 'points'}`;
+      return tn(fill.points.length, 'Mesh gradient, 1 point', 'Mesh gradient, {count} points');
     case 'image':
       return `Image, ${fill.fit}`;
   }

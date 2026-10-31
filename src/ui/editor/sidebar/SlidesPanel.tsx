@@ -257,7 +257,9 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
 
   const stop = (e: MouseEvent) => e.stopPropagation();
 
-  const label = `Slide ${number}${title ? `: ${title}` : ''}${missing ? ', no screenshot' : ''}${beyond ? ', not exported' : ''}`;
+  const label = [title ? t('Slide {number}: {title}', { number, title }) : t('Slide {number}', { number }), missing ? t('no screenshot') : '', beyond ? t('not exported') : '']
+    .filter(Boolean)
+    .join(t(', '));
 
   const actions = (
     <div
@@ -266,7 +268,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
         'flex shrink-0 items-center transition-opacity duration-(--dur-fast)',
         'opacity-0 group-hover/slide:opacity-100 group-focus-within/slide:opacity-100',
         // Over a wide thumbnail the buttons sit on a small glass plate in its corner.
-        stacked && 'absolute top-1.5 right-1.5 rounded-md bg-popover/85 p-0.5 shadow-md backdrop-blur-sm',
+        stacked && 'absolute top-1.5 end-1.5 rounded-md bg-popover/85 p-0.5 shadow-md backdrop-blur-sm',
         isDragging && 'opacity-0!',
       )}
     >
@@ -348,7 +350,7 @@ const SlideItem = memo(function SlideItem({ project, slide, index, count, family
           >
             <span
               aria-hidden
-              className={cx('w-3.5 shrink-0 pt-px text-right text-2xs leading-4 font-semibold tabular-nums', active ? 'text-accent-fg' : 'text-text-3')}
+              className={cx('w-3.5 shrink-0 pt-px text-end text-2xs leading-4 font-semibold tabular-nums', active ? 'text-accent-fg' : 'text-text-3')}
             >
               {number}
             </span>

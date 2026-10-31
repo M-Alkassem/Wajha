@@ -70,10 +70,10 @@ export function Section({
   return (
     <Collapsible.Root open={isOpen} onOpenChange={setOpen} asChild>
       <section className={cx(!borderless && 'border-b border-line', className)}>
-        <header className="group/section flex h-9 items-center gap-1 pr-3 pl-1.5">
+        <header className="group/section flex h-9 items-center gap-1 pe-3 ps-1.5">
           <Collapsible.Trigger
             className={cx(
-              'flex h-7 min-w-0 flex-1 items-center gap-1 rounded-sm pr-1.5 pl-1 text-left outline-none',
+              'flex h-7 min-w-0 flex-1 items-center gap-1 rounded-sm pe-1.5 ps-1 text-start outline-none',
               'focus-visible:outline-2 focus-visible:outline-solid focus-visible:-outline-offset-2 focus-visible:outline-focus',
             )}
           >

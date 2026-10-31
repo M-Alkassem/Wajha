@@ -99,7 +99,7 @@ export const PaletteEditor = memo(function PaletteEditor({ palette }: { palette:
               aria-label={t('Remove palette colour {v}', { v: i + 1 })}
               onClick={() => remove(i)}
               className={cx(
-                'absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full border border-line-strong bg-popover text-text-2 shadow-sm',
+                'absolute -top-1.5 -end-1.5 flex size-4 items-center justify-center rounded-full border border-line-strong bg-popover text-text-2 shadow-sm',
                 'opacity-0 transition-opacity duration-(--dur-fast) group-hover/swatch:opacity-100 hover:text-text [&_svg]:size-2.5',
               )}
             >

@@ -149,7 +149,7 @@ export const ProjectCard = memo(function ProjectCard({ meta, index, tabbable, hi
             />
           </Tooltip>
           <ProjectThumb id={id} name={meta.name} updatedAt={meta.updatedAt} families={meta.families} opening={opening} className="rounded-[6px]" />
-          <div className="flex items-start gap-1 pt-2.5 pr-0.5 pb-1 pl-1.5">
+          <div className="flex items-start gap-1 pt-2.5 pe-0.5 pb-1 ps-1.5">
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
               {renaming ? (
                 <RenameField
@@ -161,7 +161,7 @@ export const ProjectCard = memo(function ProjectCard({ meta, index, tabbable, hi
                   }}
                 />
               ) : (
-                <span ref={nameRef} aria-hidden dir="auto" className="block h-5 truncate text-left text-ui leading-5 font-medium text-text">
+                <span ref={nameRef} aria-hidden dir="auto" className="block h-5 truncate text-start text-ui leading-5 font-medium text-text">
                   {meta.name}
                 </span>
               )}
@@ -303,7 +303,7 @@ function RenameField({ initial, onCommit, onCancel }: { initial: string; onCommi
       }}
       onBlur={() => finish(true, false)}
       // Left-aligned like the name it edits, so an Arabic name does not jump sides on Enter.
-      className="relative z-[2] -mx-[5px] h-5 min-w-0 rounded-xs border border-accent-line bg-surface px-1 text-left text-ui leading-[18px] font-medium text-text ring-2 ring-focus-soft outline-none light:bg-raised"
+      className="relative z-[2] -mx-[5px] h-5 min-w-0 rounded-xs border border-accent-line bg-surface px-1 text-start text-ui leading-[18px] font-medium text-text ring-2 ring-focus-soft outline-none light:bg-raised"
     />
   );
 }

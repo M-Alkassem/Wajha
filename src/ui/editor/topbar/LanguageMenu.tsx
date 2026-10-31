@@ -37,9 +37,9 @@ export function LanguageMenu({ showName }: LanguageMenuProps) {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            aria-label={t('Preview language: {name}', { name: info.name })}
+            aria-label={t('Preview language: {name}', { name: t(info.name) })}
             className={cx(
-              'inline-flex h-7 max-w-[200px] min-w-0 shrink-0 items-center gap-1.5 rounded-sm pr-1.5 pl-1 text-ui text-text-2 outline-none select-none',
+              'inline-flex h-7 max-w-[200px] min-w-0 shrink-0 items-center gap-1.5 rounded-sm pe-1.5 ps-1 text-ui text-text-2 outline-none select-none',
               'transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text aria-expanded:bg-surface-2 aria-expanded:text-text',
               'focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-1 focus-visible:outline-focus',
             )}
@@ -68,7 +68,7 @@ export function LanguageMenu({ showName }: LanguageMenuProps) {
                     {l.native}
                   </span>
                   {l.name !== l.native && <span className="min-w-0 shrink-[2] truncate text-text-3">{l.name}</span>}
-                  <span className="ml-auto flex shrink-0 items-center gap-1 pl-1">
+                  <span className="ms-auto flex shrink-0 items-center gap-1 ps-1">
                     {i === 0 && (
                       <Badge size="sm" title={t('Base language: the others fall back to it')}>
                         {t('Base')}

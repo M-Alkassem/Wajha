@@ -959,7 +959,7 @@ function GradientBar({ stops, selected, onSelect, onStopsChange, onCommit }: Gra
           style={{ backgroundImage: `linear-gradient(90deg, ${stopsToCss(visible)})` }}
         />
       </div>
-      <div className="pointer-events-none absolute inset-y-0 right-[9px] left-[9px]">
+      <div className="pointer-events-none absolute inset-y-0 end-[9px] start-[9px]">
         {stops.map((s, i) => {
           const isSel = i === selected;
           const isRemoving = i === removing;

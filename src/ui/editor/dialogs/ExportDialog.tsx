@@ -295,16 +295,16 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
   const targetName = exportTargetName(project.name);
   const treeCaption = isWeb
     ? structure === 'fastlane'
-      ? `Inside ${targetName}.zip (unzip it in your app repository)`
-      : `Inside ${targetName}.zip`
+      ? t('Inside {name}.zip (unzip it in your app repository)', { name: targetName })
+      : t('Inside {name}.zip', { name: targetName })
     : structure === 'fastlane'
-      ? 'Inside your app repository'
-      : 'Inside the folder you choose';
+      ? t('Inside your app repository')
+      : t('Inside the folder you choose');
   const hint = isWeb
-    ? `Downloads as “${targetName}.zip”.`
+    ? t('Downloads as “{name}.zip”.', { name: targetName })
     : structure === 'fastlane'
-      ? 'Choose your app repository next. Files go into its fastlane folder.'
-      : `Choose a folder next. Files go into “${projectFolder}” inside it.`;
+      ? t('Choose your app repository next. Files go into its fastlane folder.')
+      : t('Choose a folder next. Files go into “{folder}” inside it.', { folder: projectFolder });
 
   let body;
   let footer;
@@ -331,7 +331,7 @@ function ExportBody({ project, open, onOpenChange }: EditorDialogProps & { proje
             onStructureChange={onStructureChange}
           />
         </div>
-        <aside className="min-h-0 overflow-y-auto border-l border-line bg-panel light:bg-surface" aria-label={t('Export summary')}>
+        <aside className="min-h-0 overflow-y-auto border-s border-line bg-panel light:bg-surface" aria-label={t('Export summary')}>
           <ExportSummaryPanel
             project={project}
             plan={plan}

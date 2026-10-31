@@ -46,9 +46,9 @@ const KIND: Record<ToastKind, { icon: ReactNode; tint: string; label: string }> 
 };
 
 const POSITION: Record<ToasterPosition, string> = {
-  'bottom-right': 'right-4 bottom-4 items-end',
+  'bottom-right': 'end-4 bottom-4 items-end',
   'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center',
-  'top-right': 'top-4 right-4 items-end',
+  'top-right': 'top-4 end-4 items-end',
   'top-center': 'top-3 left-1/2 -translate-x-1/2 items-center',
 };
 
@@ -202,7 +202,7 @@ function ToastItem({ toast, leaving, duration, onDismiss }: ToastItemProps) {
       }}
       className={cx(
         'kit-toast pointer-events-auto relative flex w-[360px] max-w-[calc(100vw-32px)] items-start gap-2.5 rounded-[10px] border border-line',
-        'bg-popover py-3 pr-10 pl-3 text-text shadow-lg',
+        'bg-popover py-3 pe-10 ps-3 text-text shadow-lg',
       )}
     >
       <span aria-hidden className={cx('mt-px flex size-[18px] shrink-0 items-center justify-center [&_svg]:size-[18px]', kind.tint)}>
@@ -232,7 +232,7 @@ function ToastItem({ toast, leaving, duration, onDismiss }: ToastItemProps) {
         aria-label={t('Dismiss notification')}
         onClick={() => dismissRef.current(toast.id)}
         className={cx(
-          'absolute top-2.5 right-2.5 flex size-6 items-center justify-center rounded-sm text-text-3 outline-none',
+          'absolute top-2.5 end-2.5 flex size-6 items-center justify-center rounded-sm text-text-3 outline-none',
           'transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-focus',
         )}
       >

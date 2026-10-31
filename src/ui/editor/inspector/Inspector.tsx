@@ -95,13 +95,13 @@ const SlideInspector = memo(function SlideInspector({ slideId, family }: { slide
   const total = useEditor((s) => s.project?.slides.length ?? 0);
   return (
     <>
-      <header className="flex h-9 shrink-0 items-center gap-2 border-b border-line pr-1.5 pl-3">
+      <header className="flex h-9 shrink-0 items-center gap-2 border-b border-line pe-1.5 ps-3">
         <span aria-hidden className="flex size-6 shrink-0 items-center justify-center rounded-sm bg-surface-2 text-text-2 [&_svg]:size-3.5">
           <GalleryVerticalEnd />
         </span>
         <h2 className="min-w-0 flex-1 truncate text-ui font-semibold text-text">
           {t('Slide')} {position + 1}
-          <span className="ml-1.5 font-normal text-text-3 tabular-nums">{tx('of {total}', { total })}</span>
+          <span className="ms-1.5 font-normal text-text-3 tabular-nums">{tx('of {total}', { total })}</span>
         </h2>
       </header>
       <ScrollArea className="min-h-0 flex-1" viewportClassName="overscroll-contain">

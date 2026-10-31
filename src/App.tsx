@@ -13,7 +13,8 @@ import { maybeRunSelfTest } from './ui/shell/selfTest';
 import { getPlatform } from './platform';
 import { useApp } from './store';
 
-import { t } from './i18n';
+import { isRtlUi, t } from './i18n';
+import { Direction } from 'radix-ui';
 // The UI kit showcase (visual QA) loads only for "?kit", so it never weighs on the app bundle.
 const Showcase = lazy(() => import('./ui/kit/Showcase'));
 const showKit = typeof location !== 'undefined' && new URLSearchParams(location.search).has('kit');
@@ -48,19 +49,21 @@ function Shell() {
   }, []);
 
   return (
-    <TooltipProvider>
-      <div className="h-full">
-        {route.name === 'editor' ? (
-          <Suspense fallback={<LoadingEditor />}>
-            <EditorScreen key={route.projectId} />
-          </Suspense>
-        ) : (
-          <HomeScreen />
-        )}
-      </div>
-      <ToastHost />
-      <ConfirmHost />
-    </TooltipProvider>
+    <Direction.DirectionProvider dir={isRtlUi() ? 'rtl' : 'ltr'}>
+      <TooltipProvider>
+        <div className="h-full">
+          {route.name === 'editor' ? (
+            <Suspense fallback={<LoadingEditor />}>
+              <EditorScreen key={route.projectId} />
+            </Suspense>
+          ) : (
+            <HomeScreen />
+          )}
+        </div>
+        <ToastHost />
+        <ConfirmHost />
+      </TooltipProvider>
+    </Direction.DirectionProvider>
   );
 }
 

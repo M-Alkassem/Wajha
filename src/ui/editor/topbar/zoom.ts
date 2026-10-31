@@ -1,9 +1,11 @@
+import { t } from '../../../i18n';
+
 /** Zoom levels the zoom menu offers directly. */
 export const ZOOM_PRESETS: readonly number[] = [0.5, 1, 2];
 
 /** "Fit" while the stage fits the slides, else the zoom as a percentage. */
 export function zoomLabel(zoom: number, fit: boolean): string {
-  if (fit) return 'Fit';
+  if (fit) return t('Fit');
   return `${Math.round((Number.isFinite(zoom) ? zoom : 1) * 100)}%`;
 }
 

@@ -162,7 +162,7 @@ export const SliderRow = memo(function SliderRow({
           onCommit={live.onCommit}
           onScrubEnd={live.onScrubEnd}
           className="w-[64px] shrink-0"
-          inputClassName="text-right"
+          inputClassName="text-end"
         />
       </div>
     </Row>

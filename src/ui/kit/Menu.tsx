@@ -49,7 +49,7 @@ function ItemBody({ icon, shortcut, inset, danger, children }: ItemExtras & { ch
         <span className="size-4 shrink-0" />
       ) : null}
       <span className="min-w-0 flex-1 truncate">{children}</span>
-      {shortcut && <Kbd keys={shortcut} tone="plain" className="ml-6 shrink-0" />}
+      {shortcut && <Kbd keys={shortcut} tone="plain" className="ms-6 shrink-0" />}
     </>
   );
 }
@@ -157,7 +157,7 @@ export const DropdownMenuSubTrigger = forwardRef<HTMLDivElement, DropdownMenuSub
       <ItemBody icon={icon} inset={inset}>
         {children}
       </ItemBody>
-      <ChevronRight className="size-3.5 shrink-0 text-text-3" />
+      <ChevronRight className="size-3.5 shrink-0 text-text-3 rtl:-scale-x-100" />
     </DropdownPrimitive.SubTrigger>
   );
 });
@@ -280,7 +280,7 @@ export const ContextMenuSubTrigger = forwardRef<HTMLDivElement, ContextMenuSubTr
       <ItemBody icon={icon} inset={inset}>
         {children}
       </ItemBody>
-      <ChevronRight className="size-3.5 shrink-0 text-text-3" />
+      <ChevronRight className="size-3.5 shrink-0 text-text-3 rtl:-scale-x-100" />
     </ContextPrimitive.SubTrigger>
   );
 });

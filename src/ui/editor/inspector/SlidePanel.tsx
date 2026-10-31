@@ -128,9 +128,9 @@ interface ShotRow {
 // Same tones as the rest of the editor: a missing screenshot (a mock screen shows) needs
 // attention, a fallback to the base language is fine as it is.
 const STATUS: Record<ShotStatus, { tone: DotTone; label: (base: string) => string }> = {
-  own: { tone: 'success', label: () => 'Added' },
-  base: { tone: 'muted', label: (base) => `Uses ${base}` },
-  missing: { tone: 'warning', label: () => 'Missing' },
+  own: { tone: 'success', label: () => t('Added') },
+  base: { tone: 'muted', label: (base) => t('Uses {base}', { base }) },
+  missing: { tone: 'warning', label: () => t('Missing') },
 };
 
 const ScreenshotsSection = memo(function ScreenshotsSection({ slideId, family }: { slideId: string; family: FamilyId }) {
@@ -177,7 +177,7 @@ const ScreenshotsSection = memo(function ScreenshotsSection({ slideId, family }:
                         <span className="truncate">{t(info.name)}</span>
                         {code === base && row.langs.length > 1 && (
                           <Badge size="sm" className="shrink-0">
-                            Base
+                            {t('Base')}
                           </Badge>
                         )}
                       </span>
@@ -231,13 +231,13 @@ const ThemeSection = memo(function ThemeSection({ palette }: { palette: readonly
       <BackgroundFields scope="theme" value={background} applyFill={applyFill} read={readThemeBackground} updatePattern={updatePattern} palette={palette} />
       <div className="mt-1 flex flex-col gap-1">
         <Switch label={t('Panorama')} checked={panorama} onCheckedChange={(on) => useEditor.getState().setPanorama(on)} />
-        <Hint className="pl-9">
+        <Hint className="ps-9">
           {slideCount > 1 ? t('One background flows across all {slideCount} slides, like a single wide picture.', { slideCount }) : t('One background flows across all slides, like a single wide picture.')}
         </Hint>
       </div>
       <div className="flex flex-col gap-1">
         <Switch label={t('Dark mock screens')} checked={mockDark} onCheckedChange={(on) => useEditor.getState().setMockDark(on)} />
-        <Hint className="pl-9">{t('Placeholder app screens shown until a screenshot is added.')}</Hint>
+        <Hint className="ps-9">{t('Placeholder app screens shown until a screenshot is added.')}</Hint>
       </div>
     </InspectorSection>
   );

@@ -45,6 +45,14 @@ export function uiLanguage(): UiLanguage {
   return current;
 }
 
+/**
+ * The locale for dates and relative times. Arabic keeps the digits 0-9 the
+ * rest of the interface (sizes, percentages, slide numbers) uses.
+ */
+export function uiLocale(): string {
+  return current === 'ar' ? 'ar-u-nu-latn' : 'en';
+}
+
 /** True when the interface reads right to left. */
 export const isRtlUi = () => current === 'ar';
 
@@ -107,10 +115,14 @@ export function t(text: string, vars?: Record<string, unknown>): string {
 /**
  * A count with its noun, e.g. tn(3, '{count} screenshot', '{count} screenshots').
  * English picks one of the two; Arabic finds both under the plural text in
- * the catalog and picks its own form.
+ * the catalog and picks its own form. `vars.count` may give the number as
+ * shown ("1,200"); the form is still chosen by `count`.
  */
 export function tn(count: number, one: string, other: string, vars?: Record<string, unknown>): string {
   const all = { count, ...vars };
-  if (current === 'ar' && AR[other] !== undefined) return t(other, all);
+  if (current === 'ar') {
+    const entry = AR[other];
+    if (entry !== undefined) return fill(typeof entry === 'string' ? entry : pickForm(entry, { count }, 'ar'), all);
+  }
   return fill(count === 1 ? one : other, all);
 }

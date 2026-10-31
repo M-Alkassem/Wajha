@@ -74,7 +74,7 @@ export function EmptyLibrary() {
               </h2>
               <p className="text-xs text-text-3">{t('Every template comes with mock screens, sample copy and layouts for each device.')}</p>
             </div>
-            <Button variant="ghost" trailingIcon={<ArrowRight />} onClick={() => openNew({ source: 'builtin' })}>
+            <Button variant="ghost" trailingIcon={<ArrowRight className="rtl:-scale-x-100" />} onClick={() => openNew({ source: 'builtin' })}>
               {t('Browse all templates')}
             </Button>
           </div>

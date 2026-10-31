@@ -46,9 +46,9 @@ export interface SelectProps {
 }
 
 const TRIGGER_SIZES: Record<ControlSize, string> = {
-  sm: 'h-6 gap-1 rounded-sm pl-1.5 pr-1 text-xs',
-  md: 'h-7 gap-1.5 rounded-sm pl-2 pr-1.5 text-xs',
-  lg: 'h-9 gap-2 rounded-md pl-3 pr-2 text-ui',
+  sm: 'h-6 gap-1 rounded-sm ps-1.5 pe-1 text-xs',
+  md: 'h-7 gap-1.5 rounded-sm ps-2 pe-1.5 text-xs',
+  lg: 'h-9 gap-2 rounded-md ps-3 pe-2 text-ui',
 };
 
 /** Styled radix Select: a field-like trigger and a menu-like list with a check on the chosen item. */
@@ -160,7 +160,7 @@ function SelectItem({ option }: { option: SelectOption }) {
       disabled={option.disabled}
       textValue={option.textValue ?? (typeof option.label === 'string' ? option.label : undefined)}
       className={cx(
-        'group/option relative flex min-h-7 cursor-default items-center gap-2 rounded-[5px] py-1 pr-7 pl-2 text-ui outline-none select-none',
+        'group/option relative flex min-h-7 cursor-default items-center gap-2 rounded-[5px] py-1 pe-7 ps-2 text-ui outline-none select-none',
         // Same highlight as the menus (surface-2 nearly vanishes on a dark popover).
         'data-[highlighted]:bg-surface-3 light:data-[highlighted]:bg-surface-2',
         'data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[state=checked]:font-medium',
@@ -175,12 +175,12 @@ function SelectItem({ option }: { option: SelectOption }) {
           </span>
         </SelectPrimitive.ItemText>
         {option.description && (
-          <span className={cx('truncate text-xs font-normal text-text-3 group-data-[highlighted]/option:text-text-2', option.icon ? 'pl-[22px]' : undefined)}>
+          <span className={cx('truncate text-xs font-normal text-text-3 group-data-[highlighted]/option:text-text-2', option.icon ? 'ps-[22px]' : undefined)}>
             {option.description}
           </span>
         )}
       </span>
-      <SelectPrimitive.ItemIndicator className="absolute right-2 flex items-center text-accent-fg">
+      <SelectPrimitive.ItemIndicator className="absolute end-2 flex items-center text-accent-fg">
         <Check className="size-3.5" strokeWidth={2.5} />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>

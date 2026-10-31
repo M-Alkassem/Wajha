@@ -14,7 +14,7 @@ import { FamilyIcon, SectionHeading } from '../editor/dialogs/parts';
 import { estimateBytes, familySummaries, firstSkippedSlide, formatBytes, groupWarnings, missingShotRows, type FamilySummary, type MissingShotRow } from './exportModel';
 import type { TextOverflowRow, TextOverflowState } from './textOverflow';
 
-import { t } from '../../i18n';
+import { t, tn } from '../../i18n';
 import { familyLabel } from '../shared/names';
 export interface ExportSummaryPanelProps {
   project: Project;
@@ -45,7 +45,7 @@ export const ExportSummaryPanel = memo(function ExportSummaryPanel({ project, pl
         <div>
           <div className="flex items-baseline gap-1.5">
             <span className="font-display text-[34px] leading-10 font-semibold tracking-[-0.02em] text-text tabular-nums">{files.toLocaleString('en-US')}</span>
-            <span className="text-ui text-text-2">{files === 1 ? 'file' : 'files'}</span>
+            <span className="text-ui text-text-2">{tn(files, 'file', 'files')}</span>
           </div>
           <p className="text-xs text-text-3">
             {files > 0 ? t('About {formatBytes}', { formatBytes: formatBytes(estimate) }) : t('Nothing selected')} · {format === 'png' ? t('PNG') : t('JPEG {v}%', { v: Math.round(quality * 100) })} · {STRUCTURE_LABEL[structure]}
@@ -202,7 +202,7 @@ function SlideChips({
   what?: string;
   onJump(t: JumpTarget): void;
 }) {
-  const langLabel = lang === null ? 'All languages' : languageName(lang);
+  const langLabel = lang === null ? t('All languages') : languageName(lang);
   const iconClass = 'mt-0.5 size-3 shrink-0 text-text-3';
   return (
     <li className="flex flex-col gap-1.5">
@@ -256,10 +256,10 @@ function SlideLimits({ warnings, project, onJump }: { warnings: ExportWarning[];
               <button
                 type="button"
                 onClick={() => onJump({ family, slideIndex })}
-                className="group/jump -mx-1.5 flex w-[calc(100%+12px)] items-start gap-1 rounded-md px-1.5 py-1 text-left text-xs leading-4 text-text-2 outline-none transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text focus-visible:outline-2 focus-visible:outline-focus"
+                className="group/jump -mx-1.5 flex w-[calc(100%+12px)] items-start gap-1 rounded-md px-1.5 py-1 text-start text-xs leading-4 text-text-2 outline-none transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text focus-visible:outline-2 focus-visible:outline-focus"
               >
                 <span className="min-w-0 flex-1">{w.message}</span>
-                <ChevronRight aria-hidden className="mt-px size-3.5 shrink-0 text-text-3 group-hover/jump:text-text-2" />
+                <ChevronRight aria-hidden className="mt-px size-3.5 shrink-0 text-text-3 group-hover/jump:text-text-2 rtl:-scale-x-100" />
               </button>
             </li>
           );

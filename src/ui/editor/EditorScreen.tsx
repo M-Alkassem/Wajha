@@ -52,7 +52,7 @@ function EditorLayout() {
           <Stage />
         </main>
         {rightOpen && (
-          <aside aria-label={t('Inspector')} className="flex h-full w-(--inspector-w) shrink-0 flex-col border-l border-line bg-panel">
+          <aside aria-label={t('Inspector')} className="flex h-full w-(--inspector-w) shrink-0 flex-col border-s border-line bg-panel">
             <Inspector />
           </aside>
         )}

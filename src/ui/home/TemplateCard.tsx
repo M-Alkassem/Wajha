@@ -51,7 +51,7 @@ function NamesTooltip({ title, subtitle, titleRef, subtitleRef, children }: Requ
 
 function SelectedCheck() {
   return (
-    <span className="absolute top-2.5 right-2.5 z-[2] flex size-5 items-center justify-center rounded-full bg-accent text-accent-text shadow-md">
+    <span className="absolute top-2.5 end-2.5 z-[2] flex size-5 items-center justify-center rounded-full bg-accent text-accent-text shadow-md">
       <Check className="size-3" strokeWidth={3} />
     </span>
   );
@@ -75,7 +75,9 @@ export interface TemplateCardProps {
 /** A template with a live strip of its first three slides (iPhone, English). */
 export const TemplateCard = memo(function TemplateCard({ template, selected = false, onSelect, onActivate, badge, menu, busy = false, mode = 'select' }: TemplateCardProps) {
   const project = templatePreviewProject(template, 'iphone', 'en-US');
-  const described = `${template.name}, ${categoryLabel(template.category)} template${template.author ? ` by ${template.author}` : ''}`;
+  const described = template.author
+    ? t('{name}, {category} template by {author}', { name: template.name, category: categoryLabel(template.category), author: template.author })
+    : t('{name}, {category} template', { name: template.name, category: categoryLabel(template.category) });
   const titleRef = useRef<HTMLSpanElement>(null);
   const subtitleRef = useRef<HTMLSpanElement>(null);
   const names = { title: template.name, subtitle: template.author ? t('by {author}', { author: template.author }) : t('Template'), titleRef, subtitleRef };
@@ -109,12 +111,12 @@ export const TemplateCard = memo(function TemplateCard({ template, selected = fa
 
 function TileFooter({ title, subtitle, titleRef, subtitleRef, badge, menu }: TileNames & { badge?: ReactNode; menu?: ReactNode }) {
   return (
-    <div className="flex items-center gap-2 pt-2.5 pr-0.5 pb-1 pl-1.5">
+    <div className="flex items-center gap-2 pt-2.5 pe-0.5 pb-1 ps-1.5">
       <div aria-hidden className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span ref={titleRef} dir="auto" className="truncate text-left text-ui leading-5 font-medium text-text">
+        <span ref={titleRef} dir="auto" className="truncate text-start text-ui leading-5 font-medium text-text">
           {title}
         </span>
-        <span ref={subtitleRef} dir="auto" className="truncate text-left text-xs leading-4 text-text-3">
+        <span ref={subtitleRef} dir="auto" className="truncate text-start text-xs leading-4 text-text-3">
           {subtitle}
         </span>
       </div>
@@ -215,7 +217,7 @@ export const GalleryCard = memo(function GalleryCard({ entry, installed, install
           </div>
         ) : (
           !installed && (
-            <span className="absolute right-2 bottom-2 flex h-6 items-center gap-1 rounded-full bg-[var(--glass)] px-2.5 text-2xs font-medium text-text opacity-0 shadow-md backdrop-blur-md transition-opacity duration-(--dur-fast) group-focus-within/tpl:opacity-100 group-hover/tpl:opacity-100">
+            <span className="absolute end-2 bottom-2 flex h-6 items-center gap-1 rounded-full bg-[var(--glass)] px-2.5 text-2xs font-medium text-text opacity-0 shadow-md backdrop-blur-md transition-opacity duration-(--dur-fast) group-focus-within/tpl:opacity-100 group-hover/tpl:opacity-100">
               <Download className="size-3" />
               {t('Use template')}
             </span>

@@ -166,10 +166,10 @@ function LanguagesBody({ project, open, onOpenChange }: EditorDialogProps & { pr
               item.kind === 'heading' ? (
                 <div key={`h:${item.id}`} role="presentation" className="flex items-baseline gap-2.5 px-2 pt-4 pb-1.5">
                   <span className="flex-1 text-2xs font-semibold tracking-[0.06em] text-text-3 uppercase">{item.label}</span>
-                  <span aria-hidden className="w-[76px] shrink-0 text-right text-2xs text-text-3">
+                  <span aria-hidden className="w-[76px] shrink-0 text-end text-2xs text-text-3">
                     {t('App Store')}
                   </span>
-                  <span aria-hidden className="w-[76px] shrink-0 text-right text-2xs text-text-3">
+                  <span aria-hidden className="w-[76px] shrink-0 text-end text-2xs text-text-3">
                     {t('Google Play')}
                   </span>
                 </div>
@@ -275,7 +275,7 @@ function LanguageRow({ info, inProject, base, only, disabledAdd, flash, onAdd, o
 function StoreLocale({ store, code, name }: { store: string; code: string | null; name: string }) {
   if (code) {
     return (
-      <span className="w-[76px] shrink-0 truncate text-right font-mono text-2xs text-text-2">
+      <span className="w-[76px] shrink-0 truncate text-end font-mono text-2xs text-text-2">
         <span className="sr-only">{store}: </span>
         {code}
       </span>
@@ -283,7 +283,7 @@ function StoreLocale({ store, code, name }: { store: string; code: string | null
   }
   return (
     <Tooltip content={t('{store} has no {name} localization. {name2} is skipped for {store2} sizes when you export.', { store, name, name2: name, store2: store })}>
-      <span className="w-[76px] shrink-0 text-right text-2xs font-medium text-warning">
+      <span className="w-[76px] shrink-0 text-end text-2xs font-medium text-warning">
         <span className="sr-only">{store}: </span>
         {t('Not offered')}
       </span>

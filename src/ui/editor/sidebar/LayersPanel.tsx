@@ -164,10 +164,10 @@ export function LayersPanel() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex h-10 shrink-0 items-center gap-1.5 pr-2 pl-3">
+      <div className="flex h-10 shrink-0 items-center gap-1.5 pe-2 ps-3">
         <span className="text-xs font-semibold text-text">{t('Slide')} {slideIndex + 1}</span>
         <span className="truncate text-2xs text-text-3">· {familyLabel(family)}</span>
-        <span className="ml-auto" />
+        <span className="ms-auto" />
         <AddElementMenu />
       </div>
 
@@ -224,7 +224,7 @@ export function LayersPanel() {
       </div>
 
       {family !== primary && (
-        <div className="flex min-h-10 shrink-0 items-center gap-2 border-t border-line py-1.5 pr-2 pl-3 text-2xs text-text-3">
+        <div className="flex min-h-10 shrink-0 items-center gap-2 border-t border-line py-1.5 pe-2 ps-3 text-2xs text-text-3">
           {own ? <Unlink className="size-3.5 shrink-0" /> : <Link2 className="size-3.5 shrink-0 text-accent-fg" />}
           <span className="min-w-0 flex-1 leading-[14px]">
             {own ? t('Own {shortLabel} layout', { shortLabel: familyShortLabel(family) }) : t('Follows the {shortLabel} layout until edited', { shortLabel: familyShortLabel(primary) })}

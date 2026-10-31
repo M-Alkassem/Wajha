@@ -8,13 +8,13 @@ import { FAMILY_ICONS } from './familyMeta';
 import { shortcutKeys } from './shortcuts';
 import { countMissingShots } from './sidebar/labels';
 
-import { t } from '../../i18n';
+import { t, tn } from '../../i18n';
 import { tx } from '../../i18n/react';
 function Dot() {
   return <span aria-hidden className="size-[3px] shrink-0 rounded-full bg-text-3/60" />;
 }
 
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const plural = (n: number, one: string, many: string) => tn(n, `{count} ${one}`, `{count} ${many}`);
 
 /**
  * Thin status line under the editor: the active canvas and its pixel size,
@@ -58,7 +58,7 @@ export function StatusBar() {
         {plural(count, 'slide', 'slides')}
         {over > 0 && (
           <Tooltip content={t('{label} listings show at most {maxSlides}; the rest are not exported', { label: info.label, maxSlides: info.maxSlides })}>
-            <span className="ml-1 text-warning">{tx('· {over} not exported', { over })}</span>
+            <span className="ms-1 text-warning">{tx('· {over} not exported', { over })}</span>
           </Tooltip>
         )}
       </span>
@@ -90,7 +90,7 @@ export function StatusBar() {
         onClick={() => useEditorUi.getState().openDialog('shortcuts')}
         aria-label={t('Keyboard shortcuts')}
         className={cx(
-          'inline-flex h-5 shrink-0 items-center gap-1.5 rounded-[4px] px-1 -mr-1 text-text-3 outline-none',
+          'inline-flex h-5 shrink-0 items-center gap-1.5 rounded-[4px] px-1 -me-1 text-text-3 outline-none',
           'transition-colors duration-(--dur-fast) hover:bg-surface-2 hover:text-text-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-focus',
         )}
       >

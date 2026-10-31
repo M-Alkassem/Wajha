@@ -231,7 +231,7 @@ function OverflowNote({ target, maxLines, size }: { target: Target; maxLines: nu
           {tn(maxLines, 'Too long for one line, even shrunk to 60%.', 'Too long for {count} lines, even shrunk to 60%.')}
         </span>
       </p>
-      <div className="flex flex-wrap gap-1.5 pl-5">
+      <div className="flex flex-wrap gap-1.5 ps-5">
         <Button size="sm" onClick={() => patchTarget(target, { style: { maxLines: more } })}>
           {tx('Allow {more} lines', { more })}
         </Button>

@@ -7,7 +7,7 @@ import { FAMILIES } from '../../model/catalog';
 import type { FamilyId } from '../../model/types';
 import { sanitizeSegment } from '../../export/paths';
 
-import { t, tn, uiLanguage } from '../../i18n';
+import { t, tn, uiLanguage, uiLocale } from '../../i18n';
 const SECOND = 1000;
 const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
@@ -18,8 +18,8 @@ let relative: Intl.RelativeTimeFormat | null = null;
 let shortRelative: Intl.RelativeTimeFormat | null = null;
 
 function rtf(style: 'long' | 'short'): Intl.RelativeTimeFormat {
-  if (style === 'short') return (shortRelative ??= new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' }));
-  return (relative ??= new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'long' }));
+  if (style === 'short') return (shortRelative ??= new Intl.RelativeTimeFormat(uiLocale(), { numeric: 'auto', style: 'short' }));
+  return (relative ??= new Intl.RelativeTimeFormat(uiLocale(), { numeric: 'auto', style: 'long' }));
 }
 
 /** Start of the local calendar day of `t`. */
@@ -36,9 +36,9 @@ function dayStart(t: number): number {
  * moved backwards) read as "just now".
  */
 export function relativeEdited(updatedAt: number, now: number): string {
-  if (!Number.isFinite(updatedAt) || !Number.isFinite(now)) return 'a while ago';
+  if (!Number.isFinite(updatedAt) || !Number.isFinite(now)) return t('a while ago');
   const diff = now - updatedAt;
-  if (diff < 45 * SECOND) return 'just now';
+  if (diff < 45 * SECOND) return t('just now');
   if (diff < HOUR) {
     // "5 min. ago" is CLDR's short form; the period reads fussy in a card.
     return rtf('short')
@@ -52,18 +52,18 @@ export function relativeEdited(updatedAt: number, now: number): string {
   if (diff < 4 * WEEK + 2 * DAY) return rtf('long').format(-Math.max(1, Math.round(days / 7)), 'week');
   const then = new Date(updatedAt);
   const sameYear = then.getFullYear() === new Date(now).getFullYear();
-  return then.toLocaleDateString('en', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
+  return then.toLocaleDateString(uiLocale(), sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 /** "Edited 5 min ago", as shown under a project card. */
 export function formatEdited(updatedAt: number, now: number): string {
-  return `Edited ${relativeEdited(updatedAt, now)}`;
+  return t('Edited {when}', { when: relativeEdited(updatedAt, now) });
 }
 
 /** Full local date and time, for tooltips and screen readers. */
 export function formatFullDate(t: number): string {
   if (!Number.isFinite(t)) return '';
-  return new Date(t).toLocaleString('en', { dateStyle: 'medium', timeStyle: 'short' });
+  return new Date(t).toLocaleString(uiLocale(), { dateStyle: 'medium', timeStyle: 'short' });
 }
 
 /* Initials ------------------------------------------------------------ */

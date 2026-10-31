@@ -71,6 +71,7 @@ export function SegmentedControl<T extends string = string>({
     return () => cancelAnimationFrame(id);
   }, [rect, animate]);
 
+  // Measured from the left edge in either direction, so the thumb is anchored there (left-0), not at the start.
   const thumbStyle: CSSProperties | undefined = rect
     ? { transform: `translateX(${rect.left}px)`, width: rect.width }
     : undefined;

@@ -64,14 +64,14 @@ export function TranslationsGrid({ project, previewProject, rows, stats }: Trans
       <div role="row" className="contents">
         <div
           role="columnheader"
-          className="sticky top-0 left-0 z-30 flex items-end border-r border-b border-line bg-popover px-3 pb-2.5 text-2xs font-medium text-text-3"
+          className="sticky top-0 start-0 z-30 flex items-end border-e border-b border-line bg-popover px-3 pb-2.5 text-2xs font-medium text-text-3"
           style={{ height: HEADER_H }}
         >
           {t('Slide')}
         </div>
         <div
           role="columnheader"
-          className="sticky top-0 z-30 flex items-end border-r border-b border-line bg-popover px-3 pb-2.5 text-2xs font-medium text-text-3"
+          className="sticky top-0 z-30 flex items-end border-e border-b border-line bg-popover px-3 pb-2.5 text-2xs font-medium text-text-3"
           style={{ height: HEADER_H, left: SLIDE_COL }}
         >
           {t('Text')}
@@ -89,7 +89,7 @@ export function TranslationsGrid({ project, previewProject, rows, stats }: Trans
             {row.first && <SlideCell project={previewProject} slideIndex={row.slideIndex} span={row.span} family={family} lang={base} />}
             <div
               role="rowheader"
-              className={cx('sticky z-10 border-r border-line bg-popover px-3 py-3 text-xs leading-5 text-text-2', last ? 'border-b border-b-line-strong' : 'border-b')}
+              className={cx('sticky z-10 border-e border-line bg-popover px-3 py-3 text-xs leading-5 text-text-2', last ? 'border-b border-b-line-strong' : 'border-b')}
               style={{ left: SLIDE_COL }}
             >
               <span className="line-clamp-2 break-words">{row.label}</span>
@@ -123,7 +123,7 @@ const LanguageHeader = memo(function LanguageHeader({ lang, base, filled, total,
   return (
     <div
       role="columnheader"
-      className={cx('sticky top-0 z-20 flex min-w-0 flex-col justify-end gap-2 border-b border-line bg-popover px-3 pb-2.5', !last && 'border-r')}
+      className={cx('sticky top-0 z-20 flex min-w-0 flex-col justify-end gap-2 border-b border-line bg-popover px-3 pb-2.5', !last && 'border-e')}
       style={{ height: HEADER_H }}
     >
       <div className="flex min-w-0 items-center gap-1.5">
@@ -167,11 +167,11 @@ const SlideCell = memo(function SlideCell({ project, slideIndex, span, family, l
   return (
     <div
       role="cell"
-      className="sticky left-0 z-10 border-r border-b border-b-line-strong border-r-line bg-popover"
+      className="sticky start-0 z-10 border-e border-b border-b-line-strong border-e-line bg-popover"
       style={{ gridRow: `span ${span}` }}
     >
       <div className="sticky flex items-start gap-2 px-3 py-2.5" style={{ top: HEADER_H }}>
-        <span className="w-4 pt-0.5 text-right text-xs font-medium text-text-2 tabular-nums">{slideIndex + 1}</span>
+        <span className="w-4 pt-0.5 text-end text-xs font-medium text-text-2 tabular-nums">{slideIndex + 1}</span>
         <span className="overflow-hidden rounded-[4px] shadow-[0_0_0_1px_var(--line-strong)]">
           <SlidePreview project={project} slideIndex={slideIndex} family={family} lang={lang} width={width} />
         </span>
@@ -198,7 +198,7 @@ const Cell = memo(function Cell({ slideId, textKey, lang, value, placeholder, ro
   const dir = isRtl(lang) ? 'rtl' : 'ltr';
   const shared = 'col-start-1 row-start-1 px-3 py-3 text-ui leading-5 whitespace-pre-wrap break-words';
   return (
-    <div role="cell" className={cx('grid min-w-0', lastInGroup ? 'border-b border-b-line-strong' : 'border-b border-line', !lastCol && 'border-r border-r-line')}>
+    <div role="cell" className={cx('grid min-w-0', lastInGroup ? 'border-b border-b-line-strong' : 'border-b border-line', !lastCol && 'border-e border-e-line')}>
       <textarea
         value={value}
         placeholder={placeholder}

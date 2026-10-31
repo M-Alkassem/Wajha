@@ -260,7 +260,7 @@ function TagInput({ tags, onChange, disabled }: { tags: string[]; onChange(tags:
       className={cx('flex min-h-7 w-full flex-wrap items-center gap-1 rounded-sm px-1 py-[3px] text-xs', FIELD_SHELL, disabled && 'pointer-events-none opacity-50')}
     >
       {tags.map((tag) => (
-        <span key={tag} className="inline-flex h-5 max-w-full items-center gap-0.5 rounded-[4px] bg-surface-3 pr-0.5 pl-1.5 text-2xs font-medium text-text light:bg-surface-2">
+        <span key={tag} className="inline-flex h-5 max-w-full items-center gap-0.5 rounded-[4px] bg-surface-3 pe-0.5 ps-1.5 text-2xs font-medium text-text light:bg-surface-2">
           <span dir="auto" className="truncate">
             {tag}
           </span>

@@ -95,7 +95,7 @@ describe('ProjectCard', () => {
     setLibrary({ renamingId: 'p1' });
     const field = card().match(/<input[^>]*aria-label="Project name"[^>]*>/)?.[0] ?? '';
     expect(field).toContain('dir="auto"');
-    expect(field).toContain('text-left');
+    expect(field).toContain('text-start');
   });
 
   it('draws its picture in a themed well, not on a baked-in backdrop', () => {

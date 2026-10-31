@@ -5,11 +5,11 @@ import type { AppSettings } from '../../model/types';
 import { getPlatform, type AppInfo } from '../../platform';
 import { toast, useApp } from '../../store';
 import { Logo } from '../brand/Logo';
-import { Button, cx, Dialog, DialogContent, Switch } from '../kit';
+import { Button, cx, Dialog, DialogContent, SegmentedControl, Switch } from '../kit';
 import { useHomeUi } from './homeUi';
 import { errorText } from './library';
 
-import { t } from '../../i18n';
+import { isRtlUi, savedUiLanguage, setUiLanguage, t, type UiLanguage } from '../../i18n';
 type Theme = AppSettings['theme'];
 
 const THEMES: ReadonlyArray<{ value: Theme; label: string; icon: ReactNode }> = [
@@ -56,7 +56,9 @@ function SettingsBody() {
           className="grid grid-cols-3 gap-3"
           onKeyDown={(e) => {
             // One tab stop; arrows move the choice like native radio buttons.
-            const step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+            const forward = isRtlUi() ? 'ArrowLeft' : 'ArrowRight';
+            const back = isRtlUi() ? 'ArrowRight' : 'ArrowLeft';
+            const step = e.key === forward || e.key === 'ArrowDown' ? 1 : e.key === back || e.key === 'ArrowUp' ? -1 : 0;
             if (!step) return;
             e.preventDefault();
             const at = THEMES.findIndex((t) => t.value === theme);
@@ -70,6 +72,9 @@ function SettingsBody() {
           ))}
         </div>
       </Group>
+      <Group title={t('Language')}>
+        <LanguageChoice />
+      </Group>
       <Group title={t('Editor')}>
         <label className="flex items-start gap-3">
           <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -82,6 +87,34 @@ function SettingsBody() {
       <Group title={t('About')} last>
         <About />
       </Group>
+    </div>
+  );
+}
+
+/**
+ * The interface language. Each choice is written in its own language, so
+ * people find theirs whatever the interface shows now. Choosing reloads the
+ * window in the new language.
+ */
+function LanguageChoice() {
+  const [choice, setChoice] = useState<UiLanguage | 'system'>(() => savedUiLanguage() ?? 'system');
+  return (
+    <div className="flex flex-col gap-2">
+      <SegmentedControl
+        aria-label={t('Language')}
+        fullWidth
+        value={choice}
+        onValueChange={(value) => {
+          setChoice(value);
+          setUiLanguage(value === 'system' ? null : value);
+        }}
+        options={[
+          { value: 'system', label: t('System') },
+          { value: 'en', label: 'English' },
+          { value: 'ar', label: 'العربية' },
+        ]}
+      />
+      <span className="text-xs leading-4 text-text-3">{t('The window reloads in the new language. Slide text is not affected.')}</span>
     </div>
   );
 }
@@ -102,7 +135,7 @@ function MiniWindow({ theme }: { theme: 'dark' | 'light' }) {
       <div className="flex h-[18%] items-center gap-[3px] border-b border-line bg-panel px-[7%]">
         <span className="size-[5px] rounded-full bg-surface-3" />
         <span className="size-[5px] rounded-full bg-surface-3" />
-        <span className="ml-auto h-[38%] w-[22%] rounded-[3px] bg-accent" />
+        <span className="ms-auto h-[38%] w-[22%] rounded-[3px] bg-accent" />
       </div>
       <div className="grid flex-1 grid-cols-3 gap-[6%] p-[8%]">
         {[0, 1, 2].map((i) => (
@@ -125,7 +158,7 @@ function ThemeTile({ theme, label, icon, selected, onSelect }: { theme: Theme; l
       tabIndex={selected ? 0 : -1}
       data-theme-option={theme}
       onClick={onSelect}
-      className="group/theme flex flex-col gap-2 rounded-lg text-left outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-focus"
+      className="group/theme flex flex-col gap-2 rounded-lg text-start outline-none focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-2 focus-visible:outline-focus"
     >
       <span
         className={cx(
@@ -150,7 +183,7 @@ function ThemeTile({ theme, label, icon, selected, onSelect }: { theme: Theme; l
       <span className={cx('flex items-center gap-1.5 px-0.5 text-xs font-medium [&_svg]:size-3.5', selected ? 'text-text' : 'text-text-2')}>
         <span className={selected ? 'text-accent-fg' : 'text-text-3'}>{icon}</span>
         {label}
-        {selected && <Check className="ml-auto text-accent-fg" strokeWidth={2.5} />}
+        {selected && <Check className="ms-auto text-accent-fg" strokeWidth={2.5} />}
       </span>
     </button>
   );
@@ -185,7 +218,7 @@ function About() {
         </span>
         <div className="flex min-w-0 flex-col gap-0.5">
           <span className="flex items-baseline gap-2">
-            <span className="font-brand text-[17px] leading-5 font-semibold tracking-[-0.03em] text-text">{t('Wajha')}</span>
+            <span className="font-brand text-[17px] leading-5 font-semibold tracking-[-0.03em] text-text">Wajha</span>
             <span lang="ar" dir="rtl" className="font-brand-ar text-xs text-text-3">
               {APP_NAME_AR}
             </span>
@@ -235,7 +268,7 @@ function DataFolder({ path }: { path: string }) {
   };
 
   return (
-    <div className="flex h-8 items-center gap-1 rounded-md border border-line bg-field pr-1 pl-2.5 light:bg-raised">
+    <div className="flex h-8 items-center gap-1 rounded-md border border-line bg-field pe-1 ps-2.5 light:bg-raised">
       <span dir="ltr" title={path} className="min-w-0 flex-1 truncate font-mono text-2xs text-text-2 select-text">
         {path}
       </span>

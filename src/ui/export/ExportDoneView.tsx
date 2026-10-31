@@ -75,7 +75,7 @@ export function ExportDoneView({ outcome, total, downloaded, onJump }: ExportDon
           {destination && <p className="max-w-[420px] text-ui text-text-2">{destination}</p>}
         </div>
         {!report.cancelled && written > 0 && (
-          <div className="flex max-w-[480px] items-center gap-2 rounded-full border border-line bg-field py-1 pr-3.5 pl-2.5 text-xs text-text-2 light:bg-surface">
+          <div className="flex max-w-[480px] items-center gap-2 rounded-full border border-line bg-field py-1 pe-3.5 ps-2.5 text-xs text-text-2 light:bg-surface">
             {downloaded ? <Download aria-hidden className="size-3.5 shrink-0 text-text-3" /> : <Folder aria-hidden className="size-3.5 shrink-0 text-accent-fg" />}
             <span className="truncate" title={target.path ?? undefined}>
               {downloaded ? t('Downloaded {label}.zip', { label: target.label }) : t('Saved to {label}', { label: target.label })}
@@ -113,7 +113,7 @@ function ResultCard({ tone, icon, title, description, children }: { tone: 'dange
           <span className={cx('flex [&_svg]:size-3.5', tone === 'danger' ? 'text-danger' : 'text-warning')}>{icon}</span>
           <h4 className="text-xs font-medium text-text">{title}</h4>
         </span>
-        {description && <p className="pl-[22px] text-xs leading-4 text-text-2">{description}</p>}
+        {description && <p className="ps-[22px] text-xs leading-4 text-text-2">{description}</p>}
       </header>
       {children}
     </section>
@@ -152,7 +152,7 @@ function Overflow({ entries, onJump }: { entries: OverflowEntry[]; onJump(t: Jum
             <button
               type="button"
               onClick={() => onJump({ family: e.family, lang: e.lang, slideIndex: e.slideIndex, elementId: e.elementId })}
-              className="group/jump flex w-full items-center gap-3 px-3 py-2 text-left outline-none transition-colors duration-(--dur-fast) hover:bg-field-hover focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
+              className="group/jump flex w-full items-center gap-3 px-3 py-2 text-start outline-none transition-colors duration-(--dur-fast) hover:bg-field-hover focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus"
             >
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <span className="text-xs font-medium text-text">
@@ -162,7 +162,7 @@ function Overflow({ entries, onJump }: { entries: OverflowEntry[]; onJump(t: Jum
                   {listJoin(e.langs.map(languageName))} · {e.sizes.join(', ')}
                 </span>
               </span>
-              <ChevronRight aria-hidden className="size-3.5 shrink-0 text-text-3 group-hover/jump:text-text-2" />
+              <ChevronRight aria-hidden className="size-3.5 shrink-0 text-text-3 group-hover/jump:text-text-2 rtl:-scale-x-100" />
             </button>
           </li>
         ))}

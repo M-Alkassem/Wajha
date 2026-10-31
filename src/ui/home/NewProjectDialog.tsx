@@ -288,7 +288,7 @@ function NewProjectContent({ request, busyRef }: { request: NewProjectRequest; b
             />
           )}
         </section>
-        <aside aria-label={t('Project setup')} className="flex w-[340px] shrink-0 flex-col border-l border-line bg-panel light:bg-surface">
+        <aside aria-label={t('Project setup')} className="flex w-[340px] shrink-0 flex-col border-s border-line bg-panel light:bg-surface">
           <ScrollArea className="min-h-0 flex-1">
             <div className="flex flex-col gap-5 p-5">
               <PreviewStage project={previewProject} family={family} lang={lang} title={selection.kind === 'template' ? selection.template.name : t('Blank project')} />
@@ -341,7 +341,7 @@ function SourceRail({
 }) {
   const counts = useMemo(() => countByCategory(BUILTIN_TEMPLATES), []);
   const items: Array<{ key: string; source: TemplateSource; category: Category; label: string; icon?: ReactNode; count?: number; group: string }> = [
-    { key: 'all', source: 'builtin', category: 'all', label: t('All templates'), icon: <LayoutGrid />, count: BUILTIN_TEMPLATES.length + 1, group: 'Built-in' },
+    { key: 'all', source: 'builtin', category: 'all', label: t('All templates'), icon: <LayoutGrid />, count: BUILTIN_TEMPLATES.length + 1, group: t('Built-in') },
     ...CATEGORY_ORDER.filter((c) => counts[c] > 0).map((c) => ({
       key: c,
       source: 'builtin' as const,
@@ -349,10 +349,10 @@ function SourceRail({
       label: CATEGORY_LABEL[c],
       icon: CATEGORY_ICON[c],
       count: counts[c],
-      group: 'Built-in',
+      group: t('Built-in'),
     })),
-    { key: 'community', source: 'community', category: 'all', label: t('Gallery'), icon: <Globe />, group: 'Community' },
-    { key: 'mine', source: 'mine', category: 'all', label: t('My templates'), icon: <Bookmark />, count: userCount, group: 'Yours' },
+    { key: 'community', source: 'community', category: 'all', label: t('Gallery'), icon: <Globe />, group: t('Community') },
+    { key: 'mine', source: 'mine', category: 'all', label: t('My templates'), icon: <Bookmark />, count: userCount, group: t('Yours') },
   ];
   const isOn = (i: (typeof items)[number]) => i.source === source && (i.source !== 'builtin' || i.category === category);
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -372,7 +372,7 @@ function SourceRail({
 
   let lastGroup = '';
   return (
-    <nav aria-label={t('Template sources')} className="flex w-[200px] shrink-0 flex-col border-r border-line bg-panel light:bg-surface">
+    <nav aria-label={t('Template sources')} className="flex w-[200px] shrink-0 flex-col border-e border-line bg-panel light:bg-surface">
       <ScrollArea className="min-h-0 flex-1">
         <div role="tablist" aria-orientation="vertical" className="flex flex-col px-2.5 pt-3 pb-4">
           {items.map((item, i) => {
@@ -404,7 +404,7 @@ function SourceRail({
                   <span className={cx('flex size-4 shrink-0 items-center justify-center [&_svg]:size-3.5', on ? 'text-accent-fg' : 'text-text-3')}>
                     {item.icon ?? <span className="size-1.5 rounded-full bg-current" />}
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-left">{item.label}</span>
+                  <span className="min-w-0 flex-1 truncate text-start">{item.label}</span>
                   {item.count !== undefined && <span className={cx('shrink-0 text-2xs tabular-nums', on ? 'text-text-2' : 'text-text-3')}>{item.count}</span>}
                 </button>
               </div>
@@ -445,7 +445,7 @@ function PaneHeader({
         <span className="truncate">{title}</span>
         {count !== undefined && <span className="text-xs font-normal text-text-3 tabular-nums">{count}</span>}
       </h3>
-      <div className="ml-auto flex min-w-0 items-center gap-2">
+      <div className="ms-auto flex min-w-0 items-center gap-2">
         {children}
         {showSearch && (
           <Input
@@ -457,7 +457,7 @@ function PaneHeader({
             leadingIcon={<Search />}
             suffix={
               query ? (
-                <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} className="-mr-1 size-5" onClick={() => onQuery('')} />
+                <IconButton size="sm" label={t('Clear search')} tooltip={false} icon={<X />} className="-me-1 size-5" onClick={() => onQuery('')} />
               ) : undefined
             }
             containerClassName="w-56 min-w-36 shrink"
@@ -506,7 +506,7 @@ interface PaneProps {
 function BuiltinPane({ titleId, searchId, category, query, onQuery, selection, onSelect, onActivate }: PaneProps & { category: Category }) {
   const list = BUILTIN_TEMPLATES.filter((t) => (category === 'all' || t.category === category) && templateMatches(t, query));
   const showBlank = category === 'all' && (!query.trim() || 'blank empty scratch'.includes(query.trim().toLowerCase()));
-  const title = category === 'all' ? 'All templates' : CATEGORY_LABEL[category];
+  const title = category === 'all' ? t('All templates') : CATEGORY_LABEL[category];
   const selectedId = selection.kind === 'template' ? selection.template.id : null;
   return (
     <>

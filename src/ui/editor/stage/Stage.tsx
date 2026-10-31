@@ -572,8 +572,9 @@ export function Stage() {
   const radius = layout ? slideRadius(layout.slideW, layout.slideH) : 0;
   const dots = { backgroundImage: 'radial-gradient(circle, var(--stage-dot) 1px, transparent 1.6px)', backgroundSize: '20px 20px', backgroundPosition: '10px 10px' };
 
+  // The canvas world stays left to right in an Arabic interface, as in other design tools: slides and pointer maths do not mirror.
   return (
-    <div ref={rootRef} className="relative h-full w-full min-w-0 overflow-hidden bg-stage">
+    <div ref={rootRef} dir="ltr" className="relative h-full w-full min-w-0 overflow-hidden bg-stage">
       <ContextMenu>
         <ContextMenuTrigger asChild>
           <div
@@ -604,7 +605,7 @@ export function Stage() {
             {layout && (
               <div className="relative" style={{ width: layout.contentW, height: layout.contentH, ...dots }}>
                 {count === 0 ? (
-                  <div className="sticky left-0 flex h-full items-center justify-center" style={{ width: size?.w }}>
+                  <div className="sticky start-0 flex h-full items-center justify-center" style={{ width: size?.w }}>
                     <EmptyState
                       icon={<LayoutPanelTop />}
                       title={t('No slides yet')}

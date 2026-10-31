@@ -457,7 +457,7 @@ describe('Section', () => {
     for (const collapsible of [true, false]) {
       const out = html(h(Section, { title: 'Shadow', collapsible, action: h('button', { 'aria-label': 'Shadow' }) }, 'Body'));
       const header = /<header class="([^"]*)"/.exec(out)?.[1].split(' ') ?? [];
-      expect(header.filter((c) => /^p[xr]-/.test(c)), `collapsible: ${collapsible}`).toEqual([expect.stringMatching(/^p[xr]-3$/)]);
+      expect(header.filter((c) => /^p[xre]-/.test(c)), `collapsible: ${collapsible}`).toEqual([expect.stringMatching(/^p[xe]-3$/)]);
       expect(out.slice(out.indexOf('</header>'))).toMatch(/class="[^"]*\bpx-3\b/);
     }
   });

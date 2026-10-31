@@ -49,7 +49,7 @@ export const FontPicker = memo(function FontPicker({ value, onChange, disabled, 
           aria-labelledby={aria['aria-label'] ? undefined : field.labelId ? `${field.labelId} ${field.id}-value` : undefined}
           aria-describedby={field['aria-describedby']}
           className={cx(
-            'group/font inline-flex h-7 w-full min-w-0 items-center justify-between gap-1.5 rounded-sm pr-1.5 pl-2 text-left text-xs outline-none',
+            'group/font inline-flex h-7 w-full min-w-0 items-center justify-between gap-1.5 rounded-sm pe-1.5 ps-2 text-start text-xs outline-none',
             FIELD_SHELL,
             'focus-visible:border-accent-line focus-visible:ring-3 focus-visible:ring-focus-soft data-[state=open]:border-accent-line data-[state=open]:bg-field-hover',
             'disabled:pointer-events-none disabled:opacity-50',
@@ -247,7 +247,7 @@ function FontList({ value, onPick }: { value: string; onPick: (family: string) =
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => onPick(it.family)}
                   className={cx(
-                    'absolute inset-x-1 flex cursor-default items-center gap-2 rounded-[5px] pr-2 pl-2 text-ui select-none',
+                    'absolute inset-x-1 flex cursor-default items-center gap-2 rounded-[5px] pe-2 ps-2 text-ui select-none',
                     i === active && 'bg-surface-2',
                     selected ? 'text-accent-fg' : 'text-text',
                   )}

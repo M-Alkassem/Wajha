@@ -39,6 +39,9 @@ size both stores ask for, in every language, in one click.
   Mac, Apple Watch, Apple TV, Vision Pro, Android phones (portrait and
   landscape) and tablets, and the Google Play feature graphic. PNGs are
   exported without an alpha channel, which Google Play requires.
+- **In English or Arabic.** The whole interface is available in Arabic and
+  mirrors right to left (Settings → Language); it follows your system language
+  by default.
 - **51 languages with right-to-left support.** Arabic, Hebrew, Persian and
   Urdu are shaped and aligned correctly. Translate side by side in a grid, or
   round-trip a CSV with your translators.

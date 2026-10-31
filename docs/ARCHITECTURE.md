@@ -526,3 +526,15 @@ Kit behaviour screens rely on:
 - Idle memory < 200 MB total; decoded preview images <= 192 MB.
 - Preview render of one slide < 16 ms on a modern laptop at 2x DPR for a
   360 px wide slide; full-size export of one 1320 x 2868 PNG < 1.5 s.
+
+## Interface language
+
+`src/i18n` holds the interface language (English or Arabic). English text is
+the message key: `t('Export')`, `tx()` for messages holding elements and
+`tn()` for counts, with Arabic plural forms chosen by Intl.PluralRules. The
+language is read before any interface module runs (the saved choice, else the
+system language); changing it reloads the window. The document gets `lang` and
+`dir`, the interface uses logical Tailwind classes (`ms-`, `pe-`, `start-`,
+`text-end`) so it mirrors, and the slide canvas stays `dir="ltr"`. Slide
+content never follows the interface language. `i18n.test.ts` fails on any
+message without Arabic or with mismatched placeholders.

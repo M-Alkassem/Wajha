@@ -190,7 +190,7 @@ export function BrandKitDialog({ open, onOpenChange }: EditorDialogProps) {
                       type="button"
                       aria-label={t('Remove {c}', { c })}
                       onClick={() => void save({ ...k, colors: k.colors.filter((x) => x !== c) })}
-                      className="absolute -top-1.5 -right-1.5 hidden size-4 items-center justify-center rounded-full bg-surface-3 text-text-2 shadow-sm group-focus-within/swatch:flex group-hover/swatch:flex hover:text-text"
+                      className="absolute -top-1.5 -end-1.5 hidden size-4 items-center justify-center rounded-full bg-surface-3 text-text-2 shadow-sm group-focus-within/swatch:flex group-hover/swatch:flex hover:text-text"
                     >
                       <X className="size-3" />
                     </button>

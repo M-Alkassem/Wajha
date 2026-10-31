@@ -69,7 +69,7 @@ export function PreviewStage({ project, family, lang, title }: PreviewStageProps
         </span>
         <span aria-hidden>·</span>
         <span className="shrink-0">{plural(project.slides.length, 'slide')}</span>
-        <span className="ml-auto flex shrink-0 items-center gap-1.5">
+        <span className="ms-auto flex shrink-0 items-center gap-1.5">
           <FamilyGlyph family={family} size={12} />
           {FAMILY_NAME[family]}
           <span aria-hidden>·</span>
@@ -169,7 +169,7 @@ export function DevicePicker({ value, onChange }: DevicePickerProps) {
                     <FamilyGlyph family={f} size={20} strokeWidth={1.75} className={on ? 'text-accent-fg' : undefined} />
                     <span className="max-w-full truncate text-2xs leading-[14px] font-medium">{TILE_LABEL[f]}</span>
                     {on && (
-                      <span aria-hidden className="absolute top-1 right-1 flex size-3.5 items-center justify-center rounded-full bg-accent text-accent-text">
+                      <span aria-hidden className="absolute top-1 end-1 flex size-3.5 items-center justify-center rounded-full bg-accent text-accent-text">
                         <Check className="size-2.5" strokeWidth={3.5} />
                       </span>
                     )}
@@ -232,7 +232,7 @@ export function LanguagePicker({ value, onChange }: LanguagePickerProps) {
           return (
             <li
               key={code}
-              className="group/lang flex h-8 items-center gap-2 rounded-md border border-line bg-field pr-1 pl-2.5 light:bg-raised"
+              className="group/lang flex h-8 items-center gap-2 rounded-md border border-line bg-field pe-1 ps-2.5 light:bg-raised"
             >
               <LanguageNames code={code} native={info.native} name={t(info.name)} />
               {info.rtl && (
@@ -376,7 +376,7 @@ function LanguageSearch({ selected, onToggle }: { selected: LangCode[]; onToggle
                   {t('RTL')}
                 </Badge>
               )}
-              <span className="w-12 shrink-0 text-right font-mono text-2xs text-text-3 group-data-[active]/option:text-text-2">{l.code}</span>
+              <span className="w-12 shrink-0 text-end font-mono text-2xs text-text-3 group-data-[active]/option:text-text-2">{l.code}</span>
             </li>
           );
         })}

@@ -37,7 +37,10 @@ async function messages(): Promise<Map<string, boolean>> {
         }
         if (name === 'plural' && str(a[1]) !== null) found.set(`{count} ${str(a[2]) ?? `${str(a[1])}s`}`, true);
       }
-      for (const v of Object.values(n)) if (v && typeof v === 'object') Array.isArray(v) ? v.forEach(walk) : walk(v);
+      for (const v of Object.values(n)) {
+        if (Array.isArray(v)) v.forEach(walk);
+        else if (v && typeof v === 'object') walk(v);
+      }
     };
     walk(program);
   }

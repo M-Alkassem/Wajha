@@ -73,7 +73,7 @@ export function RadioCards<T extends string>({ value, onValueChange, options, cl
             onClick={() => onValueChange(o.value)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={cx(
-              'group/radio relative flex min-w-0 flex-col items-start gap-1 rounded-lg border px-3 pt-2.5 pb-3 text-left outline-none',
+              'group/radio relative flex min-w-0 flex-col items-start gap-1 rounded-lg border px-3 pt-2.5 pb-3 text-start outline-none',
               'transition-[background-color,border-color,box-shadow] duration-(--dur-fast) ease-out',
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
               checked

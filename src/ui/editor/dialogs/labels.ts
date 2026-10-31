@@ -65,7 +65,7 @@ export function localeFor(code: LangCode, store: StoreId): string | null {
 
 /** "1 file" / "40 files", in the interface language (see tn). */
 export function plural(n: number, one: string, many = `${one}s`): string {
-  return tn(n, `{count} ${one}`, `{count} ${many}`);
+  return tn(n, `{count} ${one}`, `{count} ${many}`, { count: n.toLocaleString('en-US') });
 }
 
 /** "English, Arabic and German". */

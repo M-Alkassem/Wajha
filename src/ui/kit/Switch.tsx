@@ -49,7 +49,8 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
       <SwitchPrimitive.Thumb
         className={cx(
           'block rounded-full bg-knob shadow-[0_1px_2px_rgba(0,0,0,0.3)] transition-transform duration-(--dur) ease-out',
-          size === 'sm' ? 'size-2.5 data-[state=checked]:translate-x-2.5' : 'size-3 data-[state=checked]:translate-x-3',
+          // Right to left, "on" slides the knob the other way, as macOS does.
+          size === 'sm' ? 'size-2.5 data-[state=checked]:translate-x-2.5 rtl:data-[state=checked]:-translate-x-2.5' : 'size-3 data-[state=checked]:translate-x-3 rtl:data-[state=checked]:-translate-x-3',
         )}
       />
     </SwitchPrimitive.Root>

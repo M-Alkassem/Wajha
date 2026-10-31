@@ -59,7 +59,7 @@ const SlideHeader = memo(function SlideHeader({ slideId, index, width, active, f
   // Zoomed far out there is room for the number only; the store limit shows as its colour.
   if (width < 72) {
     return (
-      <div className="pointer-events-none absolute top-0 left-0 flex h-6 items-center" style={{ width }}>
+      <div className="pointer-events-none absolute top-0 start-0 flex h-6 items-center" style={{ width }}>
         <Tooltip content={over ? overLimitText(family) : null}>
           <button
             type="button"
@@ -80,7 +80,7 @@ const SlideHeader = memo(function SlideHeader({ slideId, index, width, active, f
     );
   }
   return (
-    <div className={cx('pointer-events-none absolute top-0 left-0 flex h-6 items-center gap-1', panorama ? 'px-2.5' : '')} style={{ width }}>
+    <div className={cx('pointer-events-none absolute top-0 start-0 flex h-6 items-center gap-1', panorama ? 'px-2.5' : '')} style={{ width }}>
       <button
         type="button"
         aria-current={active ? 'true' : undefined}
@@ -138,7 +138,7 @@ function HeaderMenuItems({ slideId, family }: { slideId: string; family: FamilyI
 function PanoramaSeam() {
   return (
     <>
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-0 border-l border-dashed border-knob/60 shadow-[1px_0_0_rgba(0,0,0,0.16)]" />
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 start-0 w-0 border-s border-dashed border-knob/60 shadow-[1px_0_0_rgba(0,0,0,0.16)]" />
       <div aria-hidden className="pointer-events-none absolute -top-2 left-0 h-1.5 w-px -translate-x-1/2 bg-text-3" />
       <div aria-hidden className="pointer-events-none absolute -bottom-2 left-0 h-1.5 w-px -translate-x-1/2 bg-text-3" />
     </>
@@ -199,7 +199,7 @@ export const SlideFrame = memo(function SlideFrame(props: SlideFrameProps) {
             data-slide-box=""
             data-slide-id={slideId}
             data-slide-index={index}
-            className="absolute left-0 touch-none"
+            className="absolute start-0 touch-none"
             style={{ top: HEADER_H, width, height }}
             onPointerDown={(e) => {
               const t = target();

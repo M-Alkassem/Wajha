@@ -320,7 +320,7 @@ export function OverlayView(props: OverlayViewProps) {
       {/* Marks belong to the picture: clipped to the slide like the canvas, and drawn under the layers above them. */}
       <div className="absolute inset-0 overflow-hidden" style={{ borderRadius: props.radius }}>
         {(hints.length > 0 || placeholders.length > 0 || dropMark) && (
-          <svg className="absolute top-0 left-0" width={width} height={height} fill="none">
+          <svg className="absolute top-0 start-0" width={width} height={height} fill="none">
             <defs>
               {masks.map((m) => (
                 <mask key={m.id} id={m.id} maskUnits="userSpaceOnUse" x={0} y={0} width={width} height={height}>
@@ -364,7 +364,7 @@ export function OverlayView(props: OverlayViewProps) {
         </div>
       )}
 
-      <svg className="absolute top-0 left-0 overflow-visible" width={width} height={height} fill="none" strokeWidth={1}>
+      <svg className="absolute top-0 start-0 overflow-visible" width={width} height={height} fill="none" strokeWidth={1}>
         {overflowing.map((b) => (
           // Text past its line limit is caught on the canvas before export; exports never see this.
           <g key={`overflow-${b.id}`} data-qa="overflow">

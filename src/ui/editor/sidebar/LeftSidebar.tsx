@@ -15,7 +15,7 @@ export function LeftSidebar() {
   const layers = useEditor((s) => selectActiveLayout(s)?.elements.length ?? 0);
 
   return (
-    <aside aria-label={t('Slides and layers')} className="flex h-full w-(--sidebar-w) shrink-0 flex-col border-r border-line bg-panel">
+    <aside aria-label={t('Slides and layers')} className="flex h-full w-(--sidebar-w) shrink-0 flex-col border-e border-line bg-panel">
       <Tabs value={tab} onValueChange={(v) => useEditor.getState().setLeftTab(v as LeftTab)} className="min-h-0 flex-1">
         <TabsList className="px-3">
           <TabsTrigger value="slides">

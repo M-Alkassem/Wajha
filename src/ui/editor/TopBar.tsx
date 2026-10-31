@@ -81,18 +81,18 @@ export function TopBar() {
     <header
       ref={ref}
       data-tauri-drag-region
-      className="relative z-20 grid h-13 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(max-content,1fr)] items-center gap-3 border-b border-line bg-panel pr-3 pl-2 select-none"
+      className="relative z-20 grid h-13 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(max-content,1fr)] items-center gap-3 border-b border-line bg-panel pe-3 ps-2 select-none"
     >
       <div data-tauri-drag-region className="flex min-w-0 items-center">
         <div ref={insetRef} data-tauri-drag-region aria-hidden className="h-full shrink-0 self-stretch" style={{ width: 'var(--traffic-lights-w, 0px)' }} />
-        <IconButton label={t('Back to projects')} icon={<ChevronLeft />} tooltipSide="bottom" loading={leaving} onClick={() => void back()} />
+        <IconButton label={t('Back to projects')} icon={<ChevronLeft className="rtl:-scale-x-100" />} tooltipSide="bottom" loading={leaving} onClick={() => void back()} />
         <IconButton
           label={leftOpen ? t('Hide sidebar') : t('Show sidebar')}
-          icon={<PanelLeft />}
+          icon={<PanelLeft className="rtl:-scale-x-100" />}
           shortcut={shortcutKeys('toggleSidebar')}
           tooltipSide="bottom"
           onClick={() => useEditorChrome.getState().toggleLeft()}
-          className="ml-0.5"
+          className="ms-0.5"
         />
         <Separator />
         <ProjectName />
@@ -106,13 +106,13 @@ export function TopBar() {
         <div data-tauri-drag-region className="h-full flex-1 self-stretch" />
         <LanguageMenu showName={density.languageName} />
         <Separator />
-        <IconButton label={t('Undo')} icon={<Undo2 />} shortcut={shortcutKeys('undo')} tooltipSide="bottom" disabled={!canUndo} onClick={() => useEditor.getState().undo()} />
-        <IconButton label={t('Redo')} icon={<Redo2 />} shortcut={shortcutKeys('redo')} tooltipSide="bottom" disabled={!canRedo} onClick={() => useEditor.getState().redo()} />
+        <IconButton label={t('Undo')} icon={<Undo2 className="rtl:-scale-x-100" />} shortcut={shortcutKeys('undo')} tooltipSide="bottom" disabled={!canUndo} onClick={() => useEditor.getState().undo()} />
+        <IconButton label={t('Redo')} icon={<Redo2 className="rtl:-scale-x-100" />} shortcut={shortcutKeys('redo')} tooltipSide="bottom" disabled={!canRedo} onClick={() => useEditor.getState().redo()} />
         <ZoomMenu />
         <Separator />
         <MoreMenu />
         <Tooltip content={t('Export screenshots')} shortcut={shortcutKeys('export')} side="bottom">
-          <Button variant="brand" leadingIcon={<Share />} className="ml-1.5" onClick={() => useEditorUi.getState().openDialog('export')}>
+          <Button variant="brand" leadingIcon={<Share />} className="ms-1.5" onClick={() => useEditorUi.getState().openDialog('export')}>
             {t('Export')}
           </Button>
         </Tooltip>

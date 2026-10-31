@@ -177,10 +177,10 @@ export function ProgressBar({ value, size = 'md', tone = 'accent', label, showVa
         {determinate ? (
           <div className={cx('h-full rounded-full transition-[width] duration-(--dur-slow) ease-out', TONE[tone])} style={fill} />
         ) : (
-          <div className={cx('kit-indeterminate absolute inset-y-0 left-0 w-2/5 rounded-full', TONE[tone])} />
+          <div className={cx('kit-indeterminate absolute inset-y-0 start-0 w-2/5 rounded-full', TONE[tone])} />
         )}
       </div>
-      {showValue && determinate && <span className="w-9 shrink-0 text-right text-xs text-text-2 tabular-nums">{Math.round(pct)}%</span>}
+      {showValue && determinate && <span className="w-9 shrink-0 text-end text-xs text-text-2 tabular-nums">{Math.round(pct)}%</span>}
     </div>
   );
 }
