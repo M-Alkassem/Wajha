@@ -9,6 +9,7 @@
  * open or a list item is being dragged.
  */
 import { useEffect } from 'react';
+import { mirrorsLayout } from '../../model/mirror';
 import { platformIsMac } from '../kit';
 import { useApp, useEditor } from '../../store';
 import { isListDragging, useEditorChrome } from './chrome';
@@ -128,7 +129,9 @@ export function runEditorShortcut(hit: ShortcutHit): boolean {
       if (!ed.selection) return false;
       const [dx, dy] = NUDGE[hit.index] ?? [0, 0];
       const step = hit.id === 'nudgeFar' ? 10 : 1;
-      ed.nudge(dx * step, dy * step);
+      // On a mirrored slide the stored layout runs the other way: the right arrow lowers x.
+      const sx = mirrorsLayout(ed.project, ed.activeLang) ? -1 : 1;
+      ed.nudge(dx * step * sx, dy * step);
       // Locked layers do not move, but the page must not scroll under them either.
       return true;
     }

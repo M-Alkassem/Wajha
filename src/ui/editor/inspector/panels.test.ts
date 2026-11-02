@@ -82,6 +82,7 @@ describe('TextPanel', () => {
       family,
       emptyText: [],
       rtl: false,
+      mirrored: false,
     });
     const render = () => html(h(TextPanel, { el: twoLines, target, index: 0, count: 1 }));
     try {

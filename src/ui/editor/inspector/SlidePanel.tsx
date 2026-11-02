@@ -6,7 +6,7 @@
  */
 import { memo, useCallback, useId, useMemo, useState, type ReactNode } from 'react';
 import { Languages, LayoutTemplate, MonitorSmartphone, RotateCcw, Settings2, Type } from 'lucide-react';
-import { languageInfo } from '../../../model/catalog';
+import { isRtl, languageInfo } from '../../../model/catalog';
 import { deepClone } from '../../../model/clone';
 import { resolveLayout } from '../../../model/resolve';
 import type { Background, DeviceElement, FamilyId, Fill, LangCode, Pattern } from '../../../model/types';
@@ -297,6 +297,7 @@ const MAX_LANGUAGE_CHIPS = 10;
 const ProjectSection = memo(function ProjectSection() {
   const familiesKey = useEditor((s) => s.project?.families.join(',') ?? '');
   const languagesKey = useEditor((s) => s.project?.languages.join(',') ?? '');
+  const mirrorRtl = useEditor((s) => s.project?.mirrorRtl !== false);
   const activeFamily = useEditor((s) => s.activeFamily);
   const activeLang = useEditor((s) => s.activeLang);
   const openDialog = useEditorUi((s) => s.openDialog);
@@ -304,6 +305,7 @@ const ProjectSection = memo(function ProjectSection() {
   const languages = useMemo(() => (languagesKey ? languagesKey.split(',') : []), [languagesKey]);
   const shown = languages.slice(0, MAX_LANGUAGE_CHIPS);
   const more = languages.length - shown.length;
+  const hasRtl = languages.some(isRtl);
 
   return (
     <InspectorSection id="project" title={t('Project')} borderless>
@@ -333,6 +335,12 @@ const ProjectSection = memo(function ProjectSection() {
       <Button size="sm" leadingIcon={<Languages />} onClick={() => openDialog('translations')} className="self-start">
         {t('Translations…')}
       </Button>
+      {hasRtl && (
+        <div className="flex flex-col gap-1">
+          <Switch label={t('Mirror right-to-left slides')} checked={mirrorRtl} onCheckedChange={(on) => useEditor.getState().setMirrorRtl(on)} />
+          <Hint className="ps-9">{t('Stores show right-to-left languages from the right, so their slides swap sides. Text and screenshots still read normally.')}</Hint>
+        </div>
+      )}
     </InspectorSection>
   );
 });

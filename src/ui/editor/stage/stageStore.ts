@@ -30,6 +30,8 @@ export interface RenderSnapshot {
   emptyText: readonly string[];
   /** The painted language is right-to-left (start/end alignment flips). */
   rtl: boolean;
+  /** The slide was drawn mirrored; `layout` holds the mirrored elements. */
+  mirrored: boolean;
 }
 
 /** A box in slide CSS px with the element it belongs to. */

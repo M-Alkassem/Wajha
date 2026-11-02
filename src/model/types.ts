@@ -348,6 +348,11 @@ export interface Project {
   families: FamilyId[];
   /** Project languages. The first is the base (fallback) language. */
   languages: LangCode[];
+  /**
+   * Right-to-left languages draw every slide mirrored (see model/mirror.ts).
+   * On unless false; stored only when turned off.
+   */
+  mirrorRtl?: boolean;
   slides: Slide[];
   assets: Record<string, AssetInfo>;
   /** Font files the project brought along (text styles name their family). */

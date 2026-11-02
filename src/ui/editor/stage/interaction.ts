@@ -12,6 +12,7 @@
  */
 import type { DeviceElement, FamilyId, SlideElement } from '../../../model/types';
 import { FAMILIES } from '../../../model/catalog';
+import { mirrorElement, mirrorPatch, mirrorsLayout } from '../../../model/mirror';
 import { resolveLayout } from '../../../model/resolve';
 import { useEditor } from '../../../store';
 import { platformIsMac } from '../../kit';
@@ -77,9 +78,11 @@ interface Gesture {
   pointer: Point;
   mods: Modifiers;
   elementId: string;
-  /** The element and its box when the press started; every frame recomputes from these. */
+  /** The element as drawn and its box when the press started; every frame recomputes from these. */
   el0: SlideElement;
   box0: StageBox;
+  /** The slide is drawn mirrored: el0 is mirrored, and each patch is mirrored back before it is stored. */
+  mirrored: boolean;
   started: boolean;
   /** Plain click inside the selection on another element: select that one on release. */
   clickSelect: string | null;
@@ -190,6 +193,9 @@ export function pressSlide(e: PointerEvent, target: SlideTarget): void {
 
 function arm(e: PointerEvent, target: SlideTarget, p: Point, box: StageBox, mode: Mode, clickSelect: string | null): void {
   const r = target.el.getBoundingClientRect();
+  const { project, activeLang } = useEditor.getState();
+  const mirrored = mirrorsLayout(project, activeLang);
+  const current = currentElement(target, box.id);
   const g: Gesture = {
     mode,
     pointerId: e.pointerId,
@@ -202,8 +208,9 @@ function arm(e: PointerEvent, target: SlideTarget, p: Point, box: StageBox, mode
     mods: modsOf(e),
     elementId: box.id,
     // The store's element (an inspector edit may not be painted yet), else the painted one.
-    el0: currentElement(target, box.id) ?? box.element,
+    el0: current ? (mirrored ? mirrorElement(current) : current) : box.element,
     box0: box,
+    mirrored,
     started: false,
     clickSelect,
     done: false,
@@ -304,6 +311,11 @@ function step(g: Gesture): void {
   apply(g);
 }
 
+/** A patch computed on the slide as drawn, as the store keeps it. */
+function stored<P extends { x?: number; rotation?: number }>(g: Gesture, patch: P): P {
+  return g.mirrored ? mirrorPatch(patch) : patch;
+}
+
 /** Applies the latest pointer position: one store update and one synchronous repaint of the slide. */
 function apply(g: Gesture): void {
   const store = useEditor.getState();
@@ -324,16 +336,16 @@ function apply(g: Gesture): void {
       dy += snap.dy;
       guides = snap.guides;
     }
-    store.updateElement(target.slideId, target.family, g.elementId, movedPosition(g.el0, dx, dy, size));
+    store.updateElement(target.slideId, target.family, g.elementId, stored(g, movedPosition(g.el0, dx, dy, size)));
   } else if (g.mode.kind === 'resize') {
     const behaviour = resizeBehaviour(g.el0.kind, g.mode.handle, mods.shift);
     const out = resizeBox({ box: g.box0, handle: g.mode.handle, pointer: g.pointer, grab: g.mode.grab, behaviour, fromCenter: mods.alt });
-    store.updateElement(target.slideId, target.family, g.elementId, resizePatch(g.el0, g.box0, out, size));
+    store.updateElement(target.slideId, target.family, g.elementId, stored(g, resizePatch(g.el0, g.box0, out, size)));
     label = sizeLabel(out.box, size, design);
   } else {
     const center = { x: g.box0.cx, y: g.box0.cy };
     const rotation = rotationFor(center, g.start, g.pointer, g.el0.rotation, mods.shift ? { step: ROTATION_STEP } : mods.mod ? {} : { magnet: ROTATION_MAGNET });
-    store.updateElement(target.slideId, target.family, g.elementId, { rotation });
+    store.updateElement(target.slideId, target.family, g.elementId, stored(g, { rotation }));
     label = angleLabel(rotation);
   }
   paintNow(target.slideId);

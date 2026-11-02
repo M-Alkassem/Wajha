@@ -10,6 +10,7 @@
  */
 import type { DeviceElement, DeviceFrameId, FamilyId, ImageElement, ShapeElement, TextElement } from '../model/types';
 import { FAMILIES } from '../model/catalog';
+import { mirrorElement } from '../model/mirror';
 import { resolveShot, resolveText } from '../model/resolve';
 import type { Ctx2D, DeviceGeometry, ElementBox, ImageLike, RenderInput, RenderResult, RenderSlideFn } from './types';
 import { drawDevice } from './devices';
@@ -171,7 +172,16 @@ function deviceElement(ctx: Ctx2D, el: DeviceElement, index: number, scene: Scen
 
 function shapeElement(ctx: Ctx2D, el: ShapeElement, scene: Scene, cx: number, cy: number, rotation: number, opacity: number): ElementBox {
   const { w, h } = shapeSize(el, scene.u);
-  attempt(() => place(ctx, cx, cy, rotation, opacity, () => drawShape(ctx, el, scene.u, scene.pc)), undefined);
+  // Decoration, so on a mirrored slide its outline and fill flip too (a blob, a gradient); a picture fill keeps reading normally.
+  const flip = scene.input.mirror === true && el.fill?.type !== 'image';
+  attempt(
+    () =>
+      place(ctx, cx, cy, rotation, opacity, () => {
+        if (flip) ctx.scale(-1, 1);
+        drawShape(ctx, el, scene.u, scene.pc);
+      }),
+    undefined,
+  );
   return { id: elementId(el), cx, cy, w, h, rotation };
 }
 
@@ -232,6 +242,18 @@ export function mockSeed(slideIndex: number, elementIndex: number): number {
   return slideIndex * 31 + elementIndex * 7 + 3;
 }
 
+/**
+ * Whether a mirrored slide flips its background. Gradients, mesh blobs and
+ * patterns do; a photo or picture does not (its text would read backwards),
+ * unless it is a panorama: mirrored slides keep a panorama's seams joined,
+ * because the store lists right-to-left screenshots from the right.
+ */
+function flipsBackground(input: RenderInput): boolean {
+  const own = input.layout?.background ?? null;
+  const fill = (own ?? input.theme?.background ?? null)?.fill;
+  return fill?.type !== 'image' || (!own && input.theme?.panorama === true);
+}
+
 /** Renders one slide into `ctx` at (0, 0, width, height). See RenderSlideFn. */
 export const renderSlide: RenderSlideFn = (ctx, input) => {
   const result: RenderResult = { boxes: [], missingShots: [], overflowingText: [], pendingImages: [] };
@@ -272,6 +294,12 @@ export const renderSlide: RenderSlideFn = (ctx, input) => {
     ctx.clip();
 
     const theme = input.theme;
+    const mirror = input.mirror === true;
+    ctx.save();
+    if (mirror && flipsBackground(input)) {
+      ctx.translate(width, 0);
+      ctx.scale(-1, 1);
+    }
     attempt(
       () =>
         paintBackground(
@@ -289,11 +317,13 @@ export const renderSlide: RenderSlideFn = (ctx, input) => {
         ),
       undefined,
     );
+    ctx.restore();
 
     const elements: unknown[] = Array.isArray(input.layout?.elements) ? input.layout.elements : [];
     elements.forEach((item, index) => {
       if (!item || typeof item !== 'object') return;
-      const el = item as DeviceElement | TextElement | ShapeElement | ImageElement;
+      const own = item as DeviceElement | TextElement | ShapeElement | ImageElement;
+      const el = mirror ? attempt(() => mirrorElement(own), own) : own;
       if (el.hidden === true) return;
       const opacity = clamp(num(el.opacity, 1), 0, 1);
       if (opacity <= 0) return;

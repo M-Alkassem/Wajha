@@ -1,6 +1,7 @@
 import { memo, useCallback, useLayoutEffect, useRef, type CSSProperties } from 'react';
 import type { AssetInfo, FamilyId, LangCode, Slide, Theme } from '../../../model/types';
 import { isRtl } from '../../../model/catalog';
+import { mirrorLayout, mirrorsLayout } from '../../../model/mirror';
 import { resolveLayout } from '../../../model/resolve';
 import { renderToCanvas } from '../../../runtime';
 import { useEditor } from '../../../store';
@@ -74,17 +75,21 @@ export const SlideCanvas = memo(function SlideCanvas(props: SlideCanvasProps) {
     const k = bitmapDpr(w, h, ratio);
     const bw = Math.max(1, Math.round(w * k));
     const bh = Math.max(1, Math.round(h * k));
-    const inputs = [slide, project.theme, lang, family, project.languages[0], project.families.join(','), project.assets, index, project.slides.length, bw, bh, t];
+    const inputs = [slide, project.theme, lang, family, project.languages[0], project.families.join(','), project.assets, project.mirrorRtl, index, project.slides.length, bw, bh, t];
     if (sameInputs(last.current, inputs)) return;
     last.current = inputs;
     try {
       const result = renderToCanvas(canvas, { project, slideIndex: index, family, lang, width: bw, height: bh, placeholder: 'mock' });
-      const layout = resolveLayout(project, slide, family);
+      const stored = resolveLayout(project, slide, family);
+      // The boxes are where elements were drawn; on a mirrored slide the elements must match them.
+      const mirrored = mirrorsLayout(project, lang);
+      const layout = mirrored ? mirrorLayout(stored) : stored;
       setSnapshot(slideId, {
         result,
         bitmapW: canvas.width,
         bitmapH: canvas.height,
         layout,
+        mirrored,
         family,
         emptyText: emptyTextIds(slide, layout, lang, project.languages[0] ?? lang),
         rtl: isRtl(lang),

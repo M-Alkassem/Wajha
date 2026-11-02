@@ -419,3 +419,73 @@ describe('renderSlide: performance', () => {
     expect(ms).toBeLessThan(250);
   });
 });
+
+describe('renderSlide: mirrored for right-to-left listings', () => {
+  const redToBlue: Fill = { type: 'linear', angle: 90, stops: [{ offset: 0, color: '#ff0000' }, { offset: 1, color: '#0000ff' }] };
+
+  it('moves elements to the other side and reverses their rotation', () => {
+    const el = shapeEl({ id: 's', shape: 'rect', x: 0.2, y: 0.5, width: 0.2, height: 0.2, rotation: 10, fill: { type: 'solid', color: '#ff0000' } });
+    const { ctx, result } = render([el], { mirror: true });
+    expect(result.boxes[0]).toMatchObject({ id: 's', cx: 288, cy: 390, rotation: -10 });
+    expect(near(pixel(ctx, 288, 390), '#ff0000')).toBe(true);
+    expect(pixel(ctx, 72, 390)).toEqual([255, 255, 255, 255]);
+  });
+
+  it('flips the background and the inside of shapes', () => {
+    const { ctx } = render([shapeEl({ shape: 'rect', x: 0.5, y: 0.8, width: 1, height: 0.2, fill: redToBlue })], { mirror: true, theme: theme({ background: background(redToBlue) }) });
+    expect(pixel(ctx, 2, 100)[2]).toBeGreaterThan(240);
+    expect(pixel(ctx, W - 3, 100)[0]).toBeGreaterThan(240);
+    expect(pixel(ctx, 4, 624)[2]).toBeGreaterThan(220);
+    expect(pixel(ctx, W - 5, 624)[0]).toBeGreaterThan(220);
+  });
+
+  it('keeps photo backgrounds readable, except panoramas', () => {
+    const { canvas: photo, ctx: p } = testCanvas(20, 10);
+    p.fillStyle = '#ff0000';
+    p.fillRect(0, 0, 10, 10);
+    p.fillStyle = '#0000ff';
+    p.fillRect(10, 0, 10, 10);
+    const fill: Fill = { type: 'image', assetId: 'photo', fit: 'cover', opacity: 1, blur: 0, tint: null };
+    const images = { photo: photo as unknown as ImageLike };
+    const single = render([], { mirror: true, images, theme: theme({ background: background(fill) }) }).ctx;
+    expect(pixel(single, 2, 400)[0]).toBeGreaterThan(240);
+    const strip = render([], { mirror: true, images, theme: theme({ panorama: true, background: background(fill) }), slideIndex: 0, slideCount: 2 }).ctx;
+    expect(pixel(strip, W - 2, 400)[0]).toBeGreaterThan(240);
+  });
+
+  it('keeps panorama seams joined in right-to-left order', () => {
+    const t = theme({ panorama: true, background: background(redToBlue) });
+    // A right-to-left store lists slide 1 on the right and slide 2 to its left.
+    const first = render([], { theme: t, slideIndex: 0, slideCount: 2, mirror: true }).ctx;
+    const second = render([], { theme: t, slideIndex: 1, slideCount: 2, mirror: true }).ctx;
+    for (const y of [3, 400, 777]) {
+      const a = pixel(first, 0, y);
+      const b = pixel(second, W - 1, y);
+      for (let k = 0; k < 3; k++) expect(Math.abs(a[k] - b[k])).toBeLessThanOrEqual(6);
+    }
+    expect(pixel(first, W - 1, 400)[0]).toBeGreaterThan(240);
+  });
+
+  it('draws devices and pictures unflipped, with their shadows reversed', () => {
+    const dev = deviceEl({ id: 'd', x: 0.75, rotation: 6, shadow: { color: '#000000', blur: 0, x: 0.03, y: 0.02 } });
+    const { result } = render([dev, imageEl({ id: 'i', x: 0.1 })], { mirror: true });
+    const passed = (drawDeviceMock.mock.calls[0][1] as DrawDeviceOptions).el;
+    expect(passed.x).toBeCloseTo(0.25);
+    expect(passed.rotation).toBe(-6);
+    expect(passed.shadow).toMatchObject({ x: -0.03, y: 0.02 });
+    expect(result.boxes.map((b) => [b.id, Math.round(b.cx)])).toEqual([
+      ['d', 90],
+      ['i', 324],
+    ]);
+  });
+
+  it('leaves the layout and the context state as they were', () => {
+    const el = shapeEl({ x: 0.2, rotation: 5 });
+    const { ctx } = testCanvas(W, H);
+    ctx.translate(3, 4);
+    renderSlide(ctx, renderInput({ env: nodeEnv, elements: [el], mirror: true, theme: theme({ background: background(redToBlue) }) }));
+    expect(el.x).toBe(0.2);
+    expect(el.rotation).toBe(5);
+    expect(ctx.getTransform()).toMatchObject({ a: 1, e: 3, f: 4 });
+  });
+});

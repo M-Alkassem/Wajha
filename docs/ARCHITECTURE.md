@@ -24,7 +24,8 @@ fully before changing anything.
 3. **Languages**: texts are per language and shared by every device family;
    screenshots are per family and per language with fallback to the base
    language. Arabic, Hebrew, Persian and Urdu render right-to-left with
-   mirrored alignment. A translations table edits all texts at once and
+   mirrored alignment, and their slides are drawn mirrored (unless the
+   project turns it off). A translations table edits all texts at once and
    round-trips through CSV.
 4. **Export**: pick sizes, languages, PNG/JPEG and a folder structure
    (stores / fastlane / flat). Renders every slide x language x size at exact
@@ -164,6 +165,12 @@ Defined in `src/model/types.ts`, repeated here because everything depends on it:
   other language gets the template's copy in that language only, else no
   entry at all, so it falls back to the base text and counts as untranslated.
   `templateFromProject`.
+- `mirror.ts`: right-to-left mirroring. `mirrorsLayout(project, lang)` is
+  true for right-to-left languages unless `project.mirrorRtl === false`
+  (stored only when off). `mirrorElement` / `mirrorLayout` move elements to
+  the other side (`x -> 1 - x`), negate rotation and shadow x offsets;
+  `mirrorPatch` maps an edit made on a mirrored slide back to the stored
+  layout. Layouts are never stored mirrored.
 - `rules.ts`: identifier rules shared by validators and the store. Text keys
   and slots (`isSafeKey`) never take a name plain objects inherit
   (`toString`, `__proto__`...). Template ids name their folder, so they are
@@ -183,6 +190,12 @@ Public API in `src/engine/types.ts` and `src/engine/index.ts`:
 `renderSlide`, `layoutText`, `deviceGeometry`, `drawDevice`, `drawMockScreen`.
 
 Render order for a slide: background fill -> pattern -> elements in order.
+With `input.mirror` (right-to-left listings) elements are drawn through
+`mirrorElement` and the background is painted flipped, except a picture
+fill that is not a panorama; shapes flip their outline and fill (unless it
+is a picture). Devices, text and images are never flipped, only moved.
+Mirroring each slide keeps panorama seams joined, because the stores show
+right-to-left screenshots from the right.
 Each element is drawn translated to its anchor and rotated around its
 center, with its opacity. `renderSlide` returns an `ElementBox` for every
 visible element in output pixels.

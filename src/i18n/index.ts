@@ -10,7 +10,8 @@
  * labels at import time), from this device's saved choice or else the
  * system language. Changing it saves the choice and reloads the window.
  * The document gets lang and dir, so the whole interface mirrors in Arabic;
- * slide designs are drawn on canvases and never mirror.
+ * slide designs are drawn on canvases and do not follow it (they mirror
+ * by slide language, see model/mirror.ts).
  */
 import { AR } from './ar';
 

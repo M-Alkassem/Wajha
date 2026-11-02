@@ -726,6 +726,7 @@ export function validateProject(json: unknown): Project {
   const slides = arrayField(o, 'slides', '', LIMITS.slides).map((s, i) => cleanSlide(s, at('slides', i), ctx, ids));
   if (!slides.length) slides.push(newSlide(families, theme, languages));
   const fonts = cleanFonts(get(o, 'fonts'), 'fonts');
+  const mirrorRtl = boolField(o, 'mirrorRtl', '', true);
 
   return {
     format: 'wajha.project',
@@ -738,6 +739,7 @@ export function validateProject(json: unknown): Project {
     theme,
     families,
     languages,
+    ...(mirrorRtl ? {} : { mirrorRtl: false }),
     slides,
     assets,
     ...(fonts.length ? { fonts } : {}),

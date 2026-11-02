@@ -194,6 +194,8 @@ export interface EditorState {
   setSlideBackground(slideId: string, family: FamilyId, bg: Background | null): boolean;
   setThemeBackground(bg: Background): boolean;
   setPanorama(on: boolean): boolean;
+  /** Draw right-to-left languages mirrored (model/mirror.ts). */
+  setMirrorRtl(on: boolean): boolean;
   setPalette(colors: string[]): boolean;
   setMockDark(on: boolean): boolean;
   /** Sets the theme fonts and restyles every text element: "headline" keys get `heading`, the rest `body`. */
@@ -1248,6 +1250,15 @@ export function createEditorStore() {
           if (!p || typeof on !== 'boolean' || p.theme.panorama === on) return false;
           return commit((d) => {
             d.theme.panorama = on;
+          });
+        },
+
+        setMirrorRtl(on) {
+          const p = get().project;
+          if (!p || typeof on !== 'boolean' || (p.mirrorRtl !== false) === on) return false;
+          return commit((d) => {
+            if (on) delete d.mirrorRtl;
+            else d.mirrorRtl = false;
           });
         },
 

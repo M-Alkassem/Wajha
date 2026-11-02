@@ -86,6 +86,18 @@ describe('validateProject: well-formed input', () => {
   });
 });
 
+describe('validateProject: right-to-left mirroring', () => {
+  it('stores the setting only when it is turned off', () => {
+    expect(validateProject(projectJson())).not.toHaveProperty('mirrorRtl');
+    expect(validateProject({ ...projectJson(), mirrorRtl: true })).not.toHaveProperty('mirrorRtl');
+    expect(validateProject({ ...projectJson(), mirrorRtl: false }).mirrorRtl).toBe(false);
+  });
+
+  it('rejects a value that is not true or false', () => {
+    expect(errorOf(() => validateProject({ ...projectJson(), mirrorRtl: 'no' })).path).toBe('mirrorRtl');
+  });
+});
+
 describe('validateProject: hostile input', () => {
   it('rejects non-objects and wrong formats', () => {
     for (const bad of [null, 1, 'x', [], undefined]) expect(errorOf(() => validateProject(bad)).path).toBe('$');

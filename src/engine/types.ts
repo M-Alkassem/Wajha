@@ -48,6 +48,12 @@ export interface RenderInput {
   /** Fallback language for missing texts and screenshots. */
   baseLang: LangCode;
   rtl: boolean;
+  /**
+   * Draw the slide mirrored for a right-to-left listing: elements trade
+   * sides (model/mirror.ts) and the background flips. Text, screenshots and
+   * pictures still read normally.
+   */
+  mirror?: boolean;
   /** Position of this slide, for panorama backgrounds and mock-screen seeds. */
   slideIndex: number;
   slideCount: number;

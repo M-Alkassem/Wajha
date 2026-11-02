@@ -811,6 +811,17 @@ describe('theme and backgrounds', () => {
     expect(s().project!.theme).toMatchObject({ panorama: true, mockDark: true });
   });
 
+  it('turns right-to-left mirroring off and on', () => {
+    expect(s().setMirrorRtl(true)).toBe(false);
+    expect(s().setMirrorRtl(false)).toBe(true);
+    expect(s().project!.mirrorRtl).toBe(false);
+    expect(s().setMirrorRtl(false)).toBe(false);
+    expect(s().setMirrorRtl(true)).toBe(true);
+    expect(s().project).not.toHaveProperty('mirrorRtl');
+    s().undo();
+    expect(s().project!.mirrorRtl).toBe(false);
+  });
+
   it('applies fonts to every text element in every family', () => {
     s().updateElement(slide(1).id, 'ipad', headlineOf(1, 'ipad').id, { x: 0.45 });
     const sid = slide(0).id;

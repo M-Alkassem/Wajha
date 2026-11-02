@@ -10,6 +10,7 @@ import type { ExportJob } from '../export';
 import { renderSlide } from '../engine';
 import { encodePngAsync } from '../export';
 import { FAMILIES, isRtl } from '../model/catalog';
+import { mirrorsLayout } from '../model/mirror';
 import { resolveLayout, resolveShot } from '../model/resolve';
 import {
   canvasSide,
@@ -135,6 +136,7 @@ function renderInput(spec: InputSpec): RenderInput {
     lang: spec.lang,
     baseLang: project.languages[0] ?? spec.lang,
     rtl: isRtl(spec.lang),
+    mirror: mirrorsLayout(project, spec.lang),
     slideIndex: spec.slideIndex,
     slideCount: project.slides.length,
     getImage,
