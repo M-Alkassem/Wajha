@@ -9,6 +9,7 @@ import { layoutText, type Ctx2D } from '../../engine';
 import type { ExportJob } from '../../export/types';
 import { isRtl } from '../../model/catalog';
 import { resolveLayout, resolveText } from '../../model/resolve';
+import { languageTypography, styleForLanguage } from '../../model/typography';
 import type { FamilyId, LangCode, Project } from '../../model/types';
 
 /** One slide of a family in a language at one canvas size: what the check lays out. */
@@ -52,6 +53,7 @@ export function overflowingTexts(ctx: Ctx2D, project: Project, check: OverflowCh
   if (!slide) return [];
   const baseLang = project.languages[0] ?? check.lang;
   const rtl = isRtl(check.lang);
+  const type = languageTypography(project, check.lang);
   const ids: string[] = [];
   for (const el of resolveLayout(project, slide, check.family).elements) {
     if (el.kind !== 'text' || el.hidden === true || finite(el.opacity, 1) <= 0) continue;
@@ -60,7 +62,7 @@ export function overflowingTexts(ctx: Ctx2D, project: Project, check: OverflowCh
     if (!text) continue;
     const layout = layoutText(ctx, {
       text,
-      style: el.style,
+      style: styleForLanguage(el.style, type),
       boxWidth: Math.max(0, finite(el.width, 0) * check.unit),
       unit: check.unit,
       rtl,

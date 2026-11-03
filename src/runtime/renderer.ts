@@ -12,6 +12,7 @@ import { encodePngAsync } from '../export';
 import { FAMILIES, isRtl } from '../model/catalog';
 import { mirrorsLayout } from '../model/mirror';
 import { resolveLayout, resolveShot } from '../model/resolve';
+import { languageTypography } from '../model/typography';
 import {
   canvasSide,
   canvasToBytes,
@@ -137,6 +138,7 @@ function renderInput(spec: InputSpec): RenderInput {
     baseLang: project.languages[0] ?? spec.lang,
     rtl: isRtl(spec.lang),
     mirror: mirrorsLayout(project, spec.lang),
+    typography: languageTypography(project, spec.lang),
     slideIndex: spec.slideIndex,
     slideCount: project.slides.length,
     getImage,

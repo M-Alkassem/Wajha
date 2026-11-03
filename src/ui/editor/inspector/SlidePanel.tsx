@@ -6,15 +6,17 @@
  */
 import { memo, useCallback, useId, useMemo, useState, type ReactNode } from 'react';
 import { Languages, LayoutTemplate, MonitorSmartphone, RotateCcw, Settings2, Type } from 'lucide-react';
-import { isRtl, languageInfo } from '../../../model/catalog';
+import { BUNDLED_FONTS, isRtl, languageInfo } from '../../../model/catalog';
 import { deepClone } from '../../../model/clone';
 import { resolveLayout } from '../../../model/resolve';
+import { RANGES } from '../../../model/rules';
+import { languageTypography } from '../../../model/typography';
 import type { Background, DeviceElement, FamilyId, Fill, LangCode, Pattern } from '../../../model/types';
 import { toast, useEditor, type EditorState } from '../../../store';
 import { Badge, Button, ListRow, Switch, cx } from '../../kit';
 import { useEditorUi } from '../editorUi';
 import { BackgroundFields } from './BackgroundFields';
-import { Hint, InspectorSection, LABEL_WIDTH, Row, StatusDot, type DotTone } from './controls';
+import { Hint, InspectorSection, LABEL_WIDTH, Row, SliderRow, StatusDot, type DotTone } from './controls';
 import { FontPicker } from './FontPicker';
 import { FRAME_LABEL, fontLabel, shotStatus, type ShotStatus } from './format';
 import { PaletteEditor } from './PaletteEditor';
@@ -281,7 +283,55 @@ const FontsSection = memo(function FontsSection() {
           {t('Apply to all text')}
         </Button>
       </div>
+      <LanguageTypeFields heading={heading} />
     </InspectorSection>
+  );
+});
+
+/** A bundled font that has the script of `lang`, else the theme's heading font. */
+function suggestedFont(lang: LangCode, heading: string): string {
+  const script = /^(ar|fa|ur)\b/.test(lang) ? 'arabic' : /^he\b/.test(lang) ? 'hebrew' : null;
+  return (script && BUNDLED_FONTS.find((f) => f.scripts.includes(script))?.family) || heading;
+}
+
+/** Font and line spacing of the language being edited, over every text's own style. */
+const LanguageTypeFields = memo(function LanguageTypeFields({ heading }: { heading: string }) {
+  const lang = useEditor((s) => s.activeLang);
+  const several = useEditor((s) => (s.project?.languages.length ?? 0) > 1);
+  const font = useEditor((s) => languageTypography(s.project, s.activeLang)?.font ?? null);
+  const spacing = useEditor((s) => languageTypography(s.project, s.activeLang)?.lineSpacing ?? 1);
+  const apply = useCallback(
+    (patch: { font?: string | null; lineSpacing?: number | null }) => {
+      if (useEditor.getState().setLanguageTypography(lang, patch) && patch.font) refreshFonts();
+    },
+    [lang],
+  );
+  const applySpacing = useCallback((pct: number) => apply({ lineSpacing: pct / 100 }), [apply]);
+  if (!several) return null;
+  const name = t(languageInfo(lang).name);
+  return (
+    <div className="mt-1 flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
+        <Switch label={t('Own font for {name}', { name })} checked={font !== null} onCheckedChange={(on) => apply({ font: on ? suggestedFont(lang, heading) : null })} />
+        <Hint className="ps-9">{t('Every text in {name} uses it, keeping its own weight.', { name })}</Hint>
+      </div>
+      {font !== null && (
+        <Row label={t('Font')}>
+          <FontPicker value={font} aria-label={t('Font for {name}', { name })} onChange={(f) => apply({ font: f })} />
+        </Row>
+      )}
+      <SliderRow
+        label={t('Spacing')}
+        value={Math.round(spacing * 100)}
+        apply={applySpacing}
+        min={RANGES.lineSpacing.min * 100}
+        max={RANGES.lineSpacing.max * 100}
+        step={1}
+        precision={0}
+        unit="%"
+        hint={t('Line spacing for {name}. Arabic usually reads best at 110–125%.', { name })}
+      />
+    </div>
   );
 });
 

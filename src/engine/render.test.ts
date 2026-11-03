@@ -420,6 +420,17 @@ describe('renderSlide: performance', () => {
   });
 });
 
+describe('renderSlide: per-language type', () => {
+  it('draws text in the language font with its line spacing', () => {
+    const s = slide({ texts: { 'en-US': { headline: 'Line one\nLine two' } } });
+    const el = textEl({ id: 't', y: 0.5 });
+    const plain = render([el], { slide: s }).result.boxes[0];
+    const spaced = render([el], { slide: s, typography: { font: 'Sora Variable', lineSpacing: 1.5 } }).result.boxes[0];
+    expect(spaced.h).toBeCloseTo(plain.h * 1.5);
+    expect(el.style.lineHeight).toBe(1.15);
+  });
+});
+
 describe('renderSlide: mirrored for right-to-left listings', () => {
   const redToBlue: Fill = { type: 'linear', angle: 90, stops: [{ offset: 0, color: '#ff0000' }, { offset: 1, color: '#0000ff' }] };
 

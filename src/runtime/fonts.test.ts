@@ -65,6 +65,21 @@ describe('fontLoadRequests', () => {
     expect(model.resolveLayout).toHaveBeenCalledWith(p, p.slides[1], 'ipad');
   });
 
+  it('loads the own font of a language at every weight its texts use, for that language only', async () => {
+    const { fontLoadRequests } = await fonts();
+    const p = project({
+      languages: ['en-US', 'ar-SA'],
+      typography: { 'ar-SA': { font: 'Cairo Variable' } },
+      slides: [slide('s1', { layouts: { iphone: layout([text('h', 'headline', { font: 'Sora Variable', weight: 800 }), text('s', 'subtitle', { font: 'Sora Variable', weight: 400 })]) } })],
+    });
+    const requests = fontLoadRequests(p);
+    const arabic = new Set(requests.filter((r) => /[\u0600-\u06FF]/.test(r.text) && !r.font.includes(',')).map((r) => r.font));
+    expect(arabic).toEqual(new Set(['800 32px "Cairo Variable"', '400 32px "Cairo Variable"']));
+    const english = requests.filter((r) => r.text.startsWith('English'));
+    expect(english.some((r) => r.font.includes('Cairo'))).toBe(false);
+    expect(english.map((r) => r.font)).toContain('800 32px "Sora Variable"');
+  });
+
   it('samples each language with its own unique characters, native name first', async () => {
     const { fontLoadRequests, languageSample } = await fonts();
     const p = project({ languages: ['en-US', 'ar-SA'] });

@@ -45,8 +45,9 @@ size both stores ask for, in every language, in one click.
 - **51 languages with right-to-left support.** Arabic, Hebrew, Persian and
   Urdu are shaped and aligned correctly, and their slides are mirrored: the
   stores list them from the right, so devices and decorations swap sides
-  while text and screenshots still read normally. Translate side by side in
-  a grid, or round-trip a CSV with your translators.
+  while text and screenshots still read normally. Each language can have its
+  own font and line spacing (Arabic usually needs taller lines than Latin).
+  Translate side by side in a grid, or round-trip a CSV with your translators.
 - **One click exports everything**: a folder per store, size and language,
   or a fastlane-ready layout (`deliver` and `supply`).
 - **A proper editor**: drag, resize and rotate with snapping guides, layers,

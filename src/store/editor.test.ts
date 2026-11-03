@@ -811,6 +811,21 @@ describe('theme and backgrounds', () => {
     expect(s().project!.theme).toMatchObject({ panorama: true, mockDark: true });
   });
 
+  it('sets and clears the font and line spacing of a language', () => {
+    const lang = s().project!.languages[0];
+    expect(s().setLanguageTypography('xx-XX', { font: 'Cairo Variable' })).toBe(false);
+    expect(s().setLanguageTypography(lang, { font: 'Cairo Variable', lineSpacing: 1.234 })).toBe(true);
+    expect(s().project!.typography).toEqual({ [lang]: { font: 'Cairo Variable', lineSpacing: 1.23 } });
+    expect(s().setLanguageTypography(lang, { lineSpacing: 1.23 })).toBe(false);
+    expect(s().setLanguageTypography(lang, { lineSpacing: 5 })).toBe(true);
+    expect(s().project!.typography?.[lang]?.lineSpacing).toBe(2);
+    expect(s().setLanguageTypography(lang, { font: 7 as unknown as string })).toBe(false);
+    expect(s().setLanguageTypography(lang, { font: null, lineSpacing: 1 })).toBe(true);
+    expect(s().project).not.toHaveProperty('typography');
+    s().undo();
+    expect(s().project!.typography?.[lang]).toEqual({ font: 'Cairo Variable', lineSpacing: 2 });
+  });
+
   it('turns right-to-left mirroring off and on', () => {
     expect(s().setMirrorRtl(true)).toBe(false);
     expect(s().setMirrorRtl(false)).toBe(true);

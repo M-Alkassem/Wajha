@@ -75,7 +75,7 @@ export const SlideCanvas = memo(function SlideCanvas(props: SlideCanvasProps) {
     const k = bitmapDpr(w, h, ratio);
     const bw = Math.max(1, Math.round(w * k));
     const bh = Math.max(1, Math.round(h * k));
-    const inputs = [slide, project.theme, lang, family, project.languages[0], project.families.join(','), project.assets, project.mirrorRtl, index, project.slides.length, bw, bh, t];
+    const inputs = [slide, project.theme, lang, family, project.languages[0], project.families.join(','), project.assets, project.mirrorRtl, project.typography, index, project.slides.length, bw, bh, t];
     if (sameInputs(last.current, inputs)) return;
     last.current = inputs;
     try {

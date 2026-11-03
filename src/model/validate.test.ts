@@ -98,6 +98,28 @@ describe('validateProject: right-to-left mirroring', () => {
   });
 });
 
+describe('validateProject: per-language type', () => {
+  const withType = (typography: unknown) => validateProject({ ...projectJson(), languages: ['en-US', 'ar-SA'], typography });
+
+  it('keeps settings of project languages, cleaned and clamped', () => {
+    const out = withType({ 'ar-SA': { font: '  Cairo  Variable; ', lineSpacing: 1.234 }, 'fr-FR': { font: 'Inter' } });
+    expect(out.typography).toEqual({ 'ar-SA': { font: 'Cairo Variable', lineSpacing: 1.23 } });
+    expect(withType({ 'ar-SA': { lineSpacing: 9 } }).typography).toEqual({ 'ar-SA': { lineSpacing: 2 } });
+  });
+
+  it('drops empty settings and stores nothing when none are left', () => {
+    expect(withType({ 'ar-SA': { font: '', lineSpacing: 1 } })).not.toHaveProperty('typography');
+    expect(withType(undefined)).not.toHaveProperty('typography');
+  });
+
+  it('rejects settings of the wrong type', () => {
+    expect(errorOf(() => withType([])).path).toBe('typography');
+    expect(errorOf(() => withType({ 'ar-SA': 'Cairo' })).path).toBe('typography.ar-SA');
+    expect(errorOf(() => withType({ 'ar-SA': { font: 5 } })).path).toBe('typography.ar-SA.font');
+    expect(errorOf(() => withType({ 'ar-SA': { lineSpacing: 'big' } })).path).toBe('typography.ar-SA.lineSpacing');
+  });
+});
+
 describe('validateProject: hostile input', () => {
   it('rejects non-objects and wrong formats', () => {
     for (const bad of [null, 1, 'x', [], undefined]) expect(errorOf(() => validateProject(bad)).path).toBe('$');

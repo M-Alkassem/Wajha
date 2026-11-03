@@ -353,11 +353,21 @@ export interface Project {
    * On unless false; stored only when turned off.
    */
   mirrorRtl?: boolean;
+  /** Type settings per language (see model/typography.ts); only languages that have any. */
+  typography?: Partial<Record<LangCode, LanguageTypography>>;
   slides: Slide[];
   assets: Record<string, AssetInfo>;
   /** Font files the project brought along (text styles name their family). */
   fonts?: ProjectFont[];
   export: ExportSettings;
+}
+
+/** How one language draws its text, over each text's own style. */
+export interface LanguageTypography {
+  /** Font family for every text in this language; absent = each text's own font. */
+  font?: string;
+  /** Multiplies each text's line height; absent = 1. */
+  lineSpacing?: number;
 }
 
 /** A font file stored with the project, in projects/<id>/fonts/<file>. */

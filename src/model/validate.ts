@@ -58,6 +58,7 @@ import type {
   GradientStop,
   ImageElement,
   LangCode,
+  LanguageTypography,
   MeshPoint,
   Pattern,
   PatternKind,
@@ -701,6 +702,30 @@ function checkFormat(o: Json, expected: string): void {
 
 /* Project ------------------------------------------------------------ */
 
+/** Type settings of the project's languages; other languages and empty settings are dropped. */
+function cleanTypography(v: unknown, path: string, languages: readonly LangCode[]): Partial<Record<LangCode, LanguageTypography>> {
+  const out: Partial<Record<LangCode, LanguageTypography>> = {};
+  if (isMissing(v)) return out;
+  const o = asObject(v, path);
+  for (const lang of languages) {
+    const raw = get(o, lang);
+    if (isMissing(raw)) continue;
+    const p = at(path, lang);
+    const lo = asObject(raw, p);
+    const entry: LanguageTypography = {};
+    const font = get(lo, 'font');
+    if (!isMissing(font)) {
+      if (typeof font !== 'string') fail(at(p, 'font'), 'must be a string');
+      const name = cleanFontName(font, '');
+      if (name) entry.font = name;
+    }
+    const spacing = Math.round(numberField(lo, 'lineSpacing', p, RANGES.lineSpacing, 1) * 100) / 100;
+    if (spacing !== 1) entry.lineSpacing = spacing;
+    if (entry.font || entry.lineSpacing) out[lang] = entry;
+  }
+  return out;
+}
+
 /** A parsed project.json (or archive manifest) as a well-formed Project. */
 export function validateProject(json: unknown): Project {
   const root = asObject(json, '$');
@@ -727,6 +752,7 @@ export function validateProject(json: unknown): Project {
   if (!slides.length) slides.push(newSlide(families, theme, languages));
   const fonts = cleanFonts(get(o, 'fonts'), 'fonts');
   const mirrorRtl = boolField(o, 'mirrorRtl', '', true);
+  const typography = cleanTypography(get(o, 'typography'), 'typography', languages);
 
   return {
     format: 'wajha.project',
@@ -740,6 +766,7 @@ export function validateProject(json: unknown): Project {
     families,
     languages,
     ...(mirrorRtl ? {} : { mirrorRtl: false }),
+    ...(Object.keys(typography).length ? { typography } : {}),
     slides,
     assets,
     ...(fonts.length ? { fonts } : {}),

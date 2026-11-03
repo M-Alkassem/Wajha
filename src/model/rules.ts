@@ -80,6 +80,8 @@ export const RANGES = {
   fontSize: { min: 0.004, max: 1 },
   fontWeight: { min: 1, max: 1000, int: true },
   lineHeight: { min: 0.5, max: 4 },
+  /** Per-language factor on every text's line height (model/typography.ts). */
+  lineSpacing: { min: 0.8, max: 2 },
   letterSpacing: { min: -0.5, max: 2 },
   maxLines: { min: 0, max: 50, int: true },
   seed: { min: 0, max: 2147483647, int: true },

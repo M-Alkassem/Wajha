@@ -19,6 +19,7 @@ import type {
   DeviceFrameId,
   FamilyId,
   LangCode,
+  LanguageTypography,
   Slide,
   SlideLayout,
   TextStyle,
@@ -54,6 +55,8 @@ export interface RenderInput {
    * pictures still read normally.
    */
   mirror?: boolean;
+  /** Font and line spacing of `lang`, over each text's own style (model/typography.ts). */
+  typography?: LanguageTypography | null;
   /** Position of this slide, for panorama backgrounds and mock-screen seeds. */
   slideIndex: number;
   slideCount: number;

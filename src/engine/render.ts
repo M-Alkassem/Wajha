@@ -12,6 +12,7 @@ import type { DeviceElement, DeviceFrameId, FamilyId, ImageElement, ShapeElement
 import { FAMILIES } from '../model/catalog';
 import { mirrorElement } from '../model/mirror';
 import { resolveShot, resolveText } from '../model/resolve';
+import { styleForLanguage } from '../model/typography';
 import type { Ctx2D, DeviceGeometry, ElementBox, ImageLike, RenderInput, RenderResult, RenderSlideFn } from './types';
 import { drawDevice } from './devices';
 import { paintBackground } from './background';
@@ -78,7 +79,7 @@ function textElement(ctx: Ctx2D, el: TextElement, scene: Scene, cx: number, ay: 
   const raw = attempt(() => resolveText(input.slide, el.key, input.lang, input.baseLang), '');
   const layout = layoutTextBlock(ctx, {
     text: typeof raw === 'string' ? raw : '',
-    style: el.style,
+    style: el.style && typeof el.style === 'object' ? styleForLanguage(el.style, input.typography) : el.style,
     boxWidth: Math.max(0, num(el.width, 0) * u),
     unit: u,
     rtl: input.rtl === true,

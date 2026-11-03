@@ -12,6 +12,7 @@
 import type { FamilyId, Project, Slide, SlideLayout } from '../model/types';
 import { BUNDLED_FONTS, FONT_FALLBACK_STACK, languageInfo } from '../model/catalog';
 import { resolveLayout } from '../model/resolve';
+import { languageTypography } from '../model/typography';
 import { readProjectFont } from '../storage';
 import { settleWithin } from './util';
 
@@ -110,7 +111,8 @@ function beyondLatin(sample: string): string {
 /**
  * Every document.fonts.load() call needed to draw `project`: each (family,
  * weight) of its text elements in every slide x family layout (plus the
- * theme fonts, so new text renders at once) for each language's sample.
+ * theme fonts, so new text renders at once) for each language's sample; a
+ * language with its own font loads that font at the same weights instead.
  * Pure; exported for tests.
  */
 export function fontLoadRequests(project: Project): FontLoadRequest[] {
@@ -123,6 +125,7 @@ export function fontLoadRequests(project: Project): FontLoadRequest[] {
     faces.set(`${name}\u0000${w}`, { family: name, weight: w });
   };
   let uppercase = false;
+  const weights = new Set<number>();
   for (const slide of project.slides) {
     for (const family of project.families) {
       const layout = layoutOf(project, slide, family);
@@ -130,6 +133,7 @@ export function fontLoadRequests(project: Project): FontLoadRequest[] {
       for (const el of layout.elements) {
         if (el.kind !== 'text' || !el.style) continue;
         addFace(el.style.font, el.style.weight);
+        weights.add(normWeight(el.style.weight));
         if (el.style.transform === 'uppercase') uppercase = true;
       }
     }
@@ -137,6 +141,7 @@ export function fontLoadRequests(project: Project): FontLoadRequest[] {
   addFace(project.theme?.fonts?.heading, 400);
   addFace(project.theme?.fonts?.body, 400);
   if (faces.size === 0) return [];
+  weights.add(400);
 
   const requests: FontLoadRequest[] = [];
   const seen = new Set<string>();
@@ -152,7 +157,10 @@ export function fontLoadRequests(project: Project): FontLoadRequest[] {
   for (const lang of languages) {
     const sample = languageSample(project, lang, uppercase);
     const extra = fallbackList ? beyondLatin(sample) : '';
-    for (const face of faces.values()) {
+    // A language with its own font draws every text in it, at each weight the texts use.
+    const own = languageTypography(project, lang)?.font?.trim();
+    const drawn = own ? [...weights].map((weight) => ({ family: own, weight })) : faces.values();
+    for (const face of drawn) {
       push(`${face.weight} 32px ${cssFamily(face.family)}`, sample);
       if (extra) push(`${face.weight} 32px ${fallbackList}`, extra);
     }

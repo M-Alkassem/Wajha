@@ -11,6 +11,7 @@ import type { Ctx2D, RenderResult } from '../../engine/types';
 import { FAMILIES, isRtl } from '../../model/catalog';
 import { projectFromTemplate } from '../../model/instantiate';
 import { resolveLayout } from '../../model/resolve';
+import { languageTypography } from '../../model/typography';
 import type { FamilyId, LangCode, Project, SlideLayout, Template } from '../../model/types';
 
 export const REPO_ROOT = join(import.meta.dirname, '..', '..', '..');
@@ -89,6 +90,7 @@ export function renderProjectSlide(project: Project, index: number, family: Fami
     lang,
     baseLang: project.languages[0],
     rtl: isRtl(lang),
+    typography: languageTypography(project, lang),
     slideIndex: index,
     slideCount: project.slides.length,
     getImage: () => null,

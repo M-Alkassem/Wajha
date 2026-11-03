@@ -171,6 +171,11 @@ Defined in `src/model/types.ts`, repeated here because everything depends on it:
   the other side (`x -> 1 - x`), negate rotation and shadow x offsets;
   `mirrorPatch` maps an edit made on a mirrored slide back to the stored
   layout. Layouts are never stored mirrored.
+- `typography.ts`: per-language type. `project.typography[lang]` may set
+  `font` (every text in that language uses it, keeping its own weight) and
+  `lineSpacing` (a factor on every text's line height, 0.8..2); stored only
+  for project languages that set either. `styleForLanguage` is the one rule
+  the renderer, the export text check and font loading share.
 - `rules.ts`: identifier rules shared by validators and the store. Text keys
   and slots (`isSafeKey`) never take a name plain objects inherit
   (`toString`, `__proto__`...). Template ids name their folder, so they are

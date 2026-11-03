@@ -26,7 +26,8 @@ import { deepClone, jsonEqual } from '../model/clone';
 import { DEFAULT_FAMILY, DEFAULT_FONT, DEFAULT_LANGUAGE, newDeviceElement, newImageElement, newShapeElement, newSlide, newTextElement, type TextRole } from '../model/defaults';
 import { newId } from '../model/ids';
 import { layoutSource, resolveLayout } from '../model/resolve';
-import { LIMITS, cleanFontName, cleanName, cleanText, isAssetId, isFamilyId, isLangCode, isSafeKey, normalizeColor, uniqueFamilies, uniqueLanguages } from '../model/rules';
+import { languageTypography } from '../model/typography';
+import { LIMITS, RANGES, clampToRange, cleanFontName, cleanName, cleanText, isAssetId, isFamilyId, isLangCode, isSafeKey, normalizeColor, uniqueFamilies, uniqueLanguages } from '../model/rules';
 import type {
   AssetInfo,
   ProjectFont,
@@ -38,6 +39,7 @@ import type {
   FrameStyle,
   ImageElement,
   LangCode,
+  LanguageTypography,
   Project,
   ShapeElement,
   ShapeKind,
@@ -205,6 +207,8 @@ export interface EditorState {
   addLanguage(code: LangCode): boolean;
   /** Removes a language with its texts and screenshots; never the last one. */
   removeLanguage(code: LangCode): boolean;
+  /** Sets or clears (null) a language's font and line-spacing factor (model/typography.ts). */
+  setLanguageTypography(lang: LangCode, patch: { font?: string | null; lineSpacing?: number | null }): boolean;
   /** Makes `code` the base (fallback) language by moving it first. */
   setBaseLanguage(code: LangCode): boolean;
   /** Appends a family; its layouts derive from the primary family until edited. */
@@ -1338,6 +1342,39 @@ export function createEditorStore() {
               }
             }
             if (d.export.languages.includes(code)) d.export.languages = d.export.languages.filter((l) => l !== code);
+            if (d.typography?.[code]) {
+              delete d.typography[code];
+              if (Object.keys(d.typography).length === 0) delete d.typography;
+            }
+          });
+        },
+
+        setLanguageTypography(lang, patch) {
+          const p = get().project;
+          if (!p || !p.languages.includes(lang) || !patch || typeof patch !== 'object') return false;
+          const next: LanguageTypography = { ...languageTypography(p, lang) };
+          if (patch.font !== undefined) {
+            if (patch.font === null) delete next.font;
+            else if (typeof patch.font === 'string' && cleanFontName(patch.font, '')) next.font = cleanFontName(patch.font, '');
+            else return false;
+          }
+          if (patch.lineSpacing !== undefined) {
+            if (patch.lineSpacing === null) delete next.lineSpacing;
+            else if (typeof patch.lineSpacing === 'number' && Number.isFinite(patch.lineSpacing)) {
+              const v = Math.round(clampToRange(patch.lineSpacing, RANGES.lineSpacing) * 100) / 100;
+              if (v === 1) delete next.lineSpacing;
+              else next.lineSpacing = v;
+            } else return false;
+          }
+          const before = languageTypography(p, lang);
+          if ((before?.font ?? null) === (next.font ?? null) && (before?.lineSpacing ?? null) === (next.lineSpacing ?? null)) return false;
+          return commit((d) => {
+            if (next.font || next.lineSpacing) {
+              d.typography = { ...d.typography, [lang]: next };
+            } else if (d.typography) {
+              delete d.typography[lang];
+              if (Object.keys(d.typography).length === 0) delete d.typography;
+            }
           });
         },
 

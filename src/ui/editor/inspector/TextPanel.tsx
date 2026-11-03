@@ -20,16 +20,17 @@ import {
   TriangleAlert,
   UnfoldVertical,
 } from 'lucide-react';
-import { isRtl } from '../../../model/catalog';
+import { isRtl, languageInfo } from '../../../model/catalog';
 import { LIMITS } from '../../../model/rules';
+import { languageTypography } from '../../../model/typography';
 import type { TextElement, TextStyle } from '../../../model/types';
 import { useEditor } from '../../../store';
 import { Button, ColorField, IconButton, NumberField, SegmentedControl, Select, Textarea, matchShortcut, platformIsMac, type SegmentedOption } from '../../kit';
 import { useEditorUi } from '../editorUi';
 import { getSnapshot, subscribeSnapshot } from '../stage/stageStore';
 import { FontPicker } from './FontPicker';
-import { InspectorSection, Pair, Row } from './controls';
-import { clampWeight, fromPct, languageLabel, smallerTextSize, toPct, weightOptions, weightRange } from './format';
+import { Hint, InspectorSection, Pair, Row } from './controls';
+import { clampWeight, fontLabel, fromPct, languageLabel, smallerTextSize, toPct, weightOptions, weightRange } from './format';
 import { toggleHighlight } from './highlight';
 import { LayoutSection } from './LayoutSection';
 import { useLive } from './live';
@@ -248,6 +249,7 @@ function OverflowNote({ target, maxLines, size }: { target: Target; maxLines: nu
 const TypographySection = memo(function TypographySection({ style, target }: { style: TextStyle; target: Target }) {
   const lang = useEditor((s) => s.activeLang);
   const rtl = isRtl(lang);
+  const langFont = useEditor((s) => languageTypography(s.project, s.activeLang)?.font ?? null);
   const size = useLive<number>((v) => patchTarget(target, { style: { size: fromPct(v) } }));
   const lineHeight = useLive<number>((v) => patchTarget(target, { style: { lineHeight: v } }));
   const letterSpacing = useLive<number>((v) => patchTarget(target, { style: { letterSpacing: v } }));
@@ -271,6 +273,7 @@ const TypographySection = memo(function TypographySection({ style, target }: { s
           if (patchTarget(target, { style: { font, weight: clampWeight(style.weight, weightRange(font)) } })) refreshFonts();
         }}
       />
+      {langFont && <Hint>{t('{name} text is drawn in {font}, set under Fonts.', { name: t(languageInfo(lang).name), font: fontLabel(langFont) })}</Hint>}
       <Pair>
         <Select
           aria-label={t('Weight')}

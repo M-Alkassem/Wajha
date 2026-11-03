@@ -47,6 +47,8 @@ describe('overflowingTexts', () => {
   beforeAll(() => {
     registerBundledFonts();
     project = blankProject('Trips', ['iphone', 'android-phone'], ['en-US', 'ar-SA', 'de-DE']);
+    // Arabic draws in its own font with taller lines: the check must measure it the same way.
+    project.typography = { 'ar-SA': { font: 'Cairo Variable', lineSpacing: 1.3 } };
     const [first, second] = project.slides;
     first.texts['en-US'] = { headline: 'Plan your *week*', subtitle: '' };
     first.texts['ar-SA'] = { headline: LONG_AR, subtitle: '' };
