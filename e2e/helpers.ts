@@ -374,6 +374,14 @@ export async function downloadBytes(download: Download): Promise<Buffer> {
   return readFile((await download.path())!);
 }
 
+/**
+ * The file name the page gave a download. WebKitGTK (the Linux CI browser)
+ * reports spaces as underscores, so they are read back as spaces.
+ */
+export function downloadName(download: Download): string {
+  return download.suggestedFilename().replace(/_/g, ' ');
+}
+
 /** Runs `start` and resolves the download it triggers. */
 export async function catchDownload(page: Page, start: () => Promise<unknown>, timeout = 60_000): Promise<Download> {
   const download = page.waitForEvent('download', { timeout });

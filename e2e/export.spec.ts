@@ -10,6 +10,7 @@ import {
   catchDownload,
   closeColor,
   downloadBytes,
+  downloadName,
   expectToast,
   jpegSize,
   openDemo,
@@ -59,7 +60,7 @@ test('export PNGs for two stores and two languages, then a JPEG set', async ({ p
   const run = dialog.getByRole('button', { name: 'Export 20 files' });
   await expect(run).toBeEnabled();
   const download = await catchDownload(page, () => run.click(), 120_000);
-  expect(download.suggestedFilename()).toBe(`${name} screenshots.zip`);
+  expect(downloadName(download)).toBe(`${name} screenshots.zip`);
   await expect(dialog.getByRole('heading', { name: '20 files exported' })).toBeVisible();
   await expect(dialog).toContainText(`Downloaded ${name} screenshots.zip`);
 

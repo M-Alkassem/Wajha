@@ -32,6 +32,7 @@ test('mixed-direction lines sit on one baseline', async ({ page }) => {
       for (const line of lines) await document.fonts.load(`700 40px "${line.font}"`, line.text);
       const W = 900;
       const H = 120;
+      const FONT_PX = 0.08 * 500;
       /** Draws one line with the engine; returns the lowest dark pixel of every group of inked columns. */
       const draw = (text: string, font: string, lang: string, rtl: boolean) => {
         const canvas = document.createElement('canvas');
@@ -63,7 +64,10 @@ test('mixed-direction lines sit on one baseline', async ({ page }) => {
         // Flat-bottomed capitals in the same font mark the baseline every line is placed on.
         const baseline = Math.max(...draw('HIH', line.font, line.lang, false).map((g) => g.bottom));
         const raised = draw(line.text, line.font, line.lang, line.rtl).filter((g) => g.bottom < baseline - 2);
-        return { text: line.text, font: line.font, raised };
+        // The quirk lifts a whole run (every glyph of "iOS 18") by about a third of the font size. One glyph a
+        // few pixels high is the rasteriser (WebKitGTK on Linux draws some fonts slightly differently), not a floating run.
+        const floating = raised.length >= 2 || raised.some((g) => g.bottom < baseline - FONT_PX / 5);
+        return { text: line.text, font: line.font, raised: floating ? raised : [] };
       });
     },
     { url: TEXT_URL, lines: LINES },

@@ -11,6 +11,7 @@ import {
   catchDownload,
   closeColor,
   downloadBytes,
+  downloadName,
   elementOnStage,
   expectToast,
   libraryKeys,
@@ -45,7 +46,7 @@ test('export a project file, delete the project, open the file again', async ({ 
   await card.hover();
   await page.getByRole('button', { name: `Actions for ${name}` }).click();
   const download = await catchDownload(page, () => page.getByRole('menuitem', { name: 'Export as file…' }).click());
-  expect(download.suggestedFilename()).toBe(`${name}.wajha`);
+  expect(downloadName(download)).toBe(`${name}.wajha`);
   await expectToast(page, 'Project exported');
   const archive = await downloadBytes(download);
   const entries = unzip(archive);

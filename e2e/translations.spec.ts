@@ -5,7 +5,7 @@
  * and in the table.
  */
 import { expect, test } from './fixtures';
-import { catchDownload, downloadBytes, expectToast, openDemo, openProject, parseCsv, pickFiles, toCsv } from './helpers';
+import { catchDownload, downloadBytes, downloadName, expectToast, openDemo, openProject, parseCsv, pickFiles, toCsv } from './helpers';
 
 const NEW_ARABIC = 'سافر مع *الجميع*';
 const NEW_SUBTITLE = 'Routes, stops and "hidden gems", all on one map.';
@@ -24,7 +24,7 @@ test('export the translations CSV, edit it, import it back', async ({ page }) =>
 
   // Export.
   const download = await catchDownload(page, () => dialog.getByRole('button', { name: 'Export CSV' }).click());
-  expect(download.suggestedFilename()).toBe(`${name} translations.csv`);
+  expect(downloadName(download)).toBe(`${name} translations.csv`);
   await expectToast(page, 'Translations exported');
   const bytes = await downloadBytes(download);
   expect([...bytes.subarray(0, 3)], 'UTF-8 with a byte order mark, for Excel').toEqual([0xef, 0xbb, 0xbf]);
