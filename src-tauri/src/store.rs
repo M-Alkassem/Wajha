@@ -602,9 +602,12 @@ mod tests {
             "._a.png",
             "Thumbs.db",
             "desktop.ini",
-            "bad\\name",
-            "colon:name",
         ] {
+            fs::write(assets.join(name), b"x").unwrap();
+        }
+        // Names the interface cannot reach; Windows cannot even create them.
+        #[cfg(unix)]
+        for name in ["bad\\name", "colon:name"] {
             fs::write(assets.join(name), b"x").unwrap();
         }
         // Not our temp pattern: listed as a normal file.

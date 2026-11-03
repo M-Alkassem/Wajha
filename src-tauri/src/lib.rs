@@ -642,8 +642,10 @@ mod tests {
             .call("export_write", InvokeBody::Raw(png()), &escape)
             .unwrap_err();
         assert!(err.starts_with("invalid_path: "), "{err}");
+        // An absolute path outside every picked root.
+        let outside = if cfg!(windows) { "C:\\" } else { "/" };
         let err = h
-            .json("reveal_path", serde_json::json!({ "path": "/" }))
+            .json("reveal_path", serde_json::json!({ "path": outside }))
             .unwrap_err();
         assert!(err.starts_with("permission: "), "{err}");
     }

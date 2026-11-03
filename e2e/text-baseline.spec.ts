@@ -69,14 +69,13 @@ test('mixed-direction lines sit on one baseline', async ({ page }) => {
       return lines.map((line) => {
         // Flat-bottomed capitals in the same font mark the baseline every line is placed on.
         const baseline = Math.max(...draw('HIH', line.font, line.lang, false).map((g) => g.bottom));
-        const raised = draw(line.text, line.font, line.lang, line.rtl).filter((g) => g.bottom < baseline - 2);
-        // The quirk lifts a whole run (every glyph of "iOS 18") by about a third of the font size. One glyph a
-        // few pixels high is the rasteriser (WebKitGTK on Linux draws some fonts slightly differently), not a floating run.
-        const floating = raised.length >= 2 || raised.some((g) => g.bottom < baseline - FONT_PX / 5);
-        return { text: line.text, font: line.font, raised: floating ? raised : [] };
+        // The quirk lifts a run by about a third of the font size. Fonts sit a few pixels apart on some
+        // rasterisers (WebKitGTK on Linux), so only a lift of more than a quarter counts.
+        const raised = draw(line.text, line.font, line.lang, line.rtl).filter((g) => g.bottom < baseline - FONT_PX / 4);
+        return { text: line.text, font: line.font, baseline, raised };
       });
     },
     { url: TEXT_URL, catalogUrl: CATALOG_URL, lines: LINES },
   );
-  for (const r of results) expect(r.raised, `glyphs above the baseline in "${r.text}" (${r.font})`).toEqual([]);
+  for (const r of results) expect(r.raised, `glyphs above the baseline (y ${r.baseline}) in "${r.text}" (${r.font})`).toEqual([]);
 });
