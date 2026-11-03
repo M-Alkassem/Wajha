@@ -12,7 +12,13 @@
 <p align="center">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-7c5cff" /></a>
   <img alt="macOS, Windows, Linux" src="https://img.shields.io/badge/platforms-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-1f1f2a" />
-  <img alt="Download about 6 MB" src="https://img.shields.io/badge/download-~6%20MB-1f1f2a" />
+  <a href="../../releases/latest"><img alt="Download about 6 MB" src="https://img.shields.io/badge/download-~6%20MB-1f1f2a" /></a>
+</p>
+
+<p align="center">
+  <a href="../../releases/latest"><b>Download</b></a> ·
+  <a href="../../discussions">Discussions</a> ·
+  <a href="../../issues/new">Report a bug</a>
 </p>
 
 <p align="center">
