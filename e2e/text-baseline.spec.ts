@@ -13,7 +13,9 @@ import { expect, test } from './fixtures';
 import type { TextStyle } from '../src/model/types.ts';
 
 type TextModule = typeof import('../src/engine/text.ts');
+type CatalogModule = typeof import('../src/model/catalog.ts');
 const TEXT_URL = '/src/engine/text.ts';
+const CATALOG_URL = '/src/model/catalog.ts';
 
 /** Lines whose glyphs all reach down to the baseline (no hyphens, quotes, Hebrew yod or Persian zero). */
 const LINES = [
@@ -27,9 +29,13 @@ const LINES = [
 test('mixed-direction lines sit on one baseline', async ({ page }) => {
   await page.goto('/');
   const results = await page.evaluate(
-    async ({ url, lines }) => {
+    async ({ url, catalogUrl, lines }) => {
       const { drawTextBlock, layoutTextBlock } = (await import(/* @vite-ignore */ url)) as TextModule;
-      for (const line of lines) await document.fonts.load(`700 40px "${line.font}"`, line.text);
+      const { FONT_FALLBACK_STACK } = (await import(/* @vite-ignore */ catalogUrl)) as CatalogModule;
+      // The whole stack the engine draws with: characters a font lacks ("HIH" and "2.0" in Noto Sans Arabic)
+      // come from the fallbacks, and a fallback still loading would draw them in yet another font.
+      for (const line of lines) await document.fonts.load(`700 40px "${line.font}", ${FONT_FALLBACK_STACK}`, `${line.text}HIH`);
+      await document.fonts.ready;
       const W = 900;
       const H = 120;
       const FONT_PX = 0.08 * 500;
@@ -70,7 +76,7 @@ test('mixed-direction lines sit on one baseline', async ({ page }) => {
         return { text: line.text, font: line.font, raised: floating ? raised : [] };
       });
     },
-    { url: TEXT_URL, lines: LINES },
+    { url: TEXT_URL, catalogUrl: CATALOG_URL, lines: LINES },
   );
   for (const r of results) expect(r.raised, `glyphs above the baseline in "${r.text}" (${r.font})`).toEqual([]);
 });
