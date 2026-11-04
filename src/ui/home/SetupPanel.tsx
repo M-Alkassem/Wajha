@@ -1,9 +1,9 @@
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Check, Plus, Search, Star, X } from 'lucide-react';
+import { Check, Maximize, Plus, Search, Star, X } from 'lucide-react';
 import { FAMILIES, FAMILY_ORDER, LANGUAGES, languageInfo } from '../../model/catalog';
 import type { FamilyId, LangCode, Project } from '../../model/types';
 import { SlidePreview } from '../shared/SlidePreview';
-import { Badge, Button, cx, IconButton, Input, Popover, PopoverContent, PopoverTrigger, Tooltip } from '../kit';
+import { Badge, Button, cx, Dialog, DialogContent, IconButton, Input, Popover, PopoverContent, PopoverTrigger, Tooltip } from '../kit';
 import { FamilyGlyph } from './FamilyGlyph';
 import { FAMILY_NAME, fitStrip, foldForSearch, matchesSearch, plural } from './format';
 import { useElementSize } from './hooks';
@@ -32,6 +32,7 @@ export interface PreviewStageProps {
 export function PreviewStage({ project, family, lang, title }: PreviewStageProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useElementSize(ref);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const design = FAMILIES[family].design;
   const fit = fitStrip(width - STAGE_PAD * 2, height - STAGE_PAD * 2, design.height / design.width, project.slides.length, STAGE_GAP, 3);
   const info = languageInfo(lang);
@@ -63,7 +64,7 @@ export function PreviewStage({ project, family, lang, title }: PreviewStageProps
             ) : null,
           )}
       </div>
-      <figcaption className="flex min-w-0 items-center gap-2 px-0.5 text-xs text-text-3">
+      <figcaption className="flex min-w-0 items-center gap-2 text-xs text-text-3">
         <span dir="auto" className="min-w-0 truncate font-medium text-text-2">
           {title}
         </span>
@@ -75,8 +76,74 @@ export function PreviewStage({ project, family, lang, title }: PreviewStageProps
           <span aria-hidden>·</span>
           <span dir="auto">{info.native}</span>
         </span>
+        <Button
+          size="sm"
+          variant="ghost"
+          leadingIcon={<Maximize />}
+          aria-label={t('Preview {name}', { name: title })}
+          onClick={() => setPreviewOpen(true)}
+        >
+          {t('Preview')}
+        </Button>
       </figcaption>
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        {previewOpen && (
+          <DialogContent
+            size="full"
+            title={t('Preview {name}', { name: title })}
+            description={`${FAMILY_NAME[family]} · ${info.native}`}
+            style={{ maxWidth: 1200, maxHeight: 900 }}
+            bodyClassName="flex flex-col"
+          >
+            <PreviewCanvas project={project} family={family} lang={lang} />
+          </DialogContent>
+        )}
+      </Dialog>
     </figure>
+  );
+}
+
+function PreviewCanvas({ project, family, lang }: { project: Project; family: FamilyId; lang: LangCode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { height } = useElementSize(ref);
+  const design = FAMILIES[family].design;
+  const aspect = design.width / design.height;
+  const previewWidth = Math.max(0, Math.min(360, (height - 48) * aspect));
+  const radius = Math.max(6, Math.round(previewWidth * 0.06));
+
+  return (
+    <div
+      ref={ref}
+      role="region"
+      aria-label={t('Template slides preview')}
+      dir="ltr"
+      className="flex min-h-[240px] flex-1 items-center overflow-x-auto overflow-y-hidden rounded-lg border border-line bg-stage p-6"
+      style={{
+        backgroundImage: 'radial-gradient(var(--stage-dot) 1px, transparent 1.2px)',
+        backgroundSize: '14px 14px',
+      }}
+    >
+      <div className="flex h-full shrink-0 items-center gap-6">
+        {project.slides.map((slide, slideIndex) => (
+          <div
+            key={slide.id}
+            className="shrink-0 overflow-hidden bg-surface-3 shadow-slide"
+            style={{ width: previewWidth, aspectRatio: `${design.width} / ${design.height}`, borderRadius: radius }}
+          >
+            {previewWidth > 0 && (
+              <SlidePreview
+                project={project}
+                slideIndex={slideIndex}
+                family={family}
+                lang={lang}
+                width={previewWidth}
+                style={{ width: '100%', height: '100%' }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
