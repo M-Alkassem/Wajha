@@ -30,6 +30,7 @@ test('first run: create a project from a template with iPhone, Android phone and
   const preview = page.getByRole('dialog', { name: 'Preview Sunset Boulevard' });
   await expect(preview).toBeVisible();
   const previewSlides = preview.getByRole('region', { name: 'Template slides preview' });
+  await expect(previewSlides).toHaveAttribute('tabindex', '0');
   await expect(previewSlides.locator('canvas')).toHaveCount(5);
   await expect
     .poll(() => previewSlides.locator('canvas').first().evaluate((canvas) => (canvas as HTMLCanvasElement).width))
@@ -37,6 +38,8 @@ test('first run: create a project from a template with iPhone, Android phone and
   await expect
     .poll(() => previewSlides.evaluate((element) => element.scrollWidth - element.clientWidth))
     .toBeGreaterThan(0);
+  await previewSlides.focus();
+  await expect(previewSlides).toBeFocused();
   const lastSlide = previewSlides.locator('canvas').last();
   await lastSlide.scrollIntoViewIfNeeded();
   await expect.poll(() => lastSlide.evaluate((canvas) => (canvas as HTMLCanvasElement).width)).toBeGreaterThan(0);

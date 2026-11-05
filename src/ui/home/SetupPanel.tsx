@@ -64,27 +64,31 @@ export function PreviewStage({ project, family, lang, title }: PreviewStageProps
             ) : null,
           )}
       </div>
-      <figcaption className="flex min-w-0 items-center gap-2 text-xs text-text-3">
-        <span dir="auto" className="min-w-0 truncate font-medium text-text-2">
-          {title}
-        </span>
-        <span aria-hidden>·</span>
-        <span className="shrink-0">{plural(project.slides.length, 'slide')}</span>
-        <span className="ms-auto flex shrink-0 items-center gap-1.5">
-          <FamilyGlyph family={family} size={12} />
-          {FAMILY_NAME[family]}
+      <figcaption className="flex min-w-0 flex-col gap-1.5 text-xs text-text-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <span dir="auto" className="min-w-0 truncate font-medium text-text-2">
+            {title}
+          </span>
           <span aria-hidden>·</span>
-          <span dir="auto">{info.native}</span>
-        </span>
-        <Button
-          size="sm"
-          variant="ghost"
-          leadingIcon={<Maximize />}
-          aria-label={t('Preview {name}', { name: title })}
-          onClick={() => setPreviewOpen(true)}
-        >
-          {t('Preview')}
-        </Button>
+          <span className="shrink-0">{plural(project.slides.length, 'slide')}</span>
+        </div>
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="flex min-w-0 flex-1 items-center gap-1.5">
+            <FamilyGlyph family={family} size={12} />
+            <span className="shrink-0">{FAMILY_NAME[family]}</span>
+            <span aria-hidden className="shrink-0">·</span>
+            <span dir="auto" className="truncate">{info.native}</span>
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
+            leadingIcon={<Maximize />}
+            aria-label={t('Preview {name}', { name: title })}
+            onClick={() => setPreviewOpen(true)}
+          >
+            {t('Preview')}
+          </Button>
+        </div>
       </figcaption>
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         {previewOpen && (
@@ -116,6 +120,7 @@ function PreviewCanvas({ project, family, lang }: { project: Project; family: Fa
       ref={ref}
       role="region"
       aria-label={t('Template slides preview')}
+      tabIndex={0}
       dir="ltr"
       className="flex min-h-[240px] flex-1 items-center overflow-x-auto overflow-y-hidden rounded-lg border border-line bg-stage p-6"
       style={{
