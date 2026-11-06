@@ -26,6 +26,26 @@ test('first run: create a project from a template with iPhone, Android phone and
   await expect(tile).toHaveAttribute('aria-pressed', 'true');
   await expect(dialog.getByRole('button', { name: /^Aurora, Gradient template/ })).toHaveAttribute('aria-pressed', 'false');
 
+  await dialog.getByRole('button', { name: 'Preview Sunset Boulevard' }).click();
+  const preview = page.getByRole('dialog', { name: 'Preview Sunset Boulevard' });
+  await expect(preview).toBeVisible();
+  const previewSlides = preview.getByRole('region', { name: 'Template slides preview' });
+  await expect(previewSlides).toHaveAttribute('tabindex', '0');
+  await expect(previewSlides.locator('canvas')).toHaveCount(5);
+  await expect
+    .poll(() => previewSlides.locator('canvas').first().evaluate((canvas) => (canvas as HTMLCanvasElement).width))
+    .toBeGreaterThan(0);
+  await expect
+    .poll(() => previewSlides.evaluate((element) => element.scrollWidth - element.clientWidth))
+    .toBeGreaterThan(0);
+  await previewSlides.focus();
+  await expect(previewSlides).toBeFocused();
+  const lastSlide = previewSlides.locator('canvas').last();
+  await lastSlide.scrollIntoViewIfNeeded();
+  await expect.poll(() => lastSlide.evaluate((canvas) => (canvas as HTMLCanvasElement).width)).toBeGreaterThan(0);
+  await page.keyboard.press('Escape');
+  await expect(preview).toBeHidden();
+
   const name = dialog.getByRole('textbox', { name: 'Project name' });
   await expect(name, 'the name follows the picked template until typed').toHaveValue('Sunset Boulevard');
   await name.fill('Road Trip Planner');
