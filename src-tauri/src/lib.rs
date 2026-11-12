@@ -698,7 +698,7 @@ mod tests {
     fn ipc_app_info_and_fonts() {
         let h = harness();
         let info = h.json("app_info", serde_json::json!({})).unwrap();
-        assert_eq!(info["version"], "0.1.0");
+        assert_eq!(info["version"], "0.1.1");
         assert_eq!(info["os"], os_name());
         assert_eq!(info["dataDir"], h.data.to_str().unwrap());
         let fonts = h.json("system_fonts", serde_json::json!({})).unwrap();

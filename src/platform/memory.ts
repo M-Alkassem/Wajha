@@ -131,7 +131,7 @@ export function createMemoryPlatform(options: MemoryPlatformOptions = {}): Memor
     kind: 'memory',
 
     async info(): Promise<AppInfo> {
-      return { kind: 'memory', os: 'web', version: '0.1.0', dataDir: 'Memory' };
+      return { kind: 'memory', os: 'web', version: '0.1.1', dataDir: 'Memory' };
     },
 
     async read(path) {

@@ -249,7 +249,7 @@ describe('memory platform', () => {
   describe('misc', () => {
     it('info describes the memory platform', async () => {
       expect(mem.kind).toBe('memory');
-      expect(await mem.info()).toEqual({ kind: 'memory', os: 'web', version: '0.1.0', dataDir: 'Memory' });
+      expect(await mem.info()).toEqual({ kind: 'memory', os: 'web', version: '0.1.1', dataDir: 'Memory' });
     });
 
     it('openUrl accepts https only', async () => {

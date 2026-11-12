@@ -144,7 +144,7 @@ describe('web platform (without IndexedDB)', () => {
 
   it('describes itself', async () => {
     expect(platform.kind).toBe('web');
-    expect(await platform.info()).toEqual({ kind: 'web', os: 'web', version: '0.1.0', dataDir: 'Browser storage (IndexedDB)' });
+    expect(await platform.info()).toEqual({ kind: 'web', os: 'web', version: '0.1.1', dataDir: 'Browser storage (IndexedDB)' });
     expect(await platform.systemFonts()).toEqual([]);
   });
 

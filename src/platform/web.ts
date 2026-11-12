@@ -328,7 +328,7 @@ export function createWebPlatform(): Platform {
     kind: 'web',
 
     async info(): Promise<AppInfo> {
-      return { kind: 'web', os: 'web', version: '0.1.0', dataDir: 'Browser storage (IndexedDB)' };
+      return { kind: 'web', os: 'web', version: '0.1.1', dataDir: 'Browser storage (IndexedDB)' };
     },
 
     async read(path) {
